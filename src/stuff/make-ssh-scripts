@@ -1,15 +1,16 @@
 #!/bin/bash
 
 rm -f ssh*
-(
+sort -u <NMS-VMs.txt | (
    n=0
    while read host ; do
       echo "${n}: ${host}"
       (
          echo "#!/bin/sh"
+         echo "Connecting to ${host} ..."
          echo "ssh -C nornetpp@${host}"
       ) >ssh${n}
       chmod +x ssh${n}
       let n=$n+1
    done
-) <NMS-VMs.txt
+)

@@ -2,9 +2,9 @@ amsterdam.nntb.no
 frankfurt.nntb.no
 hongkong.nntb.no
 london.nntb.no
-nashua.nntb.no
+ashburn.nntb.no
 oslo.nntb.no
 sanjose.nntb.no
 singapore.nntb.no
 sydney.nntb.no
-torrington.nntb.no
+toronto.nntb.no
