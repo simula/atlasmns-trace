@@ -15,7 +15,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
 # This package does not generate debug information (no executables):
-%global debug_package %{nil}
+# %global debug_package %{nil}
 
 # TEST ONLY:
 # define _unpackaged_files_terminate_build 0
@@ -23,7 +23,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 %description
 NorNet is a testbed for multi-homed systems. This package
-contains the NorNet Trace serice scripts.
+contains the Atlas/MNS Trace experiment scripts.
 See https://www.nntb.no for details on NorNet!
 
 %prep
@@ -38,40 +38,35 @@ make DESTDIR=%{buildroot} install
 
 
 
-%package importer
-Summary: NorNet Trace Importer
+%package scheduler
+Summary: Atlas/MNS Trace Scheduler
 Group: Applications/Internet
 BuildArch: noarch
-Requires: crontabs
-Requires: hipercontracer
-Requires: atlasmns-management
+Requires: nornet-management
 
-%description importer
- NorNet Trace Importer is the importer cron job to import results from the
- NorNet Trace Service into a database.
+%description scheduler
+ Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
  See https://www.nntb.no for details on NorNet!
 
-%files importer
-%config(noreplace) %{_sysconfdir}/cron.d/atlasmns-trace-importer
+%files scheduler
+%{_bindir}/atlasmns-trace-scheduler
+%{_mandir}/man1/atlasmns-trace-scheduler.1.gz
 
 
-
-%package service
-Summary: NorNet Trace Service
+%package agent
+Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
 BuildArch: noarch
-Requires: %{name}-importer = %{version}-%{release}
-Requires: hipercontracer
-Requires: atlasmns-tunnelbox
+Requires: hipercontracer (>= 1.4.0~)
+Requires: nornet-trace-trigger
 
-%description service
- NorNet Trace Service is the traceroute service for the NorNet testbed.
- It performs regular HiPerConTracer runs among all sites.
+%description agent
+ Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.
  See https://www.nntb.no for details on NorNet!
 
-%files service
-%{_bindir}/nornetinfogenerator
-%{_mandir}/man1/nornetinfogenerator.1.gz
+%files agent
+%{_bindir}/atlasmns-trace-agent
+%{_mandir}/man1/atlasmns-trace-agent.1.gz
 
 
 

@@ -10,38 +10,23 @@ Standards-Version: 4.3.0
 Vcs-Git: https://github.com/simula/atlasmns-trace.git
 Vcs-Browser: https://github.com/simula/atlasmns-trace
 
-Package: atlasmns-trace-importer
+Package: atlasmns-trace-scheduler
 Architecture: all
-Depends: hipercontracer (>= 1.2.0~),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: NorNet Trace Importer
- NorNet Trace Importer is the importer cron job to import results from the
- NorNet Trace Service into a database.
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         nornet-management
+Description: Atlas/MNS Trace Scheduler
+ Atlas/MNS Trace Importer is the scheduler for the Atlas/MNS Trace experiments.
  .
  See https://www.nntb.no for details on NorNet!
 
-Package: atlasmns-trace-service
+Package: atlasmns-trace-agent
 Architecture: all
-Depends: hipercontracer (>= 1.2.0~),
-         atlasmns-trace-importer (= ${binary:Version}),
-         atlasmns-tunnelbox,
+Depends: hipercontracer (>= 1.4.0~),
+         nornet-trace-trigger,
          ${misc:Depends},
          ${shlibs:Depends}
-Description: NorNet Trace Service
- NorNet Trace Service is the traceroute service for the NorNet testbed.
- It performs regular HiPerConTracer runs among all sites.
- .
- See https://www.nntb.no for details on NorNet!
-
-Package: atlasmns-trace-trigger
-Architecture: all
-Depends: hipercontracer-trigger (>= 1.3.0~),
-         atlasmns-trace-importer (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: NorNet Trace Trigger
- NorNet Trace Trigger is the traceroute service for the NorNet testbed.
- It performs triggered HiPerConTracer runs.
+Description: Atlas/MNS Trace Agent
+ Atlas/MNS Trace Importer is the agent for the Atlas/MNS Trace experiments.
  .
  See https://www.nntb.no for details on NorNet!
