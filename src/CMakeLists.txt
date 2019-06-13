@@ -2,8 +2,8 @@
 # PROGRAMS
 #############################################################################
 
-INSTALL(PROGRAMS atlastrace-trace-scheduler DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES atlastrace-trace-scheduler.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(PROGRAMS atlasmns-trace-scheduler DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES atlasmns-trace-scheduler.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 
 ADD_EXECUTABLE(atlasmns-trace-agent atlasmns-trace-agent.cc)
