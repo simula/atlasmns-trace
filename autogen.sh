@@ -17,7 +17,7 @@ done
 
 rm -f CMakeCache.txt
 # -DCMAKE_BUILD_TYPE=DEBUG
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DWITH_SCTP=1 $@ .
+cmake -DCMAKE_INSTALL_PREFIX=/usr $@ .
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux

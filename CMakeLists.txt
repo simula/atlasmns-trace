@@ -17,7 +17,7 @@
 # Contact: dreibh@simula.no
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
-PROJECT(atlasmns-trace LANGUAGES C)
+PROJECT(atlasmns-trace LANGUAGES CXX)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "0")
@@ -57,21 +57,18 @@ INCLUDE(CheckStructHasMember)
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-    ADD_DEFINITIONS("-D_DEFAULT_SOURCE -DLINUX")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
     MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
     SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
     SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
     INCLUDE_DIRECTORIES("/usr/local/include")
-    ADD_DEFINITIONS("-DFreeBSD")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
     SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
     SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
     INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
-    ADD_DEFINITIONS("-DDARWIN")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
     MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
@@ -80,16 +77,39 @@ ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
     SET(CMAKE_REQUIRED_INCLUDES "/usr/pkg/include" "/usr/include" "/usr/local/include")
     SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
     INCLUDE_DIRECTORIES("/usr/pkg/include" "/usr/local/include")
-    ADD_DEFINITIONS("-DNetBSD")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
     MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-    ADD_DEFINITIONS("-DSOLARIS")
 
 ELSE()
     MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
 
 ENDIF()
+
+
+#############################################################################
+# REQUIREMENTS
+#############################################################################
+
+INCLUDE(FindPackageHandleStandardArgs)
+
+# ###### Threads ############################################################
+FIND_PACKAGE(Threads REQUIRED)
+
+# ###### Boost ##############################################################
+FIND_PACKAGE(Boost REQUIRED COMPONENTS log date_time system thread iostreams filesystem)
+IF (NOT Boost_FOUND)
+   MESSAGE(FATAL_ERROR "Cannot find Boost libraries!")
+ELSE()
+  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+ENDIF()
+ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)   # <<-- Required to handle BOOST Log link problem!
+
+# ###### libhipercontracer ##################################################
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(HIPERCONTRACER DEFAULT_MSG HIPERCONTRACER_INCLUDE_DIR HIPERCONTRACER_LIBRARY)
+FIND_PATH(HIPERCONTRACER_INCLUDE_DIR hipercontracer/traceroute.h)
+FIND_LIBRARY(HIPERCONTRACER_LIBRARY NAMES hipercontracer REQUIRED)
+MARK_AS_ADVANCED(HIPERCONTRACER_LIBRARY HIPERCONTRACER_INCLUDE_DIR)
 
 
 #############################################################################
