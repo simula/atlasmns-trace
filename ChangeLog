@@ -1,0 +1,131 @@
+commit f293fabcc68a70b8cd0c321f675689816048b788
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 6 13:31:53 2019 +0200
+
+    Updated script.
+
+commit fb651d575dbea519db61e9ada75458770272d9ad
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 6 13:29:40 2019 +0200
+
+    Updated build script.
+
+commit 730f715f99fdef5cb5f35cf9bb225fb2caf2575d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Apr 9 21:42:56 2019 +0200
+
+    Updated CI scripts.
+
+commit b25de84aea07873426579263646c106d91155d7c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 8 16:02:02 2019 +0100
+
+    Version bump.
+
+commit d7c0772bc64171e11624d70e361390a733d1fbd4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 6 18:07:16 2019 +0100
+
+    Added missing user specification.
+
+commit 0830a3bafecbec61b342e78ec5f588703802b0e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 6 15:20:26 2019 +0100
+
+    Version bump.
+
+commit 535ad19203b43ac6d8ff6ab16b6ab5ff58e974ee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 6 15:20:07 2019 +0100
+
+    Added missing parameters.
+
+commit 61bb95c7ef8fd84ffb1a09b30479b7d7be5622f2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 6 11:46:30 2019 +0100
+
+    Added options.
+
+commit cbd7b184050dd9e5c3d288a82ed5e6543c9adca8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 6 11:44:23 2019 +0100
+
+    Minor updates.
+
+commit ebb3935d2e28155f7a3570c45fea5bbf540d32ce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 16:24:47 2019 +0100
+
+    Minor update.
+
+commit e675d35228c3c49c03a6cdde2c0e61678cca884a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 16:13:27 2019 +0100
+
+    Version bump.
+
+commit 357186f41225176e6dafecca6f965c3acf6068fa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 16:13:07 2019 +0100
+
+    Added trigger service.
+
+commit 47a5f248682b5e821c7555f09d3d987a19a08cc6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 15:44:00 2019 +0100
+
+    A fix.
+
+commit a480ec09de8b8b91f13042c458f810a0dac9a7d4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 15:37:00 2019 +0100
+
+    Version bump.
+
+commit bdc9a5b2079c10fd35b97ce39dd59e5ee1b6eacf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 15:36:32 2019 +0100
+
+    CI script updates.
+
+commit cf1f730a9d66f9067c3a29bf0aff48f30e235334
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 13:59:47 2019 +0100
+
+    Updated packaging files.
+
+commit eab006ecf7ea09b92e9fa0b95502ffc2aab5775b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 13:24:26 2019 +0100
+
+    Added COPR configuration to CI script.
+
+commit a6d78e108a420e1c2cadddda48ad1b52a85b68b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 12:48:46 2019 +0100
+
+    Updated packaging files.
+
+commit 3ba95f11c9b22111d8dad66c9a4e3434ad422451
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 12:22:50 2019 +0100
+
+    Added build scripts.
+
+commit ad106d0bfe9bbb3ac7439d87d472b2c307de9a42
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 12:19:00 2019 +0100
+
+    Added Ubuntu packaging files.
+
+commit 7ee9c2a17ca2f9602719a1cd727bc905c049f4ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 12:12:33 2019 +0100
+
+    Added script and manpage.
+
+commit a8f8050a6ca947a5f44e0ff346678d35215cf749
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 5 12:10:57 2019 +0100
+
+    Added RPM.
