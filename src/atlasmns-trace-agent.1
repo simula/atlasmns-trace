@@ -18,35 +18,31 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd June 14, 2019
-.Dt atlasmns-trace-scheduler 1
-.Os atlasmns-trace-scheduler
+.Dt atlasmns-trace-agent 1
+.Os atlasmns-trace-agent
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm atlasmns-trace-scheduler
+.Nm atlasmns-trace-agent
 .Nd Atlas/MNS Trace Experiment Scheduler
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm atlasmns-trace-scheduler
-database_configuration
-scheduler_configuration
+.Nm atlasmns-trace-agent
+.\" configuration_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm atlasmns-trace-scheduler
+.Nm atlasmns-trace-agent
 is the Atlas/MNS Trace experiment scheduler.
 .Pp
 .\" ###### Arguments ########################################################
-.Sh ARGUMENTS
-The following arguments have to be provided:
-.Bl -tag -width indent
-.It database_configuration
-Specifies the database configuration file.
-.It scheduler_configuration
-Specifies the scheduler configuration file.
-.El
+.\" .Sh ARGUMENTS
+.\" The following arguments have to be provided:
+.\" .Bl -tag -width indent
+.\" .It configuration_file
+.\" .El
 .\" ###### Arguments ########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It atlasmns-trace-scheduler database-configuration address-configuration
+.It atlasmns-trace-agent
 .El
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
