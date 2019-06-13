@@ -5,6 +5,7 @@ Maintainer: Thomas Dreibholz <dreibh@simula.no>
 Homepage: https://www.nntb.no/
 Build-Depends: cmake (>= 3.0.2) | cmake3,
                debhelper (>= 9),
+               libhipercontracer-dev (>= 1.4.0~),
                python3-all
 Standards-Version: 4.3.0
 Vcs-Git: https://github.com/simula/atlasmns-trace.git

@@ -11,6 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
+BuildRequires: hipercontracer-devel (>= 1.4.0~)
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
