@@ -7,7 +7,7 @@ sort -u <NMS-VMs.txt | (
       echo "${n}: ${host}"
       (
          echo "#!/bin/sh"
-         echo "Connecting to ${host} ..."
+         echo "echo \"Connecting to ${host} ...\""
          echo "ssh -C nornetpp@${host}"
       ) >ssh${n}
       chmod +x ssh${n}
