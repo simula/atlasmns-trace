@@ -5,7 +5,7 @@ Maintainer: Thomas Dreibholz <dreibh@simula.no>
 Homepage: https://www.nntb.no/
 Build-Depends: cmake (>= 3.0.2) | cmake3,
                debhelper (>= 9),
-               libhipercontracer-dev (>= 1.4.0~),
+               libhipercontracer-dev,
                python3-all
 Standards-Version: 4.3.0
 Vcs-Git: https://github.com/simula/atlasmns-trace.git
@@ -13,9 +13,10 @@ Vcs-Browser: https://github.com/simula/atlasmns-trace
 
 Package: atlasmns-trace-scheduler
 Architecture: all
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         nornet-management
+Depends: nornet-management,
+         python3-pymongo,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: Atlas/MNS Trace Scheduler
  Atlas/MNS Trace Importer is the scheduler for the Atlas/MNS Trace experiments.
  .
@@ -23,8 +24,9 @@ Description: Atlas/MNS Trace Scheduler
 
 Package: atlasmns-trace-agent
 Architecture: all
-Depends: hipercontracer (>= 1.4.0~),
+Depends: hipercontracer,
          nornet-trace-trigger,
+         python3-pymongo,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Agent
