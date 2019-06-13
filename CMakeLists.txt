@@ -106,10 +106,10 @@ ENDIF()
 ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)   # <<-- Required to handle BOOST Log link problem!
 
 # ###### libhipercontracer ##################################################
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(HIPERCONTRACER DEFAULT_MSG HIPERCONTRACER_INCLUDE_DIR HIPERCONTRACER_LIBRARY)
-FIND_PATH(HIPERCONTRACER_INCLUDE_DIR hipercontracer/traceroute.h)
-FIND_LIBRARY(HIPERCONTRACER_LIBRARY NAMES hipercontracer REQUIRED)
-MARK_AS_ADVANCED(HIPERCONTRACER_LIBRARY HIPERCONTRACER_INCLUDE_DIR)
+FIND_PATH(HiPerConTracer_INCLUDE_DIR hipercontracer/traceroute.h REQUIRED)
+FIND_LIBRARY(HiPerConTracer_LIBRARY NAMES hipercontracer REQUIRED)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(HiPerConTracer DEFAULT_MSG HiPerConTracer_INCLUDE_DIR HiPerConTracer_LIBRARY)
+MARK_AS_ADVANCED(HiPerConTracer_LIBRARY HiPerConTracer_INCLUDE_DIR)
 
 
 #############################################################################
