@@ -52,6 +52,18 @@ Requires: nornet-management
 %files scheduler
 %{_bindir}/atlasmns-trace-scheduler
 %{_mandir}/man1/atlasmns-trace-scheduler.1.gz
+%{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
+%{_datadir}/doc/atlasmns-trace/examples/SQL/README
+%{_datadir}/doc/atlasmns-trace/examples/SQL/database.sql
+%{_datadir}/doc/atlasmns-trace/examples/SQL/install-database-and-users
+%{_datadir}/doc/atlasmns-trace/examples/SQL/schema.sql
+%{_datadir}/doc/atlasmns-trace/examples/SQL/users.sql
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/admin.ms
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/database.ms
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/install-database-and-users
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/schema.ms
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/users.ms
+%{_datadir}/doc/atlasmns-trace/examples/NoSQL/README
 
 
 %package agent
