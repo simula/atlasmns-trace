@@ -11,7 +11,8 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: hipercontracer-libhipercontracer-devel (>= 1.4.0)
+BuildRequires: hipercontracer-libhipercontracer-devel
+BuildRequires: boost-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
@@ -44,6 +45,8 @@ Summary: Atlas/MNS Trace Scheduler
 Group: Applications/Internet
 BuildArch: noarch
 Requires: nornet-management
+Requires: python3-psycopg2
+Requires: python3-pymongo
 
 %description scheduler
  Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
@@ -70,8 +73,10 @@ Requires: nornet-management
 Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
 BuildArch: noarch
-Requires: hipercontracer (>= 1.4.0~)
+Requires: hipercontracer >= 1.4.0
 Requires: nornet-trace-trigger
+Requires: python3-psycopg2
+Requires: python3-pymongo
 
 %description agent
  Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.
