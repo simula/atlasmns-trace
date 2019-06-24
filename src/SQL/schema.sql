@@ -1,5 +1,5 @@
 -- STEP 2: Create Schema
--- sudo -u postgres psql atlasmsndb <schema.sql
+-- sudo -u postgres psql atlasmnsdb <schema.sql
 --
 -- =================================================================
 --          #     #                 #     #

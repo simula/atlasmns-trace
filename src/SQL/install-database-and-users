@@ -1,6 +1,6 @@
 #!/bin/sh
 
 sudo -u postgres psql <database.sql
-sudo -u postgres psql atlasmsndb <schema.sql
-sudo -u postgres psql atlasmsndb <users.sql
+sudo -u postgres psql atlasmnsdb <schema.sql
+sudo -u postgres psql atlasmnsdb <users.sql
 

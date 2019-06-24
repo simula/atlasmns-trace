@@ -62,7 +62,7 @@ Login:
  mongo --host rolfsbukta.alpha.test -u maintainer -p '!maintainer!' --authenticationDatabase "admin" --ssl --sslCAFile ~/NorNet-CA-Test-Alpha-chain.pem
  (without TLS configuration: mongo -u maintainer -p '!maintainer!' --authenticationDatabase "admin")
 * Researcher:
- mongo --host rolfsbukta.alpha.test -u researcher -p '!researcher!' --authenticationDatabase "atlasmsndb" --ssl --sslCAFile ~/NorNet-CA-Test-Alpha-chain.pem
+ mongo --host rolfsbukta.alpha.test -u researcher -p '!researcher!' --authenticationDatabase "atlasmnsdb" --ssl --sslCAFile ~/NorNet-CA-Test-Alpha-chain.pem
 
 
 4. Initialize database:

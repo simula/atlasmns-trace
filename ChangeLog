@@ -1,3 +1,117 @@
+commit 82d16bbed7c7eaf16a9e19e0b80ef0ae75eaf812
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:28:32 2019 +0200
+
+    Fixed typo.
+
+commit adcc0d16cc7e0c2bf4dac983cf05eec7ec23c5a0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:18:35 2019 +0200
+
+    Some updates.
+
+commit bf4da9edab60c861796baa4874cc4bcdea998f31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:16:56 2019 +0200
+
+    Added MongoDB files and scripts.
+
+commit b8bde97e821017695c028650d4d79c94e3f940ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:03:30 2019 +0200
+
+    Some clean-ups.
+
+commit adafb21df9c5356915edaf0f2d6f0abdf027fea1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:02:23 2019 +0200
+
+    Some work on the scheduler.
+
+commit 9f432e42286452e2c057087e7c0fbac045f73e7c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 09:50:17 2019 +0200
+
+    Added configuration file.
+
+commit 60e9d98e497492313c9f5cca214f875b7b7d2e54
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 09:35:48 2019 +0200
+
+    Added SQL files and scripts.
+
+commit f87c74cc756a6ce6adaa5d5142949537b789cb1b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 17:34:52 2019 +0200
+
+    CMakeLists.txt fix.
+
+commit a7d03973d2205ffbfd1fe20384363432fe9cf070
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 17:34:45 2019 +0200
+
+    Dependency updates.
+
+commit eb8ba85c352fc10c00302365a376296039e8317a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 17:34:29 2019 +0200
+
+    A fix.
+
+commit 860bf23074bc06de7f2c36aa23ddb1e08aba7d34
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 15:40:27 2019 +0200
+
+    Improved helper script.
+
+commit d69c36c9dfa43375a8fecaf42ecca5edf467db70
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 15:40:11 2019 +0200
+
+    Added image.
+
+commit 3797c714f2d9dbecb213e346611f1e064839af62
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 13:46:53 2019 +0200
+
+    Added helper script.
+
+commit 64e0ebd30804ea80f17f87b70b3d9c9a3f1da5ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 12:37:52 2019 +0200
+
+    Improved build script.
+
+commit 09e0fceba34722342e46276915534767dd050810
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 10:58:13 2019 +0200
+
+    CMake file updates.
+
+commit 82f8ca960937e6dd97b8b94c7f5658d42c478021
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 10:54:52 2019 +0200
+
+    Updated CMake files.
+
+commit 6a0ea1407433636e106aba46d9d37364ef18d27d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 10:54:39 2019 +0200
+
+    Updated manpages.
+
+commit 5f87ea335e74fbd0dfc158c4eb0edf64fd05c7f2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 10:54:33 2019 +0200
+
+    Added source file.
+
+commit 8440e6d1450229da9096dbeac0a97ac92e63abff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 13 10:22:01 2019 +0200
+
+    Updated build script.
+
 commit d2f082d03dd2d88648cdb1c33529720446e69160
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Jun 13 10:21:25 2019 +0200

@@ -1,4 +1,4 @@
-use atlasmsndb
+use atlasmnsdb
 db.dropUser("importer")
 db.dropUser("researcher")
 db.createUser({ user: "importer",   pwd: "!importer!",   roles: [ "readWrite" ] })
