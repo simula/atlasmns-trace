@@ -26,4 +26,4 @@ INSTALL(FILES atlasmsn-database-configuration
 #############################################################################
 
 ADD_SUBDIRECTORY(SQL)
-# ADD_SUBDIRECTORY(NoSQL)
+ADD_SUBDIRECTORY(NoSQL)
