@@ -11,3 +11,6 @@ results_dbport     = 27017
 results_dbuser     = importer
 results_dbpassword = !importer!
 results_database   = atlasmnsdb
+
+# ====== RIPE Atlas =========================================================
+atlas_api_key      = <SET_A_KEY_HERE>

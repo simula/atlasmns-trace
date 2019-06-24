@@ -41,6 +41,7 @@ import psycopg2
 import pymongo
 import re
 import shutil
+import ripe.atlas.cousteau
 import ssl
 import socket
 import sys
@@ -84,6 +85,8 @@ results_dbpassword   = None
 results_database     = "atlasmnsdb"
 results_cafile       = "None"
 
+atlas_api_key        = None
+
 
 # ====== Get parameters =====================================================
 parsedConfigFile = configparser.RawConfigParser()
@@ -92,7 +95,6 @@ try:
    parsedConfigFile.readfp(io.StringIO(u'[root]\n' + open(configFileName, 'r').read()))
 except Exception as e:
     error('Unable to read database configuration file' +  sys.argv[1] + ': ' + str(e))
-    sys.exit(1)
 
 for parameterName in parsedConfigFile.options('root'):
    parameterValue = parsedConfigFile.get('root', parameterName)
@@ -123,6 +125,22 @@ for parameterName in parsedConfigFile.options('root'):
    elif parameterName == 'results_cafile':
       results_cafile = parameterValue
 
+   elif parameterName == 'atlas_api_key':
+      atlas_api_key = parameterValue
+
+
+# ====== Connect to RIPE Atlas ==============================================
+log('Connecting to the RIPE Atlas server ...')
+atlas_request = ripe.atlas.cousteau.AtlasRequest(
+   **{
+      "url_path": "/api/v2/anchors"
+   }
+)
+result = collections.namedtuple('Result', 'success response')
+(result.success, result.response) = atlas_request.get()
+if result.success == False:
+   error('Unable to connect to the RIPE Atlas server!')
+
 
 # ====== Connect to the scheduler database ==================================
 log('Connecting to the PostgreSQL scheduler database at ' + scheduler_dbserver + ' ...')
@@ -145,9 +163,8 @@ try:
                                                 sslmode='verify-ca', sslrootcert=scheduler_cafile)
    scheduler_dbConnection.autocommit = False
 except Exception as e:
-   log('Unable to connect to the PostgreSQL scheduler database at ' +
-       scheduler_dbserver + ': ' + str(e))
-   sys.exit(1)
+   error('Unable to connect to the PostgreSQL scheduler database at ' +
+         scheduler_dbserver + ': ' + str(e))
 
 scheduler_dbCursor = scheduler_dbConnection.cursor()
 
@@ -168,9 +185,8 @@ try:
    results_db = results_dbConnection[str(results_database)]
    results_db.authenticate(str(results_dbuser), str(results_dbpassword), mechanism='SCRAM-SHA-1')
 except Exception as e:
-   log('Unable to connect to the MongoDB results database at ' +
-       results_dbserver + ': ' + str(e))
-   sys.exit(1)
+   error('Unable to connect to the MongoDB results database at ' +
+         results_dbserver + ': ' + str(e))
 
 
 
