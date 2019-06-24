@@ -115,9 +115,9 @@ for parameterName in parsedConfigFile.options('root'):
 # ====== Connect to the scheduler database ==================================
 try:
    scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
-                                   user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
-                                   scheduler_dbname=str(scheduler_dbname),
-                                   sslmode='verify-ca')
+                                             user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
+                                             scheduler_dbname=str(scheduler_dbname),
+                                             sslmode='verify-ca')
    scheduler_dbConnection.autocommit = False
 except Exception as e:
    log('Unable to connect to the PostgreSQL scheduler database at ' + scheduler_dbserver + '!')
