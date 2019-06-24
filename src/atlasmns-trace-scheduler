@@ -41,6 +41,7 @@ import psycopg2
 import pymongo
 import re
 import shutil
+import ssl
 import socket
 import sys
 
@@ -48,6 +49,11 @@ import sys
 # ###### Print log message ##################################################
 def log(logstring):
    print('\x1b[32m' + datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S') + ': ' + logstring + '\x1b[0m');
+
+
+# ###### Print warning message ##############################################
+def warning(logstring):
+   sys.stderr.write('\x1b[31m' + datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S') + ': WARNING: ' + logstring + '\x1b[0m\n');
 
 
 # ###### Abort with error ###################################################
@@ -69,12 +75,14 @@ scheduler_dbport     = "5432"
 scheduler_dbuser     = "scheduler"
 scheduler_dbpassword = None
 scheduler_database   = "atlasmnsdb"
+scheduler_cafile     = "None"
 
 results_dbserver     = "localhost"
 results_dbport       = "27017"
 results_dbuser       = "importer"
 results_dbpassword   = None
 results_database     = "atlasmnsdb"
+results_cafile       = "None"
 
 
 # ====== Get parameters =====================================================
@@ -99,6 +107,8 @@ for parameterName in parsedConfigFile.options('root'):
       scheduler_dbpassword = parameterValue
    elif parameterName == 'scheduler_database':
       scheduler_database = parameterValue
+   elif parameterName == 'scheduler_cafile':
+      scheduler_cafile = parameterValue
 
    elif parameterName == 'results_dbserver':
       results_dbserver = parameterValue
@@ -110,36 +120,63 @@ for parameterName in parsedConfigFile.options('root'):
       results_dbpassword = parameterValue
    elif parameterName == 'results_database':
       results_database = parameterValue
+   elif parameterName == 'results_cafile':
+      results_cafile = parameterValue
 
 
 # ====== Connect to the scheduler database ==================================
+log('Connecting to the PostgreSQL scheduler database at ' + scheduler_dbserver + ' ...')
 try:
-   scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
-                                             user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
-                                             scheduler_dbname=str(scheduler_dbname),
-                                             sslmode='verify-ca')
+   if scheduler_cafile == "IGNORE":   # ------ Ignore TLS certificate -------
+      warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
+      scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
+                                                user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
+                                                dbname=str(scheduler_database),
+                                                sslmode='require')
+   elif scheduler_cafile == "None":   # ------ Use default CA settings ------
+      scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
+                                                user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
+                                                dbname=str(scheduler_database),
+                                                sslmode='verify-ca')
+   else:   # ------ Use given CA --------------------------------------------
+      scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
+                                                user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
+                                                dbname=str(scheduler_database),
+                                                sslmode='verify-ca', sslrootcert=scheduler_cafile)
    scheduler_dbConnection.autocommit = False
 except Exception as e:
-   log('Unable to connect to the PostgreSQL scheduler database at ' + scheduler_dbserver + '!')
+   log('Unable to connect to the PostgreSQL scheduler database at ' +
+       scheduler_dbserver + ': ' + str(e))
    sys.exit(1)
 
 scheduler_dbCursor = scheduler_dbConnection.cursor()
 
 
-
-# ====== Main loop ==========================================================
-
-
-
 # ====== Connect to the results database ====================================
+log('Connecting to MongoDB results database at ' + results_dbserver + ' ...')
 try:
-   results_dbConnection = pymongo.MongoClient(host=str(results_dbserver), port=int(results_dbport),
-                                              ssl=True, ssl_cert_reqs=ssl.CERT_REQUIRED)
-   results_db = results_dbConnection[str(results_dbname)]
+   if results_cafile == "IGNORE":   # ------ Ignore TLS certificate ------------
+      warning('TLS certificate check for MongoDB results database is turned off!')
+      results_dbConnection = pymongo.MongoClient(host=str(results_dbserver), port=int(results_dbport),
+                                                 ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+   elif results_cafile == "None":   # ------ Use default CA settings -----------
+      results_dbConnection = pymongo.MongoClient(host=str(results_dbserver), port=int(results_dbport),
+                                                 ssl=True, ssl_cert_reqs=ssl.CERT_REQUIRED)
+   else:   # ------ Use given CA, requires PyMongo >= 3.4! ---------------
+      results_dbConnection = pymongo.MongoClient(host=str(results_dbserver), port=int(results_dbport),
+                                                 ssl=True, ssl_cert_reqs=ssl.CERT_REQUIRED, ssl_ca_certs=results_cafile)
+   results_db = results_dbConnection[str(results_database)]
    results_db.authenticate(str(results_dbuser), str(results_dbpassword), mechanism='SCRAM-SHA-1')
 except Exception as e:
-   log('Unable to connect to the MongoDB results database at ' + results_dbserver + '!')
+   log('Unable to connect to the MongoDB results database at ' +
+       results_dbserver + ': ' + str(e))
    sys.exit(1)
+
+
+
+# ====== Main loop ==========================================================
+log('Scheduler is ready!')
+
 
 
 # ====== All done! ==========================================================

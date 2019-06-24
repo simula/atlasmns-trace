@@ -1,13 +1,15 @@
 # ====== PostgreSQL database server for scheduler ===========================
-scheduler_dbserver   = taralrudaasen.simula.nornet
+scheduler_dbserver   = rolfsbukta.alpha.test
 scheduler_dbport     = 5432
 scheduler_dbuser     = scheduler
 scheduler_dbpassword = !scheduler!
 scheduler_database   = atlasmnsdb
+scheduler_cafile     = IGNORE
 
 # ====== MongoDB database server for results ================================
-results_dbserver   = taralrudaasen.simula.nornet
+results_dbserver   = rolfsbukta.alpha.test
 results_dbport     = 27017
 results_dbuser     = importer
 results_dbpassword = !importer!
 results_database   = atlasmnsdb
+results_cafile     = IGNORE

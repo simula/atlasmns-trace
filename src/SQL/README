@@ -42,9 +42,9 @@ rolfsbukta.alpha.test.key and certificate file rolfsbukta.alpha.test.crt!
 
 Change in /etc/postgresql/*/main/postgresql.conf:
 # ====== NorNet =============================================================
-ssl                       = true
-ssl_ciphers               = 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:AES256-SHA'
-ssl_ecdh_curve            = 'brainpoolP512r1'
+ssl                       = on
+ssl_ciphers               = 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256
 ssl_prefer_server_ciphers = on
+password_encryption       = scram-sha-256
 ssl_cert_file             = '/etc/ssl/rolfsbukta.alpha.test.crt'
 ssl_key_file              = '/etc/ssl/rolfsbukta.alpha.test.key'
