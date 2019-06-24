@@ -1,5 +1,5 @@
 -- STEP 2: Create Schema
--- sudo -u postgres psql pingtraceroutedb <schema.sql
+-- sudo -u postgres psql atlasmsndb <schema.sql
 --
 -- =================================================================
 --          #     #                 #     #
@@ -39,7 +39,7 @@ CREATE TABLE ExperimentSchedule (
    TimeStamp         TIMESTAMP        NOT NULL DEFAULT NOW(),
 
    AgentHostIP       INET             NOT NULL,
-   AgentTrafficClass SMALLINT(0..255) NOT NULL DEFAULT 0,
+   AgentTrafficClass SMALLINT NOT NULL DEFAULT 0,
    AgentRouterIP     INET             NOT NULL,
 
    MeasurementID     INTEGER          DEFAULT NULL,
