@@ -11,7 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: libhipercontracer-devel (>= 1.4.0~)
+BuildRequires: hipercontracer-libhipercontracer-devel (>= 1.4.0)
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
