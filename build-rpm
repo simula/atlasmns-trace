@@ -21,33 +21,26 @@
 
 # ---------------------------------------------------------------------------
 # USAGE:
-# ./build-rpm                       => Use current distribution and architecture
-# ./build-rpm fedora-30-x86_64      => F30, amd64
-# ./build-rpm fedora-rawhide-i386   => F30, i386
-# ./build-rpm fedora-30-x86_64 --copr dreibh/ppa   => Add PPA dreibh/ppa
+# ./make-rpm                       => Use current distribution and architecture
+# ./make-rpm fedora-30-x86_64      => F30, amd64
+# ./make-rpm fedora-rawhide-i386   => F30, i386
 # ...
 # ---------------------------------------------------------------------------
 
 
-PPAs=""
-DISTRIBUTION="$1"
-if [[ ! "${DISTRIBUTION}" =~ ^- ]] ; then
+DISTRIBUTIONS=`\
+( \
+while [ x$1 != "x" ] ; do \
+   echo $1
    shift
-else
+done \
+) | sort -u`
+if [ "${DISTRIBUTIONS}" == "" ] ; then
    release=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g"`
    arch=`uname -m`
-   DISTRIBUTION="fedora-${release}-${arch}"
-fi
-while [ $# -gt 0 ] ; do
-   if [ "$1" == "--copr" ] ; then
-      PPAs="${PPAs} $2"
-      shift ; shift
-   else
-      echo >&2 "Usage: $0 architecture [--copr PPA] ..."
-      exit 1
-   fi
-done
 
+   DISTRIBUTIONS="fedora-${release}-${arch}"
+fi
 
 PACKAGE=`grep "^Name:" rpm/*.spec | head -n1 | sed -e "s/Name://g" -e "s/[ \t]*//g"`
 PACKAGE_VERSION=`grep "^Version:" rpm/*.spec | head -n1 | sed -e "s/Version://g" -e "s/[ \t]*//g"`
@@ -70,38 +63,32 @@ fi
 
 # ====== Build binary RPMs ==================================================
 # Create binary RPMs
-echo -e ""
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: ====== Creating binary RPM for ${DISTRIBUTION} ==========\x1b[0m"
-echo -e ""
+for DISTRIBUTION in ${DISTRIBUTIONS} ; do
+   echo -e ""
+   echo -e "\x1b[34m`date +%FT%H:%M:%S`: ====== Creating binary RPM for ${DISTRIBUTION} ==========\x1b[0m"
+   echo -e ""
 
-# NOTE: DISTRIBUTION may point to another directory (e.g. "rawhide" instead of "30")!
-if [ ! -e "/etc/mock/${DISTRIBUTION}.cfg" ] ; then
-   echo >&2 "ERROR: Cannot find /etc/mock/${DISTRIBUTION}.cfg!"
-   exit 1
-fi
-distribution=`grep "config_opts..root.. =" /etc/mock/${DISTRIBUTION}.cfg | sed -e "s/^.* = //g" -e "s/'//g"`
+   # NOTE: DISTRIBUTION may point to another directory (e.g. "rawhide" instead of "30")!
+   if [ ! -e "/etc/mock/${DISTRIBUTION}.cfg" ] ; then
+      echo >&2 "ERROR: Cannot find /etc/mock/${DISTRIBUTION}.cfg!"
+      exit 1
+   fi
+   distribution=`grep "config_opts..root.. =" /etc/mock/${DISTRIBUTION}.cfg | sed -e "s/^.* = //g" -e "s/'//g"`
 
-# Remove old files
-find /var/lib/mock/${DISTRIBUTION}/result -name "${PACKAGE}-*.rpm" | xargs --no-run-if-empty rm -f
+   # Remove old files
+   find /var/lib/mock/${DISTRIBUTION}/result -name "${PACKAGE}-*.rpm" | xargs --no-run-if-empty rm -f
 
-# Build the binary RPM
-# NOTE: using old chroot instead of container, to allow running it inside a container!
-mock -r ${DISTRIBUTION} --old-chroot --init
-mock -r ${DISTRIBUTION} --old-chroot --install openssl pesign dnf
-echo "---- Adding PPAs: ${PPAs} ----"
-mock -r ${DISTRIBUTION} --old-chroot --shell <<EOF
-# /usr/bin/dnf upgrade -y
-/usr/bin/dnf install -y --allowerasing dnf-plugins-core
-for ppa in ${PPAs} ; do
-   /usr/bin/dnf copr enable -y \${ppa}
+   # Build the binary RPM
+   # NOTE: using old chroot instead of container, to allow running it inside a container!
+   mock -r ${DISTRIBUTION} --old-chroot --init
+   mock -r ${DISTRIBUTION} --old-chroot --installdeps ${PACKAGE_SRPM}
+   mock -r ${DISTRIBUTION} --old-chroot --install openssl pesign
+   mock -r ${DISTRIBUTION} --old-chroot --no-clean --rebuild ${PACKAGE_SRPM}
+
+   # Check whether files are at the right location
+   PACKAGE_RPMS=`find /var/lib/mock/${distribution}/result -name "${PACKAGE}-*${PACKAGE_VERSION}*-*.rpm" | grep -v "${PACKAGE}-*${PACKAGE_VERSION}*-*.src.rpm" || true`
+   if [ "${PACKAGE_RPMS}" == "" ] ; then
+      echo >&2 "ERROR: Cannot find RPMs!"
+      exit 1
+   fi
 done
-EOF
-mock -r ${DISTRIBUTION} --old-chroot --installdeps ${PACKAGE_SRPM}
-mock -r ${DISTRIBUTION} --old-chroot --no-clean --rebuild ${PACKAGE_SRPM}
-
-# Check whether files are at the right location
-PACKAGE_RPMS=`find /var/lib/mock/${distribution}/result -name "${PACKAGE}-*${PACKAGE_VERSION}*-*.rpm" | grep -v "${PACKAGE}-*${PACKAGE_VERSION}*-*.src.rpm" || true`
-if [ "${PACKAGE_RPMS}" == "" ] ; then
-   echo >&2 "ERROR: Cannot find RPMs!"
-   exit 1
-fi
