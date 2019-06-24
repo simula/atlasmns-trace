@@ -32,18 +32,17 @@
 #
 #  Contact: dreibh@simula.no
 
-import os
-import sys
-import io
-import re
+import collections
+import configparser
 import datetime
-import bz2
+import io
+import os
+import psycopg2
+import pymongo
+import re
 import shutil
 import socket
-import psycopg2
-import configparser
-import pymongo
-import collections
+import sys
 
 
 # ###### Print log message ##################################################
