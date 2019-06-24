@@ -1,4 +1,4 @@
-use atlasmsndb
+use atlasmnsdb
 db.dropDatabase()
-use atlasmsndb
+use atlasmnsdb
 show dbs

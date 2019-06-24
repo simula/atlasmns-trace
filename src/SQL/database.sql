@@ -32,5 +32,5 @@
 --
 -- Contact: dreibh@simula.no
 
-DROP DATABASE IF EXISTS atlasmsndb;
-CREATE DATABASE atlasmsndb;
+DROP DATABASE IF EXISTS atlasmnsdb;
+CREATE DATABASE atlasmnsdb;

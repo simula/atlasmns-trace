@@ -1,5 +1,5 @@
 -- STEP 4: Create Users
--- sudo -u postgres psql atlasmsndb <users.sql
+-- sudo -u postgres psql atlasmnsdb <users.sql
 --
 -- =================================================================
 --          #     #                 #     #
@@ -38,25 +38,25 @@
 -- ##########################################################
 
 
-REVOKE ALL ON DATABASE atlasmsndb FROM agent;
+REVOKE ALL ON DATABASE atlasmnsdb FROM agent;
 REVOKE ALL ON Ping FROM agent;
 REVOKE ALL ON Traceroute FROM agent;
 DROP ROLE agent;
 CREATE ROLE agent WITH LOGIN ENCRYPTED PASSWORD '!agent!';
-GRANT CONNECT ON DATABASE atlasmsndb TO agent;
+GRANT CONNECT ON DATABASE atlasmnsdb TO agent;
 GRANT SELECT ON TABLE ExperimentSchedule TO agent;
 GRANT UPDATE ON TABLE ExperimentSchedule TO agent;
 
-REVOKE ALL ON DATABASE atlasmsndb FROM scheduler;
+REVOKE ALL ON DATABASE atlasmnsdb FROM scheduler;
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM scheduler;
 DROP ROLE scheduler;
 CREATE ROLE scheduler WITH LOGIN ENCRYPTED PASSWORD '!scheduler!';
-GRANT CONNECT ON DATABASE atlasmsndb TO scheduler;
+GRANT CONNECT ON DATABASE atlasmnsdb TO scheduler;
 GRANT INSERT ON TABLE ExperimentSchedule TO scheduler;
 GRANT SELECT ON TABLE ExperimentSchedule TO scheduler;
 
-REVOKE ALL ON DATABASE atlasmsndb FROM maintainer;
+REVOKE ALL ON DATABASE atlasmnsdb FROM maintainer;
 DROP ROLE maintainer;
 CREATE ROLE maintainer WITH LOGIN ENCRYPTED PASSWORD '!maintainer!';
-GRANT CONNECT ON DATABASE atlasmsndb TO maintainer;
+GRANT CONNECT ON DATABASE atlasmnsdb TO maintainer;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO maintainer;

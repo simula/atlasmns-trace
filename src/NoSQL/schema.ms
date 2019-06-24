@@ -1,4 +1,4 @@
-use atlasmsndb
+use atlasmnsdb
 
 // ====== Create collections ================================================
 db.createCollection("ping", { storageEngine: { wiredTiger: { configString: 'block_compressor=zlib' }}})

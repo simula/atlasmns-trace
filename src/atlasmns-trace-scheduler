@@ -68,13 +68,13 @@ scheduler_dbserver   = "localhost"
 scheduler_dbport     = "5432"
 scheduler_dbuser     = "scheduler"
 scheduler_dbpassword = None
-scheduler_database   = "atlasmsndb"
+scheduler_database   = "atlasmnsdb"
 
 results_dbserver     = "localhost"
 results_dbport       = "27017"
 results_dbuser       = "importer"
 results_dbpassword   = None
-results_database     = "atlasmsndb"
+results_database     = "atlasmnsdb"
 
 
 # ====== Get parameters =====================================================
