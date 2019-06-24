@@ -87,13 +87,16 @@ find /var/lib/mock/${DISTRIBUTION}/result -name "${PACKAGE}-*.rpm" | xargs --no-
 # Build the binary RPM
 # NOTE: using old chroot instead of container, to allow running it inside a container!
 mock -r ${DISTRIBUTION} --old-chroot --init
-mock -r ${DISTRIBUTION} --old-chroot --installdeps ${PACKAGE_SRPM}
-mock -r ${DISTRIBUTION} --old-chroot --install openssl pesign
+mock -r ${DISTRIBUTION} --old-chroot --install openssl pesign dnf
+echo "---- Adding PPAs: ${PPAs} ----"
 mock -r ${DISTRIBUTION} --old-chroot --shell <<EOF
-dnf upgrade -y
-dnf install -y --allowerasing dnf-plugins-core
-dnf copr enable -y dreibh/ppa
+# /usr/bin/dnf upgrade -y
+/usr/bin/dnf install -y --allowerasing dnf-plugins-core
+for ppa in ${PPAs} ; do
+   /usr/bin/dnf copr enable -y \${ppa}
+done
 EOF
+mock -r ${DISTRIBUTION} --old-chroot --installdeps ${PACKAGE_SRPM}
 mock -r ${DISTRIBUTION} --old-chroot --no-clean --rebuild ${PACKAGE_SRPM}
 
 # Check whether files are at the right location
