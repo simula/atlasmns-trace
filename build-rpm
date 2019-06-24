@@ -31,7 +31,7 @@
 
 PPAs=""
 DISTRIBUTION="$1"
-if [ "${DISTRIBUTION}" != "" ] ; then
+if [[ ! "${DISTRIBUTION}" =~ ^- ]] ; then
    shift
 else
    release=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g"`

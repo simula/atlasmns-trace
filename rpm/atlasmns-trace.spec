@@ -89,5 +89,5 @@ Requires: python3-pymongo
 
 
 %changelog
-* Thu Jun 14 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.0.0
+* Fri Jun 14 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.0.0
 - Created RPM package.
