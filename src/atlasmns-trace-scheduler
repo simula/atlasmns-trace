@@ -42,6 +42,8 @@ import shutil
 import socket
 import psycopg2
 import configparser
+import pymongo
+import collections
 
 
 # ###### Print log message ##################################################
@@ -62,11 +64,18 @@ if len(sys.argv) < 2:
    error('Usage: ' + sys.argv[0] + ' database_configuration')
 
 configFileName = sys.argv[1]
-dbServer       = 'localhost'
-dbPort         = 5432
-dbUser         = 'importer'
-dbPassword     = None
-dbName         = 'pingtraceroutedb'
+
+scheduler_dbserver   = "localhost"
+scheduler_dbport     = "5432"
+scheduler_dbuser     = "scheduler"
+scheduler_dbpassword = None
+scheduler_database   = "atlasmsndb"
+
+results_dbserver     = "localhost"
+results_dbport       = "27017"
+results_dbuser       = "importer"
+results_dbpassword   = None
+results_database     = "atlasmsndb"
 
 
 # ====== Get parameters =====================================================
@@ -80,26 +89,59 @@ except Exception as e:
 
 for parameterName in parsedConfigFile.options('root'):
    parameterValue = parsedConfigFile.get('root', parameterName)
-   if parameterName == 'dbserver':
-      dbServer = parameterValue
-   elif parameterName == 'dbport':
-      dbPort = parameterValue
-   elif parameterName == 'dbuser':
-      dbUser = parameterValue
-   elif parameterName == 'dbpassword':
-      dbPassword = parameterValue
-   elif parameterName == 'database':
-      dbName = parameterValue
+
+   if parameterName == 'scheduler_dbserver':
+      scheduler_dbserver = parameterValue
+   elif parameterName == 'scheduler_dbport':
+      scheduler_dbport = parameterValue
+   elif parameterName == 'scheduler_dbuser':
+      scheduler_dbuser = parameterValue
+   elif parameterName == 'scheduler_dbpassword':
+      scheduler_dbpassword = parameterValue
+   elif parameterName == 'scheduler_database':
+      scheduler_database = parameterValue
+
+   elif parameterName == 'results_dbserver':
+      results_dbserver = parameterValue
+   elif parameterName == 'results_dbport':
+      results_dbport = parameterValue
+   elif parameterName == 'results_dbuser':
+      results_dbuser = parameterValue
+   elif parameterName == 'results_dbpassword':
+      results_dbpassword = parameterValue
+   elif parameterName == 'results_database':
+      results_database = parameterValue
 
 
-# ====== Connect to the database ============================================
+# ====== Connect to the scheduler database ==================================
 try:
-   dbConnection = psycopg2.connect(host=str(dbServer), port=str(dbPort),
-                                   user=str(dbUser), password=str(dbPassword),
-                                   dbname=str(dbName))
-   dbConnection.autocommit = False
+   scheduler_dbConnection = psycopg2.connect(host=str(scheduler_dbserver), port=str(scheduler_dbport),
+                                   user=str(scheduler_dbuser), password=str(scheduler_dbpassword),
+                                   scheduler_dbname=str(scheduler_dbname),
+                                   sslmode='verify-ca')
+   scheduler_dbConnection.autocommit = False
 except Exception as e:
-    log('Unable to connect to the database!')
-    sys.exit(1)
+   log('Unable to connect to the PostgreSQL scheduler database at ' + scheduler_dbserver + '!')
+   sys.exit(1)
 
-dbCursor = dbConnection.cursor()
+scheduler_dbCursor = scheduler_dbConnection.cursor()
+
+
+
+# ====== Main loop ==========================================================
+
+
+
+# ====== Connect to the results database ====================================
+try:
+   results_dbConnection = pymongo.MongoClient(host=str(results_dbserver), port=int(results_dbport),
+                                              ssl=True, ssl_cert_reqs=ssl.CERT_REQUIRED)
+   results_db = results_dbConnection[str(results_dbname)]
+   results_db.authenticate(str(results_dbuser), str(results_dbpassword), mechanism='SCRAM-SHA-1')
+except Exception as e:
+   log('Unable to connect to the MongoDB results database at ' + results_dbserver + '!')
+   sys.exit(1)
+
+
+# ====== All done! ==========================================================
+log('Exiting!')
