@@ -1,0 +1,105 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          atlasmns-trace-service
+# Required-Start:    $local_fs $remote_fs $network $syslog atlasmns-tunnelbox
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Atlas/MNS Trace Agent
+# Description:       This service provides the Atlas/MNS Trace Agent
+### END INIT INFO
+#
+# Atlas/MNS Trace Service
+# Copyright (C) 2014-2019 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=atlasmns-trace-service
+DESC="Atlas/MNS Trace Agent"
+ATLASMNS_TRACE_AGENT_DAEMON="/usr/bin/atlasmns-trace-agent"
+ATLASMNS_TRACE_AGENT_PIDFILE=/var/run/$NAME.pid
+ATLASMNS_TRACE_AGENT_LOGFILE=/var/log/$NAME.log
+ATLASMNS_TRACE_AGENT_ARGS=""
+ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE=/var/log/atlasmns-trace-import.log
+
+test -x $ATLASMNS_TRACE_AGENT_DAEMON || exit 0
+
+
+# Get configuration:
+# First, set default (if available).
+if [ -f /etc/default/atlasmns-trace ] ; then
+   . /etc/default/atlasmns-trace
+fi
+# Then, apply local settings (if available).
+if [ -f /etc/nornet/atlasmns-trace-service.local ] ; then
+   . /etc/nornet/atlasmns-trace-service.local
+fi
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+
+set -e
+
+
+echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>$ATLASMNS_TRACE_AGENT_LOGFILE
+
+case "$1" in
+  start)
+   echo -n "Starting $DESC: "
+   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE --exec $ATLASMNS_TRACE_AGENT_DAEMON -- $ATLASMNS_TRACE_AGENT_ARGS >>$ATLASMNS_TRACE_AGENT_LOGFILE 2>&1
+   echo "$NAME."
+   # Ensure that importer's log file is writable by user "hipercontracer":
+   touch $ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE
+   chown hipercontracer:hipercontracer $ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE
+   ;;
+  stop)
+   echo -n "Stopping $DESC: "
+   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE || true
+   rm -f $ATLASMNS_TRACE_AGENT_PIDFILE
+   echo "$NAME."
+   ;;
+  force-reload)
+   start-stop-daemon --stop --test --quiet --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE \
+   && $0 restart \
+   || exit 0
+   ;;
+  restart)
+   echo -n "Restarting $DESC: "
+   start-stop-daemon --stop --quiet --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE || true
+   rm -f $ATLASMNS_TRACE_AGENT_PIDFILE
+   sleep 1
+   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE --exec /bin/bash -- -c "exec $ATLASMNS_TRACE_AGENT_DAEMON -- $ATLASMNS_TRACE_AGENT_ARGS >>$ATLASMNS_TRACE_AGENT_LOGFILE 2>&1"
+   echo "$NAME."
+   ;;
+  status)
+   status_of_proc -p $ATLASMNS_TRACE_AGENT_PIDFILE $ATLASMNS_TRACE_AGENT_DAEMON $NAME \
+   && exit 0 || exit $?
+   ;;
+  *)
+   N=/etc/init.d/$NAME
+   echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
+   exit 1
+   ;;
+esac
+
+exit 0

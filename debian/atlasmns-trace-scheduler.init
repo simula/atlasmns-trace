@@ -1,0 +1,107 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          atlasmns-trace-scheduler
+# Required-Start:    $local_fs $remote_fs $network $syslog atlasmns-tunnelbox
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Atlas/MNS Trace Scheduler
+# Description:       This service provides the Atlas/MNS Trace Scheduler.
+### END INIT INFO
+#
+# Atlas/MNS Trace Trigger
+# Copyright (C) 2018-2019 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=atlasmns-trace-scheduler
+DESC="Atlas/MNS Trace Scheduler"
+ATLASMNS_TRACE_SCHEDULER_DAEMON="/usr/bin/atlasmns-trace-scheduler"
+ATLASMNS_TRACE_SCHEDULER_PIDFILE=/var/run/$NAME.pid
+ATLASMNS_TRACE_SCHEDULER_LOGFILE=/var/log/$NAME.log
+ATLASMNS_TRACE_SCHEDULER_ARGS=""
+
+test -x $ATLASMNS_TRACE_SCHEDULER_DAEMON || exit 0
+
+
+# Get configuration:
+# First, set default (if available).
+SOURCE_ARGS=""
+if [ -f /etc/default/atlasmns-trace ] ; then
+   # NOTE: The trace service is configured as well => get the SOURCE_ARGS setting here!
+   . /etc/default/atlasmns-trace
+fi
+# Then, apply local settings (if available).
+if [ -f /etc/nornet/atlasmns-trace-scheduler.local ] ; then
+   . /etc/nornet/atlasmns-trace-scheduler.local
+fi
+if [ "$ATLASMNS_TRACE_SCHEDULER_ARGS" == "" ] ; then
+   # NOTE: No specific configuration => try to use existing source settings with defaults!
+   ATLASMNS_TRACE_SCHEDULER_ARGS=""
+fi
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+
+set -e
+
+
+echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE
+
+case "$1" in
+  start)
+   echo -n "Starting $DESC: "
+   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE --exec $ATLASMNS_TRACE_SCHEDULER_DAEMON -- $ATLASMNS_TRACE_SCHEDULER_ARGS >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE 2>&1
+   echo "$NAME."
+   ;;
+  stop)
+   echo -n "Stopping $DESC: "
+   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE || true
+   rm -f $ATLASMNS_TRACE_SCHEDULER_PIDFILE
+   echo "$NAME."
+   ;;
+  force-reload)
+   start-stop-daemon --stop --test --quiet --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE \
+   && $0 restart \
+   || exit 0
+   ;;
+  restart)
+   echo -n "Restarting $DESC: "
+   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE || true
+   rm -f $ATLASMNS_TRACE_SCHEDULER_PIDFILE
+   sleep 1
+   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE --exec $ATLASMNS_TRACE_SCHEDULER_DAEMON -- $ATLASMNS_TRACE_SCHEDULER_ARGS >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE 2>&1
+   echo "$NAME."
+   ;;
+  status)
+   status_of_proc -p $ATLASMNS_TRACE_SCHEDULER_PIDFILE $ATLASMNS_TRACE_SCHEDULER_DAEMON $NAME \
+   && exit 0 || exit $?
+   ;;
+  *)
+   N=/etc/init.d/$NAME
+   echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
+   exit 1
+   ;;
+esac
+
+exit 0
