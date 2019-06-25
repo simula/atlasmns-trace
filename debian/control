@@ -32,8 +32,8 @@ Description: Atlas/MNS Trace common functions
 
 Package: atlasmns-trace-controller
 Architecture: all
-Depends: nornet-management,
-         atlasmns-trace-common,
+Depends: atlasmns-trace-common,
+         nornet-management,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Controller
@@ -43,8 +43,8 @@ Description: Atlas/MNS Trace Controller
 
 Package: atlasmns-trace-scheduler
 Architecture: all
-Depends: nornet-management,
-         atlasmns-trace-common,
+Depends: atlasmns-trace-common,
+         nornet-management,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Scheduler
