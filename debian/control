@@ -18,15 +18,37 @@ Standards-Version: 4.3.0
 Vcs-Git: https://github.com/simula/atlasmns-trace.git
 Vcs-Browser: https://github.com/simula/atlasmns-trace
 
-Package: atlasmns-trace-scheduler
+Package: atlasmns-trace-common
 Architecture: all
 Depends: nornet-management,
          python3-psycopg2,
          python3-pymongo,
          ${misc:Depends},
          ${shlibs:Depends}
+Description: Atlas/MNS Trace common functions
+ This package contains common functions for the Atlas/MNS Trace programs.
+ .
+ See https://www.nntb.no for details on NorNet!
+
+Package: atlasmns-trace-controller
+Architecture: all
+Depends: nornet-management,
+         atlasmns-trace-common,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Atlas/MNS Trace Controller
+ Atlas/MNS Trace Controller is the controller for the Atlas/MNS Trace experiments.
+ .
+ See https://www.nntb.no for details on NorNet!
+
+Package: atlasmns-trace-scheduler
+Architecture: all
+Depends: nornet-management,
+         atlasmns-trace-common,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: Atlas/MNS Trace Scheduler
- Atlas/MNS Trace Importer is the scheduler for the Atlas/MNS Trace experiments.
+ Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
  .
  See https://www.nntb.no for details on NorNet!
 
@@ -34,11 +56,9 @@ Package: atlasmns-trace-agent
 Architecture: all
 Depends: hipercontracer (>= 1.4.0),
          nornet-trace-trigger,
-         python3-psycopg2,
-         python3-pymongo,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Agent
- Atlas/MNS Trace Importer is the agent for the Atlas/MNS Trace experiments.
+ Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.
  .
  See https://www.nntb.no for details on NorNet!

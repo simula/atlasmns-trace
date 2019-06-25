@@ -1,0 +1,3 @@
+/usr/lib/python*/*-packages/AtlasMNS*.egg-info
+/usr/lib/python*/*-packages/AtlasMNS.py
+/usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
