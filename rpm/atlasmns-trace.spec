@@ -53,6 +53,9 @@ Requires: python3-pymongo
  See https://www.nntb.no for details on NorNet!
 
 %files scheduler
+/usr/lib/python*/*-packages/AtlasMNS*.egg-info
+/usr/lib/python*/*-packages/AtlasMNS.py
+/usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
 %{_bindir}/atlasmns-trace-scheduler
 %{_mandir}/man1/atlasmns-trace-scheduler.1.gz
 %{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
