@@ -1,0 +1,102 @@
+#!/usr/bin/python3
+
+import datetime
+import ripe.atlas.cousteau
+import os
+import sys
+
+
+atlas_api_key_file = os.path.expanduser('~/atlas-test-key')
+try:
+   atlas_api_key = open(atlas_api_key_file, "r").readline().rstrip('\n')
+except:
+   sys.stderr.write('ERROR: Unable to read API key!\n')
+   sys.exit(1)
+
+
+# ====== Measurement definitions ============================================
+ping = ripe.atlas.cousteau.Ping(
+   af          = 4,
+   target      = "www.google.gr",
+   description = "Ping Test"
+)
+print(ping)
+
+source = ripe.atlas.cousteau.AtlasSource(
+   #type      = "country",
+   #value     = "IR",
+   #requested = 1,
+
+   type      = "probes",
+   value     = "35287,51230",
+   requested = 1,
+
+   tags      = { "include": [ "system-ipv4-works" ] }
+)
+print(source)
+
+
+# ====== Create measurement =================================================
+measurementIDFile = 'measurements.list'
+measurementIDs    = []
+
+if not os.path.isfile(measurementIDFile):
+   atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
+      start_time   = datetime.datetime.utcnow(),
+      key          = atlas_api_key,
+      measurements = [ ping ],
+      sources      = [ source ],
+      is_oneoff    = True
+   )
+   ( is_success, response ) = atlas_request.create()
+   if is_success:
+      print('Success!')
+      print(response)
+      measurementIDs = response['measurements']
+      id_file = open(measurementIDFile, 'w')
+      for measurementID in measurementIDs:
+         id_file.write(str(measurementID) + '\n')
+   else:
+      print('FAILED!')
+      print(response)
+      sys.exit(1)
+
+else:
+   with open(measurementIDFile) as f:
+      line = f.readline()
+      while line:
+         measurementIDs.append(int(line))
+         line = f.readline()
+
+
+print(measurementIDs)
+
+
+# ====== Query results ======================================================
+#kwargs = {
+#"msm_id": 2016892,
+#"start": datetime(2015, 05, 19),
+#"stop": datetime(2015, 05, 20),
+#"probe_ids": [1,2,3,4]
+#}
+
+(is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
+   msm_id = measurementIDs[0]
+).create()
+if is_success:
+
+   i = 0
+   probeIDs = set()
+   for result in results:
+      i = i + 1
+      probeID = int(result['prb_id'])
+      print(str(i) + ' from Probe #' + str(probeID))
+      print(result)
+      probeIDs.add(probeID)
+
+
+   for probeID in probeIDs:
+      print('Metadata for Probe #' + str(probeID))
+      probe  = ripe.atlas.cousteau.Probe(id = probeID)
+      print(probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
+      print(dir(probe))
