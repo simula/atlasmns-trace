@@ -27,9 +27,11 @@ INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install $
 # PROGRAMS
 #############################################################################
 
+INSTALL(PROGRAMS atlasmns-trace-controller DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES atlasmns-trace-controller.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
 INSTALL(PROGRAMS atlasmns-trace-scheduler DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES atlasmns-trace-scheduler.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-
 
 ADD_EXECUTABLE(atlasmns-trace-agent atlasmns-trace-agent.cc)
 TARGET_INCLUDE_DIRECTORIES(atlasmns-trace-agent PUBLIC ${HiPerConTracer_INCLUDE_DIR})
