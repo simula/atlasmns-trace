@@ -32,21 +32,30 @@
 #
 #  Contact: dreibh@simula.no
 
-import collections
-import configparser
+import atexit
+import readline
 import datetime
 import io
 import os
-import psycopg2
-import pymongo
 import re
-import shutil
-import ripe.atlas.cousteau
-import ssl
-import socket
 import sys
 
 import AtlasMNS
+
+
+# ###### Add measurement run ################################################
+def addMeasurementRun(atlasMNS, address, dscp, router, probe_id):
+   print()
+
+
+# ###### Remove measurement run #############################################
+def addMeasurementRun(atlasMNS, address, dscp, router, probe_id):
+   print()
+
+
+# ###### Check status of measurement run ####################################
+def checkMeasurementRun(atlasMNS, address, dscp, router, probe_id):
+   print()
 
 
 
@@ -67,12 +76,31 @@ if not atlasMNS.connectToRIPEAtlas():
 if not atlasMNS.connectToSchedulerDB():
    sys.exit(1)
 
-if not atlasMNS.connectToResultsDB():
-   sys.exit(1)
+# ------ Initialise GNU Readline for comfortable input ----------------------
+histfile = os.path.join(os.path.expanduser("~"), ".atlasmns-trace-controller_history")
+try:
+   readline.read_history_file(histfile)
+   readline.set_history_length(1000)
+except FileNotFoundError:
+   pass
+
+atexit.register(readline.write_history_file, histfile)
+readline.parse_and_bind('tab: complete')
+readline.parse_and_bind('set editing-mode vi')
 
 
 # ====== Main loop ==========================================================
-log('Scheduler is ready!')
+log('Controller is ready!')
+while True:
+    try:
+       line = input('? ')
+    except EOFError:
+        break
+    if line == 'stop':
+        break
+    print('ENTERED: "%s"' % line)
+
+print()
 
 
 # ====== All done! ==========================================================
