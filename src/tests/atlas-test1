@@ -73,30 +73,22 @@ print(measurementIDs)
 
 
 # ====== Query results ======================================================
-#kwargs = {
-#"msm_id": 2016892,
-#"start": datetime(2015, 05, 19),
-#"stop": datetime(2015, 05, 20),
-#"probe_ids": [1,2,3,4]
-#}
-
 (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
    msm_id = measurementIDs[0]
 ).create()
 if is_success:
 
-   i = 0
+   print('\nResults:')
    probeIDs = set()
    for result in results:
-      i = i + 1
       probeID = int(result['prb_id'])
-      print(str(i) + ' from Probe #' + str(probeID))
-      print(result)
       probeIDs.add(probeID)
+      print('- Result from Probe #' + str(probeID))
+      print('  ', result)
 
-
+   print('\nMetadata:')
    for probeID in probeIDs:
-      print('Metadata for Probe #' + str(probeID))
+      print('- Metadata for Probe #' + str(probeID))
       probe  = ripe.atlas.cousteau.Probe(id = probeID)
-      print(probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
-      print(dir(probe))
+      print('  ', probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
+      # print(dir(probe))
