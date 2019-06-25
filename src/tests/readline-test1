@@ -1,0 +1,30 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import atexit
+import os
+import readline
+
+#histfile = os.path.join(os.path.expanduser("~"), ".readline-test1_history")
+histfile = os.path.join(os.path.expanduser("/tmp"), ".readline-test1_history")
+try:
+   readline.read_history_file(histfile)
+   readline.set_history_length(1000)
+except FileNotFoundError:
+   pass
+
+atexit.register(readline.write_history_file, histfile)
+readline.parse_and_bind('tab: complete')
+readline.parse_and_bind('set editing-mode vi')
+
+
+while True:
+    try:
+       line = input('Enter something ("stop" or Ctrl-D to quit): ')
+    except EOFError:
+        break
+    if line == 'stop':
+        break
+    print('ENTERED: "%s"' % line)
+
+print()
