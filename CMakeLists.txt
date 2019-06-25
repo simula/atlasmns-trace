@@ -115,6 +115,15 @@ FIND_LIBRARY(HiPerConTracer_LIBRARY NAMES hipercontracer REQUIRED)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(HiPerConTracer DEFAULT_MSG HiPerConTracer_INCLUDE_DIR HiPerConTracer_LIBRARY)
 MARK_AS_ADVANCED(HiPerConTracer_LIBRARY HiPerConTracer_INCLUDE_DIR)
 
+# ###### Python #############################################################
+SET(PYTHON_LIBRARY_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH   "AtlasMNS Python library prefix")
+SET(PYTHON_SETUP_OPTS     ""                        CACHE STRING "")
+
+SET(Python_ADDITIONAL_VERSIONS 3)
+INCLUDE(FindPythonInterp)
+
+FIND_PACKAGE(PythonInterp 3.4.0 REQUIRED)
+
 
 #############################################################################
 # SOURCE DIRECTORIES
