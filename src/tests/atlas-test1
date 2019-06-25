@@ -1,4 +1,36 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
+#
+#  =================================================================
+#           #     #                 #     #
+#           ##    #   ####   #####  ##    #  ######   #####
+#           # #   #  #    #  #    # # #   #  #          #
+#           #  #  #  #    #  #    # #  #  #  #####      #
+#           #   # #  #    #  #####  #   # #  #          #
+#           #    ##  #    #  #   #  #    ##  #          #
+#           #     #   ####   #    # #     #  ######     #
+#
+#        ---   The NorNet Testbed for Multi-Homed Systems  ---
+#                        https://www.nntb.no
+#  =================================================================
+#
+#  High-Performance Connectivity Tracer (HiPerConTracer)
+#  Copyright (C) 2015-2019 by Thomas Dreibholz
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact: dreibh@simula.no
 
 import datetime
 import ripe.atlas.cousteau
@@ -8,32 +40,48 @@ import sys
 
 atlas_api_key_file = os.path.expanduser('~/atlas-test-key')
 try:
-   atlas_api_key = open(atlas_api_key_file, "r").readline().rstrip('\n')
+   atlas_api_key = open(atlas_api_key_file, 'r').readline().rstrip('\n')
 except:
    sys.stderr.write('ERROR: Unable to read API key!\n')
    sys.exit(1)
 
 
 # ====== Measurement definitions ============================================
-ping = ripe.atlas.cousteau.Ping(
+ping4 = ripe.atlas.cousteau.Ping(
    af          = 4,
-   target      = "www.google.gr",
-   description = "Ping Test"
+   target      = 'www.nntb.no',
+   description = '托马斯\'s IPv4 Ping Test'
 )
-print(ping)
+ping6 = ripe.atlas.cousteau.Ping(
+   af          = 6,
+   target      = 'www.nntb.no',
+   description = '托马斯\'s IPv6 Ping Test'
+)
+
+traceroute4 = ripe.atlas.cousteau.Traceroute(
+   af          = 4,
+   target      = 'www.nntb.no',
+   description = '托马斯\'s IPv4 Traceroute Test',
+   protocol    = 'ICMP',
+)
+traceroute6 = ripe.atlas.cousteau.Traceroute(
+   af          = 6,
+   target      = 'www.nntb.no',
+   description = '托马斯\'s IPv6 Traceroute Test',
+   protocol    = 'ICMP',
+)
 
 source = ripe.atlas.cousteau.AtlasSource(
-   #type      = "country",
-   #value     = "IR",
+   #type      = 'country',
+   #value     = 'IR',
    #requested = 1,
 
-   type      = "probes",
-   value     = "35287,51230",
+   type      = 'probes',
+   value     = '29027,51230',
    requested = 1,
 
-   tags      = { "include": [ "system-ipv4-works" ] }
+   tags      = { 'include': [ 'system-ipv4-works' ] }
 )
-print(source)
 
 
 # ====== Create measurement =================================================
@@ -44,7 +92,7 @@ if not os.path.isfile(measurementIDFile):
    atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
       start_time   = datetime.datetime.utcnow(),
       key          = atlas_api_key,
-      measurements = [ ping ],
+      measurements = [ ping4, ping6, traceroute4, traceroute6 ],
       sources      = [ source ],
       is_oneoff    = True
    )
@@ -57,7 +105,7 @@ if not os.path.isfile(measurementIDFile):
       for measurementID in measurementIDs:
          id_file.write(str(measurementID) + '\n')
    else:
-      print('FAILED!')
+      print('ERROR: Creating the measurements failed!')
       print(response)
       sys.exit(1)
 
@@ -68,27 +116,28 @@ else:
          measurementIDs.append(int(line))
          line = f.readline()
 
-
 print(measurementIDs)
 
 
 # ====== Query results ======================================================
-(is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
-   msm_id = measurementIDs[0]
-).create()
-if is_success:
+probeIDs = set()
+for measurementID in measurementIDs:
+   print('\nResults for Measurement #' + str(measurementID) + ':')
+   (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
+      msm_id = measurementID
+   ).create()
+   if is_success:
+      for result in results:
+         probeID = int(result['prb_id'])
+         probeIDs.add(probeID)
+         print('- Result from Probe #' + str(probeID))
+         print('  ', result)
+   else:
+      print('WARNING: Something went wrong!')
 
-   print('\nResults:')
-   probeIDs = set()
-   for result in results:
-      probeID = int(result['prb_id'])
-      probeIDs.add(probeID)
-      print('- Result from Probe #' + str(probeID))
-      print('  ', result)
-
-   print('\nMetadata:')
-   for probeID in probeIDs:
-      print('- Metadata for Probe #' + str(probeID))
-      probe  = ripe.atlas.cousteau.Probe(id = probeID)
-      print('  ', probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
-      # print(dir(probe))
+print('\nMetadata:')
+for probeID in probeIDs:
+   print('- Metadata for Probe #' + str(probeID))
+   probe  = ripe.atlas.cousteau.Probe(id = probeID)
+   print('  ', probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
+   # print(dir(probe))
