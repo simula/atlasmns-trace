@@ -87,7 +87,31 @@ def removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP
 
 # ###### Check status of measurement run ####################################
 def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID):
-   print()
+   try:
+      atlasMNS.scheduler_dbCursor.execute("""
+         SELECT * FROM ExperimentSchedule
+         WHERE
+            AgentHostIP = %(AgentHostIP)s AND
+            AgentTrafficClass = %(AgentTrafficClass)s AND
+            AgentRouterIP = %(AgentRouterIP)s AND
+            ProbeID = %(ProbeID)s
+         """, {
+            'AgentHostIP':       str(agentHostIP),
+            'AgentTrafficClass': int(agentTrafficClass),
+            'AgentRouterIP':     str(agentRouterIP),
+            'ProbeID':           int(probeID)
+         })
+      rows = atlasMNS.scheduler_dbCursor.fetchall()
+   except Exception as e:
+      print('Unable to list measurement runs: ' + str(e))
+      atlasMNS.scheduler_dbConnection.rollback()
+      return
+
+   if len(rows) > 0:
+      for row in rows:
+         print(row)
+   else:
+      print('No experiment run found.')
 
 
 # ###### List measurement runs ##############################################
