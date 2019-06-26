@@ -33,11 +33,12 @@
 #  Contact: dreibh@simula.no
 
 import atexit
-import readline
 import datetime
 import io
+import ipaddress
 import os
 import re
+import readline
 import sys
 
 import AtlasMNS
@@ -57,12 +58,12 @@ def addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, p
          })
       atlasMNS.scheduler_dbConnection.commit()
    except Exception as e:
-      atlasMNS.error('Unable to add measurement run: ' + str(e))
+      print('Unable to add measurement run: ' + str(e))
       atlasMNS.scheduler_dbConnection.rollback()
 
 
 # ###### Remove measurement run #############################################
-def addMeasurementRun(atlasMNS, address, dscp, router, probe_id):
+def removeMeasurementRun(atlasMNS, address, dscp, router, probe_id):
    print()
 
 
@@ -72,7 +73,7 @@ def checkMeasurementRun(atlasMNS, address, dscp, router, probe_id):
 
 
 # ###### List measurement runs ##############################################
-def checkMeasurementRun(atlasMNS):
+def listMeasurementRuns(atlasMNS):
    try:
       atlasMNS.scheduler_dbCursor.execute("""
          SELECT * FROM ExperimentSchedule
@@ -85,7 +86,7 @@ def checkMeasurementRun(atlasMNS):
          """)
       rows = atlasMNS.scheduler_dbCursor.fetchall()
    except Exception as e:
-      atlasMNS.error('Unable to list measurement runs: ' + str(e))
+      print('Unable to list measurement runs: ' + str(e))
       atlasMNS.scheduler_dbConnection.rollback()
       return
 
@@ -106,13 +107,14 @@ atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
 
-if not atlasMNS.connectToRIPEAtlas():
-   sys.exit(1)
+#if not atlasMNS.connectToRIPEAtlas():
+   #sys.exit(1)
 
-if not atlasMNS.connectToSchedulerDB():
-   sys.exit(1)
+#if not atlasMNS.connectToSchedulerDB():
+   #sys.exit(1)
 
-# ------ Initialise GNU Readline for comfortable input ----------------------
+
+# ====== Initialise GNU Readline for comfortable input ======================
 histfile = os.path.join(os.path.expanduser("~"), ".atlasmns-trace-controller_history")
 try:
    readline.read_history_file(histfile)
@@ -126,18 +128,51 @@ readline.parse_and_bind('set editing-mode vi')
 
 
 # ====== Main loop ==========================================================
-log('Controller is ready!')
+AtlasMNS.log('Controller is ready!')
 while True:
     try:
        line = input('? ')
     except EOFError:
         break
-    if line == 'stop':
-        break
-    print('ENTERED: "%s"' % line)
+
+    argv = re.split('\s+', line)
+    if len(argv) > 0:
+
+       if argv[0] == 'exit':
+          break
+
+       elif ((argv[0] == 'list') or (argv[0] == 'ls')):
+          listMeasurementRuns(atlasMNS)
+
+       elif ((argv[0] == 'add') or (argv[0] == 'remove') or (argv[0] == 'check')):
+          if len(argv) >= 5:
+             try:
+                agentHostIP       = ipaddress.ip_address(argv[1])
+                agentTrafficClass = int(argv[2])
+                agentRouterIP     = ipaddress.ip_address(argv[3])
+                probeID           = int(argv[4])
+             except Exception as e:
+                print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
+
+             if argv[0] == 'add':
+                print('Q1')
+                addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID)
+                print('Q2')
+             elif argv[0] == 'remove':
+                removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID)
+             elif argv[0] == 'check':
+                checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID)
+             else:
+                raise ValueError('Unexpected command')
+
+          else:
+             print('Too few arguments for ' + argv[0] + ' given!')
+
+       else:
+          print('Unknown command: ' + argv[0])
 
 print()
 
 
 # ====== All done! ==========================================================
-log('Exiting!')
+AtlasMNS.log('Exiting!')
