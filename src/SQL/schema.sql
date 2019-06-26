@@ -49,5 +49,5 @@ CREATE TABLE ExperimentSchedule (
 
    State             SMALLINT         NOT NULL DEFAULT 0,
 
-   PRIMARY KEY (TimeStamp, AgentHostIP, AgentTrafficClass)
+   PRIMARY KEY (AgentHostIP, AgentTrafficClass, AgentRouterIP, ProbeID)
 );
