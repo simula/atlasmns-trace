@@ -63,12 +63,30 @@ def addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, p
 
 
 # ###### Remove measurement run #############################################
-def removeMeasurementRun(atlasMNS, address, dscp, router, probe_id):
-   print()
+def removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID):
+   try:
+      atlasMNS.scheduler_dbCursor.execute("""
+         DELETE FROM ExperimentSchedule
+         WHERE
+            AgentHostIP = %(AgentHostIP)s AND
+            AgentTrafficClass = %(AgentTrafficClass)s AND
+            AgentRouterIP = %(AgentRouterIP)s AND
+            ProbeID = %(ProbeID)s
+         """, {
+            'AgentHostIP':       str(agentHostIP),
+            'AgentTrafficClass': int(agentTrafficClass),
+            'AgentRouterIP':     str(agentRouterIP),
+            'ProbeID':           int(probeID)
+         })
+      atlasMNS.scheduler_dbConnection.commit()
+   except Exception as e:
+      print('Unable to list measurement runs: ' + str(e))
+      atlasMNS.scheduler_dbConnection.rollback()
+      return
 
 
 # ###### Check status of measurement run ####################################
-def checkMeasurementRun(atlasMNS, address, dscp, router, probe_id):
+def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID):
    print()
 
 
@@ -90,9 +108,9 @@ def listMeasurementRuns(atlasMNS):
       atlasMNS.scheduler_dbConnection.rollback()
       return
 
-   print('Measurements: ' + len(rows))
+   print('Measurements: ' + str(len(rows)))
    for row in rows:
-      print('  ', row)
+      print('* ', row)
 
 
 
@@ -110,8 +128,8 @@ if not atlasMNS.loadConfiguration(sys.argv[1]):
 #if not atlasMNS.connectToRIPEAtlas():
    #sys.exit(1)
 
-#if not atlasMNS.connectToSchedulerDB():
-   #sys.exit(1)
+if not atlasMNS.connectToSchedulerDB():
+   sys.exit(1)
 
 
 # ====== Initialise GNU Readline for comfortable input ======================
@@ -155,9 +173,7 @@ while True:
                 print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
 
              if argv[0] == 'add':
-                print('Q1')
                 addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID)
-                print('Q2')
              elif argv[0] == 'remove':
                 removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID)
              elif argv[0] == 'check':
