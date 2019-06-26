@@ -33,13 +33,28 @@
 -- Contact: dreibh@simula.no
 
 
+-- ###### AtlasMNSStatus ####################################################
+CREATE TYPE AtlasMNSStatus AS ENUM (
+   'scheduled',
+
+   'atlas_scheduled',
+   'atlas_running',
+
+   'agent_scheduled',
+   'agent_completed',
+
+   'failed',
+   'finished'
+);
+
+
 -- ###### Experiment Schedule ###############################################
 DROP TABLE IF EXISTS ExperimentSchedule;
 CREATE TABLE ExperimentSchedule (
    TimeStamp         TIMESTAMP        NOT NULL DEFAULT NOW(),
 
    AgentHostIP       INET             NOT NULL,
-   AgentTrafficClass SMALLINT NOT NULL DEFAULT 0,
+   AgentTrafficClass SMALLINT         NOT NULL DEFAULT 0,
    AgentRouterIP     INET             NOT NULL,
 
    MeasurementID     INTEGER          DEFAULT NULL,
@@ -47,7 +62,7 @@ CREATE TABLE ExperimentSchedule (
    ProbeHostIP       INET             DEFAULT NULL,
    ProbeRouterIP     INET             DEFAULT NULL,
 
-   State             SMALLINT         NOT NULL DEFAULT 0,
+   State             AtlasMNSStatus   NOT NULL DEFAULT 'scheduled',
 
    PRIMARY KEY (AgentHostIP, AgentTrafficClass, AgentRouterIP, ProbeID)
 );
