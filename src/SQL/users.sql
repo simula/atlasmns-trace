@@ -51,8 +51,9 @@ REVOKE ALL ON ALL TABLES IN SCHEMA public FROM scheduler;
 DROP ROLE scheduler;
 CREATE ROLE scheduler WITH LOGIN ENCRYPTED PASSWORD '!scheduler!';
 GRANT CONNECT ON DATABASE atlasmnsdb TO scheduler;
-GRANT INSERT ON TABLE ExperimentSchedule TO scheduler;
-GRANT SELECT ON TABLE ExperimentSchedule TO scheduler;
+GRANT INSERT ON ExperimentSchedule TO scheduler;
+GRANT SELECT ON ExperimentSchedule TO scheduler;
+GRANT DELETE ON ExperimentSchedule TO scheduler;
 
 REVOKE ALL ON DATABASE atlasmnsdb FROM maintainer;
 DROP ROLE maintainer;
