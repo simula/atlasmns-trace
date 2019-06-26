@@ -44,8 +44,21 @@ import AtlasMNS
 
 
 # ###### Add measurement run ################################################
-def addMeasurementRun(atlasMNS, address, dscp, router, probe_id):
-   print()
+def addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentRouterIP, probeID):
+   try:
+      atlasMNS.scheduler_dbCursor.execute("""
+         INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentRouterIP,ProbeID)
+         VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentRouterIP)s,%(ProbeID)s)
+         """, {
+            'AgentHostIP':       str(agentHostIP),
+            'AgentTrafficClass': int(agentTrafficClass),
+            'AgentRouterIP':     str(agentRouterIP),
+            'ProbeID':           int(probeID)
+         })
+      atlasMNS.scheduler_dbConnection.commit()
+   except Exception as e:
+      atlasMNS.error('Unable to add measurement run: ' + str(e))
+      atlasMNS.scheduler_dbConnection.rollback()
 
 
 # ###### Remove measurement run #############################################
@@ -56,6 +69,29 @@ def addMeasurementRun(atlasMNS, address, dscp, router, probe_id):
 # ###### Check status of measurement run ####################################
 def checkMeasurementRun(atlasMNS, address, dscp, router, probe_id):
    print()
+
+
+# ###### List measurement runs ##############################################
+def checkMeasurementRun(atlasMNS):
+   try:
+      atlasMNS.scheduler_dbCursor.execute("""
+         SELECT * FROM ExperimentSchedule
+         ORDER BY
+            TimeStamp DESC,
+            AgentHostIP ASC,
+            AgentTrafficClass DESC,
+            AgentRouterIP ASC,
+            ProbeID ASC
+         """)
+      rows = atlasMNS.scheduler_dbCursor.fetchall()
+   except Exception as e:
+      atlasMNS.error('Unable to list measurement runs: ' + str(e))
+      atlasMNS.scheduler_dbConnection.rollback()
+      return
+
+   print('Measurements: ' + len(rows))
+   for row in rows:
+      print('  ', row)
 
 
 
