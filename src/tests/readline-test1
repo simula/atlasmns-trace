@@ -4,6 +4,7 @@
 import atexit
 import os
 import readline
+import re
 
 #histfile = os.path.join(os.path.expanduser("~"), ".readline-test1_history")
 histfile = os.path.join(os.path.expanduser("/tmp"), ".readline-test1_history")
@@ -26,5 +27,7 @@ while True:
     if line == 'stop':
         break
     print('ENTERED: "%s"' % line)
+    argv = re.split('\s+', line)
+    print(argv)
 
 print()
