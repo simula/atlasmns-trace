@@ -139,17 +139,20 @@ int main(int argc, char** argv)
 
       try {
          pqxx::result result = schedulerDBTransaction.exec(
-            "SELECT * FORM ExperimentSchedule WHERE "
-            "AgentIP = " + schedulerDBTransaction.quote(sourceAddress.to_string()));
+            "SELECT * "
+            "FROM ExperimentSchedule "
+            "WHERE "
+               "State = 'scheduled' AND "
+               "AgentHostIP = " + schedulerDBTransaction.quote(sourceAddress.to_string()) + " "
+            "ORDER BY TimeStamp ASC");
          for (auto row : result) {
-            std::cout << "- " << row["ProbeIP"] << std::endl;
+            std::cout << "- "  << row["AgentHostIP"].c_str() << " -> " << row["ProbeHostIP"].c_str() << std::endl;
          }
       }
       catch (const std::exception &e) {
          HPCT_LOG(warning) << "Unable to query scheduler database: " << e.what();
          return 1;
       }
-
 
    }
    catch (const std::exception &e) {
