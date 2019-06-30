@@ -121,7 +121,7 @@ def listMeasurementRuns(atlasMNS):
       atlasMNS.scheduler_dbCursor.execute("""
          SELECT * FROM ExperimentSchedule
          ORDER BY
-            TimeStamp DESC,
+            LastChange DESC,
             AgentHostIP ASC,
             AgentTrafficClass DESC,
             AgentRouterIP ASC,

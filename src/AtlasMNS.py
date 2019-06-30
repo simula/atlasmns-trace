@@ -50,6 +50,18 @@ import sys
 import AtlasMNSLogger
 
 
+# ###### Scheduler database columns #########################################
+ExperimentSchedule_TimeStamp=0
+ExperimentSchedule_AgentHostIP=1
+ExperimentSchedule_AgentTrafficClass=2
+ExperimentSchedule_AgentRouterIP=3
+ExperimentSchedule_MeasurementID=4
+ExperimentSchedule_ProbeID=5
+ExperimentSchedule_ProbeHostIP=6
+ExperimentSchedule_ProbeRouterIP=7
+ExperimentSchedule_State=8
+
+
 class AtlasMNS:
 
    # ###### Constructor #####################################################
@@ -282,6 +294,39 @@ class AtlasMNS:
       self.scheduler_dbCursor = self.scheduler_dbConnection.cursor()
       return True
 
+
+   # ###### Query schedule from scheduler database ##########################
+   def querySchedule(self):
+      AtlasMNSLogger.trace('Querying schedule ...')
+      try:
+         self.scheduler_dbCursor.execute("""
+SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP
+FROM ExperimentSchedule
+ORDER BY TimeStamp ASC;
+""")
+         schedule = self.scheduler_dbCursor.fetchall()
+         return schedule
+      except (Exception, psycopg2.Error) as e:
+         AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
+      return []
+
+
+   # ###### Update schedule in scheduler database ###########################
+   def updateScheduledEntry(self, scheduledEntry, changes):
+      AtlasMNSLogger.trace('Updating scheduled entry ...')
+      #PRIMARY KEY (AgentHostIP, AgentTrafficClass, AgentRouterIP, ProbeID)
+      #try:
+      print(self.scheduler_dbCursor.mogrify(
+"""
+UPDATE ExperimentSchedule
+SET
+   TimeStamp = NOW()
+WHERE
+   AgentHostIP = %s;
+""", ("1.1.1.1")))
+         
+         
+      
 
    # ###### Connect to MongoDB results database #############################
    def connectToResultsDB(self):
