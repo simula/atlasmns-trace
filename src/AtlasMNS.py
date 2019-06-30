@@ -51,17 +51,19 @@ import AtlasMNSLogger
 
 
 # ###### Scheduler database columns #########################################
-ExperimentSchedule_TimeStamp=0
-ExperimentSchedule_AgentHostIP=1
-ExperimentSchedule_AgentTrafficClass=2
-ExperimentSchedule_AgentRouterIP=3
-ExperimentSchedule_MeasurementID=4
-ExperimentSchedule_ProbeID=5
-ExperimentSchedule_ProbeHostIP=6
-ExperimentSchedule_ProbeRouterIP=7
-ExperimentSchedule_State=8
+ExperimentSchedule_Identifier=0
+ExperimentSchedule_State=1
+ExperimentSchedule_LastChange=2
+ExperimentSchedule_AgentHostIP=3
+ExperimentSchedule_AgentTrafficClass=4
+ExperimentSchedule_AgentRouterIP=5
+ExperimentSchedule_MeasurementID=6
+ExperimentSchedule_ProbeID=7
+ExperimentSchedule_ProbeHostIP=8
+ExperimentSchedule_ProbeRouterIP=9
 
 
+# ###### AtlasMNS class #####################################################
 class AtlasMNS:
 
    # ###### Constructor #####################################################
@@ -297,36 +299,67 @@ class AtlasMNS:
 
    # ###### Query schedule from scheduler database ##########################
    def querySchedule(self):
+      # ====== Query database ===============================================
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
          self.scheduler_dbCursor.execute("""
 SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP
 FROM ExperimentSchedule
-ORDER BY TimeStamp ASC;
+ORDER BY LastChange ASC;
 """)
-         schedule = self.scheduler_dbCursor.fetchall()
-         return schedule
-      except (Exception, psycopg2.Error) as e:
+         table = self.scheduler_dbCursor.fetchall()
+         print(table)   
+      except Exception as e:
          AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
-      return []
+         return []
+
+      # ====== Provide result as list of dictionaries =======================
+      schedule = []
+      for row in table:
+         schedule.append({
+            'Identifier':        row[0],
+            'State':             row[1],
+            'LastChange':        row[2],
+            'AgentHostIP':       row[3],
+            'AgentTrafficClass': row[4],
+            'AgentRouterIP':     row[5],
+            'MeasurementID':     row[6],
+            'ProbeID':           row[7],
+            'ProbeHostIP':       row[8],
+            'ProbeRouterIP':     row[9]
+         })
+      print(schedule)   
+      return schedule
 
 
    # ###### Update schedule in scheduler database ###########################
-   def updateScheduledEntry(self, scheduledEntry, changes):
+   def updateScheduledEntry(self, scheduledEntry):
       AtlasMNSLogger.trace('Updating scheduled entry ...')
-      #PRIMARY KEY (AgentHostIP, AgentTrafficClass, AgentRouterIP, ProbeID)
-      #try:
-      print(self.scheduler_dbCursor.mogrify(
-"""
-UPDATE ExperimentSchedule
-SET
-   TimeStamp = NOW()
-WHERE
-   AgentHostIP = %s;
-""", ("1.1.1.1")))
-         
-         
-      
+      try:
+         self.scheduler_dbCursor.execute(
+            """
+            UPDATE ExperimentSchedule
+            SET
+               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentRouterIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeRouterIP=%s
+            WHERE
+               Identifier = %s;
+            """,  [
+               scheduledEntry['State'],
+               scheduledEntry['AgentHostIP'],
+               scheduledEntry['AgentTrafficClass'],
+               scheduledEntry['AgentRouterIP'],
+               scheduledEntry['MeasurementID'],
+               scheduledEntry['ProbeID'],
+               scheduledEntry['ProbeHostIP'],
+               scheduledEntry['ProbeRouterIP'],
+               scheduledEntry['Identifier']
+            ] )
+         self.scheduler_dbConnection.commit()
+      except Exception as e:
+         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e))
+         self.scheduler_dbConnection.rollback()
+         return False
+
 
    # ###### Connect to MongoDB results database #############################
    def connectToResultsDB(self):
