@@ -178,7 +178,7 @@ class AtlasMNS:
          AtlasMNSLogger.warning('Creating ' + measurement.measurement_type + ' measurement for ' +
                                 'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                                 ' failed: ' + str(response))
-         return False
+         return None
 
 
    # ###### Stop RIPE Atlas measurement #####################################
@@ -236,11 +236,11 @@ class AtlasMNS:
          msm_id = measurementID
       ).create()
       if is_success:
-         return results
+         return (True, results)
       else:
          AtlasMNSLogger.warning('Downloading results for Measurement #' +
                                 str(measurementID) + ' failed: ' + str(results))
-         return None
+         return (False, None)
 
 
    # ###### Print measurement results #######################################
@@ -303,12 +303,11 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
          self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP
+SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP,Info
 FROM ExperimentSchedule
 ORDER BY LastChange ASC;
 """)
          table = self.scheduler_dbCursor.fetchall()
-         print(table)   
       except Exception as e:
          AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
          return []
@@ -326,9 +325,10 @@ ORDER BY LastChange ASC;
             'MeasurementID':     row[6],
             'ProbeID':           row[7],
             'ProbeHostIP':       row[8],
-            'ProbeRouterIP':     row[9]
+            'ProbeRouterIP':     row[9],
+            'Info':              row[10]
          })
-      print(schedule)   
+      # print(schedule)   
       return schedule
 
 
@@ -340,7 +340,7 @@ ORDER BY LastChange ASC;
             """
             UPDATE ExperimentSchedule
             SET
-               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentRouterIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeRouterIP=%s
+               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentRouterIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeRouterIP=%s,Info=%s
             WHERE
                Identifier = %s;
             """,  [
@@ -352,6 +352,7 @@ ORDER BY LastChange ASC;
                scheduledEntry['ProbeID'],
                scheduledEntry['ProbeHostIP'],
                scheduledEntry['ProbeRouterIP'],
+               scheduledEntry['Info'],
                scheduledEntry['Identifier']
             ] )
          self.scheduler_dbConnection.commit()
