@@ -50,6 +50,17 @@ import AtlasMNS
 import AtlasMNSLogger
 
 
+# ###### Schedule RIPE Atlas experiment #####################################
+def scheduleRIPEAtlasExperiment(scheduledEntry):
+   print('S')
+   measurementID = 12345
+   changes = {
+      'State':         'atlas_scheduled',
+      'MeasurementID': measurementID
+   }
+   atlasMNS.updateScheduledEntry(scheduledEntry, changes)
+
+
 # ###### Main program #######################################################
 if len(sys.argv) < 2:
    sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
@@ -62,8 +73,8 @@ atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
 
-if not atlasMNS.connectToRIPEAtlas():
-   sys.exit(1)
+#if not atlasMNS.connectToRIPEAtlas():
+   #sys.exit(1)
 
 if not atlasMNS.connectToSchedulerDB():
    sys.exit(1)
@@ -74,6 +85,21 @@ if not atlasMNS.connectToResultsDB():
 
 # ====== Main loop ==========================================================
 AtlasMNSLogger.info('Scheduler is ready!')
+
+schedule = atlasMNS.querySchedule()
+for scheduledEntry in schedule:
+   state = scheduledEntry[AtlasMNS.ExperimentSchedule_State]
+
+   print(scheduledEntry)
+   print(state)
+
+   # ------ State == 'scheduled' --------------------------------------------
+   if state == 'scheduled':
+      scheduleRIPEAtlasExperiment(scheduledEntry)
+
+   # ------ Bad State -------------------------------------------------------
+   else:
+      AtlasMNSLogger.error('Bad state for scheduled entry: ' + str(scheduledEntry))
 
 
 # ====== All done! ==========================================================
