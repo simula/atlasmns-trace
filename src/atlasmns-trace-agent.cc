@@ -35,6 +35,7 @@
 
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
+#include <boost/asio/ip/address.hpp>
 
 #include <pqxx/pqxx>
 
@@ -131,10 +132,31 @@ int main(int argc, char** argv)
          "user="     + schedulerDBUser     + " "
          "password=" + schedulerDBPassword + " "
          "dbname="   + schedulerDatabase);
+      pqxx::work schedulerDBTransaction(schedulerDBConnection);
+
+
+      boost::asio::ip::address sourceAddress = boost::asio::ip::address_v4::from_string("10.1.1.1");
+
+      try {
+         pqxx::result result = schedulerDBTransaction.exec(
+            "SELECT * FORM ExperimentSchedule WHERE "
+            "AgentIP = " + schedulerDBTransaction.quote(sourceAddress.to_string()));
+         for (auto row : result) {
+            std::cout << "- " << row["ProbeIP"] << std::endl;
+         }
+      }
+      catch (const std::exception &e) {
+         HPCT_LOG(warning) << "Unable to query scheduler database: " << e.what();
+         return 1;
+      }
+
+
    }
    catch (const std::exception &e) {
       HPCT_LOG(warning) << "Unable to connect to scheduler database: " << e.what();
+      return 1;
    }
+
 
    return 0;
 }
