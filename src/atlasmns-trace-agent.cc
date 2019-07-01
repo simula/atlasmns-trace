@@ -33,6 +33,7 @@
 #include <vector>
 #include <fstream>
 
+#include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
 #include <pqxx/pqxx>
@@ -52,14 +53,14 @@ int main(int argc, char** argv)
    std::string schedulerDBServer;
    uint16_t    schedulerDBPort;
    std::string schedulerDBUser;
-   std::string schedulerDBpassword;
+   std::string schedulerDBPassword;
    std::string schedulerDatabase;
    std::string schedulerCAFile;
    configurationFileOptions.add_options()
       ( "scheduler_dbserver",   boost::program_options::value<std::string>(&schedulerDBServer)->default_value(std::string("localhost")),  "Scheduler database server name" )
       ( "scheduler_dbport",     boost::program_options::value<uint16_t>(&schedulerDBPort)->default_value(5432),                           "Scheduler database server port" )
       ( "scheduler_dbuser",     boost::program_options::value<std::string>(&schedulerDBUser)->default_value(std::string("scheduler")),    "Scheduler database user name" )
-      ( "scheduler_dbpassword", boost::program_options::value<std::string>(&schedulerDBpassword),                                         "Scheduler database password" )
+      ( "scheduler_dbpassword", boost::program_options::value<std::string>(&schedulerDBPassword),                                         "Scheduler database password" )
       ( "scheduler_database",   boost::program_options::value<std::string>(&schedulerDatabase)->default_value(std::string("atlasmnsdb")), "Scheduler database name" )
       ( "scheduler_cafile",     boost::program_options::value<std::string>(&schedulerCAFile),                                             "Scheduler server CA file" )
       ;
@@ -123,6 +124,17 @@ int main(int argc, char** argv)
 
    // ====== Initialize =====================================================
    initialiseLogger(logLevel);
+   try {
+      pqxx::connection schedulerDBConnection(
+         "host="     + schedulerDBServer                                 + " "
+         "port="     + boost::str(boost::format("%d") % schedulerDBPort) + " "
+         "user="     + schedulerDBUser     + " "
+         "password=" + schedulerDBPassword + " "
+         "dbname="   + schedulerDatabase);
+   }
+   catch (const std::exception &e) {
+      HPCT_LOG(warning) << "Unable to connect to scheduler database: " << e.what();
+   }
 
    return 0;
 }
