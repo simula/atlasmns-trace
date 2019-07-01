@@ -8,11 +8,12 @@ URL: https://www.nntb.no/
 Source: https://packages.nntb.no/software/%{name}/%{name}-%{version}.tar.xz
 
 AutoReqProv: on
+BuildRequires: boost-devel
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: hipercontracer-libhipercontracer-devel
-BuildRequires: boost-devel
+BuildRequires: libpqxx-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 

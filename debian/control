@@ -12,6 +12,7 @@ Build-Depends: cmake (>= 3.0.2) | cmake3,
                libboost-system-dev (>= 1.48.0) | libboost-system1.48-dev,
                libboost-thread-dev (>= 1.48.0) | libboost-thread1.48-dev,
                libhipercontracer-dev (>= 1.4.0),
+               libpqxx-dev,
                pkg-config,
                python3-all
 Standards-Version: 4.3.0

@@ -30,6 +30,7 @@
 // Contact: dreibh@simula.no
 
 #include <iostream>
+#include <pqxx/pqxx>
 
 #include <hipercontracer/logger.h>
 #include <hipercontracer/service.h>

@@ -124,6 +124,13 @@ INCLUDE(FindPythonInterp)
 
 FIND_PACKAGE(PythonInterp 3.4.0 REQUIRED)
 
+# ###### Python #############################################################
+FIND_PACKAGE(PkgConfig)
+PKG_CHECK_MODULES(LIBPQXX libpqxx)
+IF (NOT LIBPQXX_FOUND)
+  MESSAGE(FATAL_ERROR "Cannot find libpqxx library!")
+ENDIF()
+
 
 #############################################################################
 # SOURCE DIRECTORIES
