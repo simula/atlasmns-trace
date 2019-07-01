@@ -101,7 +101,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE(Threads REQUIRED)
 
 # ###### Boost ##############################################################
-FIND_PACKAGE(Boost REQUIRED COMPONENTS log date_time system thread iostreams filesystem)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS log date_time system thread iostreams filesystem program_options)
 IF (NOT Boost_FOUND)
    MESSAGE(FATAL_ERROR "Cannot find Boost libraries!")
 ELSE()
