@@ -46,20 +46,7 @@ import ssl
 import socket
 import sys
 
-
-# ###### Print log message ##################################################
-def log(logstring):
-   print('\x1b[32m' + datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S') + ': ' + logstring + '\x1b[0m');
-
-
-# ###### Print warning message ##############################################
-def warning(logstring):
-   sys.stderr.write('\x1b[31m' + datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S') + ': WARNING: ' + logstring + '\x1b[0m\n');
-
-
-# ###### Print error message ################################################
-def error(logstring):
-   sys.stderr.write(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S') + ': ERROR: ' + logstring + '\n')
+import AtlasMNSLogger
 
 
 class AtlasMNS:
@@ -85,6 +72,7 @@ class AtlasMNS:
          'atlas_api_key':        None
       }
 
+
    # ###### Load configuration ##############################################
    def loadConfiguration(self, configFileName):
       parsedConfigFile = configparser.RawConfigParser()
@@ -92,7 +80,7 @@ class AtlasMNS:
       try:
          parsedConfigFile.readfp(io.StringIO(u'[root]\n' + open(configFileName, 'r').read()))
       except Exception as e:
-         error('Unable to read database configuration file' +  configFileName + ': ' + str(e))
+         AtlasMNSLogger.error('Unable to read database configuration file' +  configFileName + ': ' + str(e))
          return False
 
       for parameterName in parsedConfigFile.options('root'):
@@ -128,14 +116,14 @@ class AtlasMNS:
             self.configuration['atlas_api_key'] = parameterValue
 
          else:
-            warning('Unknown parameter ' + parameterName + ' is ignored!')
+            AtlasMNSLogger.warning('Unknown parameter ' + parameterName + ' is ignored!')
 
       return True
 
 
    # ###### Connect to RIPE Atlas ###########################################
    def connectToRIPEAtlas(self):
-      log('Connecting to the RIPE Atlas server ...')
+      AtlasMNSLogger.info('Connecting to the RIPE Atlas server ...')
       atlas_request = ripe.atlas.cousteau.AtlasRequest(
          **{
             "url_path": "/api/v2/anchors"
@@ -145,13 +133,14 @@ class AtlasMNS:
       (result.success, result.response) = atlas_request.get()
       return (result.success == True)
 
+
    # ###### Connect to PostgreSQL scheduler database ########################
    def connectToSchedulerDB(self):
-      log('Connecting to the PostgreSQL scheduler database at ' + self.configuration['scheduler_dbserver'] + ' ...')
+      AtlasMNSLogger.info('Connecting to the PostgreSQL scheduler database at ' + self.configuration['scheduler_dbserver'] + ' ...')
       self.scheduler_dbCursor = None
       try:
          if self.configuration['scheduler_cafile'] == "IGNORE":   # Ignore TLS certificate
-            warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
+            AtlasMNSLogger.warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
             self.scheduler_dbConnection = psycopg2.connect(host=str(self.configuration['scheduler_dbserver']),
                                                            port=str(self.configuration['scheduler_dbport']),
                                                            user=str(self.configuration['scheduler_dbuser']),
@@ -175,7 +164,7 @@ class AtlasMNS:
                                                            sslrootcert=self.configuration['scheduler_cafile'])
          self.scheduler_dbConnection.autocommit = False
       except Exception as e:
-         error('Unable to connect to the PostgreSQL scheduler database at ' +
+         AtlasMNSLogger.error('Unable to connect to the PostgreSQL scheduler database at ' +
                self.configuration['scheduler_dbserver'] + ': ' + str(e))
          return False
 
@@ -185,10 +174,10 @@ class AtlasMNS:
 
    # ###### Connect to MongoDB results database #############################
    def connectToResultsDB(self):
-      log('Connecting to MongoDB results database at ' + self.configuration['results_dbserver'] + ' ...')
+      AtlasMNSLogger.info('Connecting to MongoDB results database at ' + self.configuration['results_dbserver'] + ' ...')
       try:
          if self.configuration['results_cafile'] == "IGNORE":   # Ignore TLS certificate
-            warning('TLS certificate check for MongoDB results database is turned off!')
+            AtlasMNSLogger.warning('TLS certificate check for MongoDB results database is turned off!')
             results_dbConnection = pymongo.MongoClient(host=str(self.configuration['results_dbserver']),
                                                        port=int(self.configuration['results_dbport']),
                                                        ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
@@ -206,7 +195,7 @@ class AtlasMNS:
                                       str(self.configuration['results_dbpassword']),
                                       mechanism='SCRAM-SHA-1')
       except Exception as e:
-         error('Unable to connect to the MongoDB results database at ' +
+         AtlasMNSLogger.error('Unable to connect to the MongoDB results database at ' +
                self.configuration['results_dbserver'] + ': ' + str(e))
          return False
 

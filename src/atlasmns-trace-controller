@@ -42,6 +42,7 @@ import readline
 import sys
 
 import AtlasMNS
+import AtlasMNSLogger
 
 
 # ###### Add measurement run ################################################
@@ -140,11 +141,12 @@ def listMeasurementRuns(atlasMNS):
 
 # ###### Main program #######################################################
 if len(sys.argv) < 2:
-   sys.stderr.write('Usage: ' + sys.argv[0] + ' database_configuration\n')
+   sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
    sys.exit(1)
 
 
 # ====== Initialise =========================================================
+atlasMSNLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
 atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
@@ -170,7 +172,7 @@ readline.parse_and_bind('set editing-mode vi')
 
 
 # ====== Main loop ==========================================================
-AtlasMNS.log('Controller is ready!')
+AtlasMNSLogger.info('Controller is ready!')
 while True:
     try:
        line = input('? ')
@@ -215,4 +217,4 @@ print()
 
 
 # ====== All done! ==========================================================
-AtlasMNS.log('Exiting!')
+AtlasMNSLogger.info('Exiting!')

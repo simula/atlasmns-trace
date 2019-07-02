@@ -41,8 +41,15 @@ import lzma
 import os
 
 
+TRACE    = logging.DEBUG - 1
+DEBUG    = logging.DEBUG
+INFO     = logging.INFO
+WARNING  = logging.WARNING
+ERROR    = logging.ERROR
+CRITICAL = logging.CRITICAL
+
+
 # ###### Custom log level "TRACE" ###########################################
-TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
 
 def trace(self, message, *args, **kwargs):
@@ -61,7 +68,7 @@ def CompressingRotator(source, dest):
    os.remove(dest)
 
 
-class AtlasMSNLogger:
+class AtlasMNSLogger:
    # ###### Constructor #####################################################
    def __init__(self,
                 logLevel       = TRACE,

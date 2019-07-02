@@ -47,16 +47,17 @@ import socket
 import sys
 
 import AtlasMNS
-
+import AtlasMNSLogger
 
 
 # ###### Main program #######################################################
 if len(sys.argv) < 2:
-   sys.stderr.write('Usage: ' + sys.argv[0] + ' database_configuration\n')
+   sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
    sys.exit(1)
 
 
 # ====== Initialise =========================================================
+atlasMSNLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
 atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
@@ -72,8 +73,8 @@ if not atlasMNS.connectToResultsDB():
 
 
 # ====== Main loop ==========================================================
-log('Scheduler is ready!')
+AtlasMNSLogger.info('Scheduler is ready!')
 
 
 # ====== All done! ==========================================================
-log('Exiting!')
+AtlasMNSLogger.info('Exiting!')
