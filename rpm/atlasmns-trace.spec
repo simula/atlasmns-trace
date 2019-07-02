@@ -46,6 +46,7 @@ Summary: Atlas/MNS Trace Scheduler
 Group: Applications/Internet
 BuildArch: noarch
 Requires: nornet-management
+Requires: python3-colorlog
 Requires: python3-psycopg2
 Requires: python3-pymongo
 

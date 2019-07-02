@@ -15,7 +15,8 @@ Build-Depends: cmake (>= 3.0.2) | cmake3,
                libhipercontracer-dev (>= 1.4.0),
                libpqxx-dev,
                pkg-config,
-               python3-all
+               python3-all,
+               python3-colorlog
 Standards-Version: 4.3.0
 Vcs-Git: https://github.com/simula/atlasmns-trace.git
 Vcs-Browser: https://github.com/simula/atlasmns-trace
@@ -25,6 +26,7 @@ Architecture: all
 Depends: nornet-management,
          python3-psycopg2,
          python3-pymongo,
+         python3-colorlog,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace common functions
