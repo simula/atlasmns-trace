@@ -1,0 +1,83 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import colorlog
+import logging
+import logging.config
+import lzma
+import os
+
+
+# ###### Custom log level "TRACE" ###########################################
+TRACE = 5
+logging.addLevelName(TRACE, 'TRACE')
+
+def trace(self, message, *args, **kws):
+    self.log(TRACE, message, *args, **kws)
+logging.Logger.trace = trace
+
+
+# ###### Compressing log rotator ############################################
+def CompressingRotator(source, dest):
+   os.rename(source, dest)
+   f_in = open(dest, 'rb')
+   f_out = lzma.LZMAFile('%s.xz' % dest, 'wb')
+   f_out.writelines(f_in)
+   f_out.close()
+   f_in.close()
+   os.remove(dest)
+
+
+# ###### Configure logging ##################################################
+def initialiseLogger(logLevel = TRACE, logDirectory = os.getcwd(), compress = True):
+   loggingHandler = {
+      'level': 'TRACE',
+      'class': 'logging.handlers.TimedRotatingFileHandler',
+      'formatter': 'standard',
+      'filename': os.path.join(logDirectory, 'update-schedules.log'),
+      'when': 'D'
+   }
+   loggingConfiguration = {
+      'version': 1,
+      'handlers': {
+         'default': loggingHandler
+      },
+      'formatters': {
+         'standard': {
+            '()': colorlog.ColoredFormatter,
+            #'msg': 'TEST',
+            #'use_color': True
+            'fmt': '%(log_color)s[%(asctime)s][%(levelname)s]: %(message)s',
+            'style': '%',
+            'datefmt': '%Y-%m-%d %H:%M:%S.%f',
+            'log_colors': { 'TRACE':    'white',    # 37
+                            'DEBUG':    'cyan',     # 36
+                            'INFO':     'blue',     # 34
+                            'WARNING':  'yellow',   # 33
+                            'ERROR':    'red',      # 31
+                            'CRITICAL': 'white,bg_red' }
+         },
+      },
+      'root': {
+         'level': 'TRACE',
+         'handlers': ['default'],
+      }
+   }
+
+   logging.config.dictConfig(loggingConfiguration)
+   logger = logging.getLogger()
+   if compress == True:
+      for handler in logger.handlers[:]:
+         handler.rotator = CompressingRotator
+
+
+
+initialiseLogger(TRACE, os.getcwd())
+
+l = logging.getLogger()
+l.trace('Trace level')
+l.debug('Debug level')
+l.info('Info level')
+l.warning('Warning level')
+l.error('Error level')
+l.critical('Fatal level')
