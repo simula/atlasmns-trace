@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import atexit
 import colorlog
 import logging
 import logging.config
@@ -12,8 +13,8 @@ import os
 TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
 
-def trace(self, message, *args, **kws):
-    self.log(TRACE, message, *args, **kws)
+def trace(self, message, *args, **kwargs):
+    self.log(TRACE, message, *args, **kwargs)
 logging.Logger.trace = trace
 
 
@@ -28,81 +29,123 @@ def CompressingRotator(source, dest):
    os.remove(dest)
 
 
-# ###### Configure logging ##################################################
-def initialiseLogger(logLevel     = TRACE,
-                     logDirectory = None,
-                     logFile      = None,
-                     compress     = True):
+class AtlasMSNLogger:
+   # ###### Constructor #####################################################
+   def __init__(self,
+                logLevel       = TRACE,
+                logDirectory   = None,
+                logFile        = None,
+                logCompression = True):
 
-   if ((logDirectory != None) and (logFile != None)):
-      loggingHandler = {
-         'level': 'TRACE',
-         'class': 'logging.handlers.TimedRotatingFileHandler',
-         'formatter': 'standard',
-         'filename': os.path.join(logDirectory, logFile),
-         'when': 'S',
-         'interval': 24*3600
-      }
-   else:
-      loggingHandler = {
-         'level': 'TRACE',
-         'class': 'logging.StreamHandler',
-         'formatter': 'standard'
-      }
+      self.logFileName    = None
+      self.logCompression = False
 
-   loggingConfiguration = {
-      'version': 1,
-      'handlers': {
-         'default': loggingHandler
-      },
-      'formatters': {
-         'standard': {
-            '()': colorlog.ColoredFormatter,
-            #'msg': 'TEST',
-            #'use_color': True
-            'fmt': '%(log_color)s[%(asctime)s][%(levelname)s]: %(message)s',
-            'style': '%',
-            'datefmt': '%Y-%m-%d %H:%M:%S.%f',
-            'log_colors': { 'TRACE':    'white',    # 37
-                            'DEBUG':    'cyan',     # 36
-                            'INFO':     'blue',     # 34
-                            'WARNING':  'yellow',   # 33
-                            'ERROR':    'red',      # 31
-                            'CRITICAL': 'white,bg_red' }
+      if ((logDirectory != None) and (logFile != None)):
+         self.logFileName    = os.path.join(logDirectory, logFile)
+         self.logCompression = logCompression
+         loggingHandler = {
+            'level': 'TRACE',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'formatter': 'standard',
+            'filename': self.logFileName,
+            'when': 'S',
+            'interval': 24*3600
+         }
+      else:
+         loggingHandler = {
+            'level': 'TRACE',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+         }
+
+      self.loggingConfiguration = {
+         'version': 1,
+         'handlers': {
+            'default': loggingHandler
          },
-      },
-      'root': {
-         'level': 'TRACE',
-         'handlers': ['default'],
+         'formatters': {
+            'standard': {
+               '()': colorlog.ColoredFormatter,
+               #'msg': 'TEST',
+               #'use_color': True
+               'fmt': '%(log_color)s[%(asctime)s][%(levelname)s]: %(message)s',
+               'style': '%',
+               'datefmt': '%Y-%m-%d %H:%M:%S.%f',
+               'log_colors': { 'TRACE':    'white',    # 37
+                               'DEBUG':    'cyan',     # 36
+                               'INFO':     'blue',     # 34
+                               'WARNING':  'yellow',   # 33
+                               'ERROR':    'red',      # 31
+                               'CRITICAL': 'white,bg_red' }
+            },
+         },
+         'root': {
+            'level': 'TRACE',
+            'handlers': ['default'],
+         }
       }
-   }
 
-   logging.config.dictConfig(loggingConfiguration)
-   logger = logging.getLogger()
-   if compress == True:
-      for handler in logger.handlers[:]:
-         handler.rotator = CompressingRotator
+      logging.config.dictConfig(self.loggingConfiguration)
+      self.logger = logging.getLogger()
+      if self.logCompression == True:
+         for handler in self.logger.handlers[:]:
+            handler.rotator = CompressingRotator
 
-
-# ###### Perform log rollover ###############################################
-def doRollover(onlyIfCompressing = False):
-   logger = logging.getLogger()
-   for handler in logger.handlers[:]:
-      if hasattr(handler, 'doRollover'):
-         if ((onlyIfCompressing == False) or
-             (handler.rotator == CompressingRotator)):
-            handler.doRollover()
+      atexit.register(self.cleanup)
 
 
+   # ###### Destructor ######################################################
+   def cleanup(self):
+      self.doRollover(True)
+      if self.logCompression == True:
+         print('DEL: ' + self.logFileName)
+         os.unlink(self.logFileName)
 
-initialiseLogger(TRACE, os.getcwd(), "output.log")
 
-l = logging.getLogger()
-l.trace('Trace level')
-l.debug('Debug level')
-l.info('Info level')
-l.warning('Warning level')
-l.error('Error level')
-l.critical('Fatal level')
+   # ###### Perform log rollover ############################################
+   def doRollover(self, onlyIfCompressing = False):
+     if ((onlyIfCompressing == False) or (self.logCompression == True)):
+         for handler in self.logger.handlers[:]:
+            if hasattr(handler, 'doRollover'):
+               handler.doRollover()
 
-doRollover()
+
+# ###### Create log entry ###################################################
+def log(level, message, *args, **kwargs):
+   logging.getLogger().log(level, message, *args, **kwargs)
+
+# ###### Create log entry ###################################################
+def trace(message, *args, **kwargs):
+   logging.getLogger().trace(*args, message, **kwargs)
+
+# ###### Create log entry ###################################################
+def debug(message, *args, **kwargs):
+   logging.getLogger().debug(*args, message, **kwargs)
+
+# ###### Create log entry ###################################################
+def info(message, *args, **kwargs):
+   logging.getLogger().info(*args, message, **kwargs)
+
+# ###### Create log entry ###################################################
+def warning(message, *args, **kwargs):
+   logging.getLogger().warning(*args, message, **kwargs)
+
+# ###### Create log entry ###################################################
+def error(message, *args, **kwargs):
+   logging.getLogger().error(*args, message, **kwargs)
+
+# ###### Create log entry ###################################################
+def critical(message, *args, **kwargs):
+   logging.getLogger().critical(*args, message, **kwargs)
+
+
+AtlasMSNLogger(TRACE)#, os.getcwd(), "output.log")
+
+log(100, "Test!")
+
+trace('Trace level')
+debug('Debug level')
+info('Info level')
+warning('Warning level')
+error('Error level')
+critical('Fatal level')
