@@ -44,7 +44,7 @@ INSTALL(FILES atlasmns-trace-agent.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 # EXAMPLES
 #############################################################################
 
-INSTALL(FILES atlasmns-database-configuration
+INSTALL(FILES atlasmns-configuration
         DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/atlasmns-trace/examples)
 
 

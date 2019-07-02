@@ -9,7 +9,7 @@ override_dh_auto_configure:
 	# * Need to set path for packaging here.
 	# * Need to tell setup.py to use Debian layout.
 	# NOTE: CMAKE_VERBOSE_MAKEFILE=OFF for reduced log output!
-	dh_auto_configure -- -DPYTHON_LIBRARY_PREFIX="$(CURDIR)/debian/tmp/usr" -DPYTHON_SETUP_OPTS="--install-layout=deb" -DCMAKE_VERBOSE_MAKEFILE=OFF
+	dh_auto_configure -- -DPYTHON_LIBRARY_PREFIX="$(CURDIR)/debian/tmp/usr" -DPYTHON_SETUP_OPTS="--install-layout=deb" -DCMAKE_VERBOSE_MAKEFILE=ON
 
 # Use upstream ChangeLog for installation
 override_dh_installchangelogs:

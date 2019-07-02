@@ -14,6 +14,9 @@ BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: hipercontracer-libhipercontracer-devel
 BuildRequires: libpqxx-devel
+BuildRequires: python3-colorlog
+BuildRequires: python3-psycopg2
+BuildRequires: python3-pymongo
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
@@ -41,8 +44,8 @@ make DESTDIR=%{buildroot} install
 
 
 
-%package scheduler
-Summary: Atlas/MNS Trace Scheduler
+%package common
+Summary: Atlas/MNS Trace common functions
 Group: Applications/Internet
 BuildArch: noarch
 Requires: nornet-management
@@ -50,17 +53,16 @@ Requires: python3-colorlog
 Requires: python3-psycopg2
 Requires: python3-pymongo
 
-%description scheduler
- Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
+%description common
+ This package contains common functions for the Atlas/MNS Trace programs.
  See https://www.nntb.no for details on NorNet!
 
-%files scheduler
+%files common
 /usr/lib/python*/*-packages/AtlasMNS*.egg-info
 /usr/lib/python*/*-packages/AtlasMNS.py
+/usr/lib/python*/*-packages/AtlasMNSLogging.py
 /usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
-%{_bindir}/atlasmns-trace-scheduler
-%{_mandir}/man1/atlasmns-trace-scheduler.1.gz
-%{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
+%{_datadir}/doc/atlasmns-trace/examples/atlasmns-configuration
 %{_datadir}/doc/atlasmns-trace/examples/SQL/README
 %{_datadir}/doc/atlasmns-trace/examples/SQL/database.sql
 %{_datadir}/doc/atlasmns-trace/examples/SQL/install-database-and-users
@@ -74,14 +76,43 @@ Requires: python3-pymongo
 %{_datadir}/doc/atlasmns-trace/examples/NoSQL/README
 
 
+%package controller
+Summary: Atlas/MNS Trace Controller
+Group: Applications/Internet
+BuildArch: noarch
+Requires: %{name}-common = %{version}-%{release}
+
+%description controller
+ Atlas/MNS Trace Controller is the controller for the Atlas/MNS Trace experiments.
+ See https://www.nntb.no for details on NorNet!
+
+%files controller
+%{_bindir}/atlasmns-trace-controller
+%{_mandir}/man1/atlasmns-trace-controller.1.gz
+
+
+%package scheduler
+Summary: Atlas/MNS Trace Scheduler
+Group: Applications/Internet
+BuildArch: noarch
+Requires: %{name}-common = %{version}-%{release}
+
+%description scheduler
+ Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
+ See https://www.nntb.no for details on NorNet!
+
+%files scheduler
+%{_bindir}/atlasmns-trace-scheduler
+%{_mandir}/man1/atlasmns-trace-scheduler.1.gz
+
+
 %package agent
 Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
 BuildArch: noarch
 Requires: hipercontracer >= 1.4.0
 Requires: nornet-trace-trigger
-Requires: python3-psycopg2
-Requires: python3-pymongo
+Requires: %{name}-common = %{version}-%{release}
 
 %description agent
  Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.

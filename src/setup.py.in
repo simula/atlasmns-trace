@@ -41,6 +41,7 @@ setup(name='AtlasMNS',
        'Topic :: Software Development :: Libraries',
        'Topic :: System :: Networking'],
    py_modules=[
-      'AtlasMNS'
+      'AtlasMNS',
+      'AtlasMNSLogger'
    ]
 )
