@@ -29,14 +29,27 @@ def CompressingRotator(source, dest):
 
 
 # ###### Configure logging ##################################################
-def initialiseLogger(logLevel = TRACE, logDirectory = os.getcwd(), compress = True):
-   loggingHandler = {
-      'level': 'TRACE',
-      'class': 'logging.handlers.TimedRotatingFileHandler',
-      'formatter': 'standard',
-      'filename': os.path.join(logDirectory, 'update-schedules.log'),
-      'when': 'D'
-   }
+def initialiseLogger(logLevel     = TRACE,
+                     logDirectory = None,
+                     logFile      = None,
+                     compress     = True):
+
+   if ((logDirectory != None) and (logFile != None)):
+      loggingHandler = {
+         'level': 'TRACE',
+         'class': 'logging.handlers.TimedRotatingFileHandler',
+         'formatter': 'standard',
+         'filename': os.path.join(logDirectory, logFile),
+         'when': 'S',
+         'interval': 24*3600
+      }
+   else:
+      loggingHandler = {
+         'level': 'TRACE',
+         'class': 'logging.StreamHandler',
+         'formatter': 'standard'
+      }
+
    loggingConfiguration = {
       'version': 1,
       'handlers': {
@@ -71,8 +84,18 @@ def initialiseLogger(logLevel = TRACE, logDirectory = os.getcwd(), compress = Tr
          handler.rotator = CompressingRotator
 
 
+# ###### Perform log rollover ###############################################
+def doRollover(onlyIfCompressing = False):
+   logger = logging.getLogger()
+   for handler in logger.handlers[:]:
+      if hasattr(handler, 'doRollover'):
+         if ((onlyIfCompressing == False) or
+             (handler.rotator == CompressingRotator)):
+            handler.doRollover()
 
-initialiseLogger(TRACE, os.getcwd())
+
+
+initialiseLogger(TRACE, os.getcwd(), "output.log")
 
 l = logging.getLogger()
 l.trace('Trace level')
@@ -81,3 +104,5 @@ l.info('Info level')
 l.warning('Warning level')
 l.error('Error level')
 l.critical('Fatal level')
+
+doRollover()
