@@ -29,7 +29,7 @@ def CompressingRotator(source, dest):
    os.remove(dest)
 
 
-class AtlasMSNLogger:
+class AtlasMNSLogger:
    # ###### Constructor #####################################################
    def __init__(self,
                 logLevel       = TRACE,
@@ -139,7 +139,7 @@ def critical(message, *args, **kwargs):
    logging.getLogger().critical(*args, message, **kwargs)
 
 
-AtlasMSNLogger(TRACE)#, os.getcwd(), "output.log")
+AtlasMNSLogger(TRACE)#, os.getcwd(), "output.log")
 
 log(100, "Test!")
 
