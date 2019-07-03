@@ -56,19 +56,19 @@ class AtlasMNS:
    def __init__(self):
       # ====== Set defaults =================================================
       self.configuration = {
-         'scheduler_dbserver':   "localhost",
-         'scheduler_dbport':     "5432",
-         'scheduler_dbuser':     "scheduler",
+         'scheduler_dbserver':   'localhost',
+         'scheduler_dbport':     '5432',
+         'scheduler_dbuser':     'scheduler',
          'scheduler_dbpassword': None,
-         'scheduler_database':   "atlasmsdb",
-         'scheduler_cafile':     "None",
+         'scheduler_database':   'atlasmsdb',
+         'scheduler_cafile':     'None',
 
-         'results_dbserver':     "localhost",
-         'results_dbport':       "27017",
-         'results_dbuser':       "importer",
+         'results_dbserver':     'localhost',
+         'results_dbport':       '27017',
+         'results_dbuser':       'importer',
          'results_dbpassword':   None,
-         'results_database':     "atlasmnsdb",
-         'results_cafile':       "None",
+         'results_database':     'atlasmnsdb',
+         'results_cafile':       'None',
 
          'atlas_api_key':        None
       }
@@ -133,7 +133,7 @@ class AtlasMNS:
 
       atlas_request = ripe.atlas.cousteau.AtlasRequest(
          **{
-            "url_path": "/api/v2/anchors"
+            'url_path': '/api/v2/anchors'
          }
       )
       result = collections.namedtuple('Result', 'success response')
@@ -142,56 +142,74 @@ class AtlasMNS:
       return (result.success == True)
 
 
-   # ###### Create Ping measurement #########################################
-   def createRIPEAtlasPingMeasurement(self, probeID, targetAddress, description):
-      measurement = ping4 = ripe.atlas.cousteau.Ping(
-         af          = targetAddress.version,
-         target      = str(targetAddress),
-         description = description
-      )
-      source = ripe.atlas.cousteau.AtlasSource(
-         type      = 'probes',
-         value     = str(probeID),
-         requested = 1
-      )
-      AtlasMNSLogger.trace("Creating Ping measurement: Probe #" +
-                           str(probeID) + " to " + str(targetAddress))
+   # ###### Create RIPE Atlas measurement ###################################
+   def createRIPEAtlasMeasurement(self, source, measurement):
+      AtlasMNSLogger.trace('Creating ' + measurement.measurement_type + ' measurement for ' +
+                           'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) + ' ...')
       atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
          start_time   = datetime.datetime.utcnow(),
          key          = self.configuration['atlas_api_key'],
-         measurements = [ measurement ],
          sources      = [ source ],
+         measurements = [ measurement ],
          is_oneoff    = True
       )
       ( is_success, response ) = atlas_request.create()
       if is_success:
          measurementID = response['measurements'][0]
-         AtlasMNSLogger.trace("Created Ping measurement: Probe #" +
-                              str(probeID) + " to " + str(targetAddress) +
-                              " -> Measurement #" + str(measurementID))
+         AtlasMNSLogger.trace('Created ' + measurement.measurement_type + ' measurement: ' +
+                              'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
+                              ' -> Measurement #' + str(measurementID))
          return measurementID
       else:
-         AtlasMNSLogger.warning("Creating Ping measurement: Probe #" +
-                                str(probeID) + " to " + str(targetAddress) +
-                                " failed: " + str(response))
+         AtlasMNSLogger.warning('Creating ' + measurement.measurement_type + ' measurement for ' +
+                                'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
+                                ' failed: ' + str(response))
          return False
+
+
+   # ###### Create RIPE Atlas Ping measurement ##############################
+   def createRIPEAtlasPingMeasurement(self, probeID, targetAddress, description):
+      source = ripe.atlas.cousteau.AtlasSource(
+         type      = 'probes',
+         value     = str(probeID),
+         requested = 1
+      )
+      measurement = ping4 = ripe.atlas.cousteau.Ping(
+         af          = targetAddress.version,
+         target      = str(targetAddress),
+         description = description
+      )
+      return self.createRIPEAtlasMeasurement(source, measurement)
+
+
+   # ###### Create RIPE Atlas Traceroute measurement ########################
+   def createRIPEAtlasTracerouteMeasurement(self, probeID, targetAddress, description):
+      source = ripe.atlas.cousteau.AtlasSource(
+         type      = 'probes',
+         value     = str(probeID),
+         requested = 1
+      )
+      measurement = ping4 = ripe.atlas.cousteau.Traceroute(
+         af          = targetAddress.version,
+         target      = str(targetAddress),
+         description = description,
+         protocol    = 'ICMP'
+      )
+      return self.createRIPEAtlasMeasurement(source, measurement)
 
 
    # ###### Obtain measurement results ######################################
    def downloadMeasurementResults(self, measurementID):
+      AtlasMNSLogger.trace('Downloading results for Measurement #' +
+                           str(measurementID) + ' ...')
       (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
          msm_id = measurementID
       ).create()
       if is_success:
          return results
-         for result in results:
-            probeID = int(result['prb_id'])
-            probeIDs.add(probeID)
-            print('- Result from Probe #' + str(probeID))
-            print('  ', result)
       else:
-         AtlasMNSLogger.warning("Obtaining results for Measurement #" +
-                                str(measurementID) + " failed: " + str(results))
+         AtlasMNSLogger.warning('Downloading results for Measurement #' +
+                                str(measurementID) + ' failed: ' + str(results))
          return None
 
 
@@ -216,7 +234,7 @@ class AtlasMNS:
       AtlasMNSLogger.info('Connecting to the PostgreSQL scheduler database at ' + self.configuration['scheduler_dbserver'] + ' ...')
       self.scheduler_dbCursor = None
       try:
-         if self.configuration['scheduler_cafile'] == "IGNORE":   # Ignore TLS certificate
+         if self.configuration['scheduler_cafile'] == 'IGNORE':   # Ignore TLS certificate
             AtlasMNSLogger.warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
             self.scheduler_dbConnection = psycopg2.connect(host=str(self.configuration['scheduler_dbserver']),
                                                            port=str(self.configuration['scheduler_dbport']),
@@ -224,7 +242,7 @@ class AtlasMNS:
                                                            password=str(self.configuration['scheduler_dbpassword']),
                                                            dbname=str(self.configuration['scheduler_database']),
                                                            sslmode='require')
-         elif self.configuration['scheduler_cafile'] == "None":   # Use default CA settings
+         elif self.configuration['scheduler_cafile'] == 'None':   # Use default CA settings
             self.scheduler_dbConnection = psycopg2.connect(host=str(self.configuration['scheduler_dbserver']),
                                                            port=str(self.configuration['scheduler_dbport']),
                                                            user=str(self.configuration['scheduler_dbuser']),
@@ -253,12 +271,12 @@ class AtlasMNS:
    def connectToResultsDB(self):
       AtlasMNSLogger.info('Connecting to MongoDB results database at ' + self.configuration['results_dbserver'] + ' ...')
       try:
-         if self.configuration['results_cafile'] == "IGNORE":   # Ignore TLS certificate
+         if self.configuration['results_cafile'] == 'IGNORE':   # Ignore TLS certificate
             AtlasMNSLogger.warning('TLS certificate check for MongoDB results database is turned off!')
             results_dbConnection = pymongo.MongoClient(host=str(self.configuration['results_dbserver']),
                                                        port=int(self.configuration['results_dbport']),
                                                        ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-         elif self.configuration['results_cafile'] == "None":   # Use default CA settings
+         elif self.configuration['results_cafile'] == 'None':   # Use default CA settings
             results_dbConnection = pymongo.MongoClient(host=str(self.configuration['results_dbserver']),
                                                        port=int(self.configuration['results_dbport']),
                                                        ssl=True, ssl_cert_reqs=ssl.CERT_REQUIRED)
