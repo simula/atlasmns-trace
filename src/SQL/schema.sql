@@ -65,7 +65,7 @@ CREATE TABLE ExperimentSchedule (
    ProbeHostIP       INET             DEFAULT NULL,
    ProbeRouterIP     INET             DEFAULT NULL,
    
-   Info              CHAR(128)        NOT NULL DEFAULT '',
+   Info              CHAR(128)        DEFAULT NULL,
 
    PRIMARY KEY (Identifier)
    -- UNIQUE (AgentHostIP,AgentTrafficClass,AgentRouterIP,ProbeID)
