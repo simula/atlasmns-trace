@@ -67,3 +67,6 @@ CREATE TABLE ExperimentSchedule (
 
    PRIMARY KEY (Identifier)
 );
+
+DROP INDEX IF EXISTS ExperimentSchedule_LastChange_Index;
+CREATE INDEX ExperimentSchedule_LastChange_Index ON ExperimentSchedule ( LastChange );
