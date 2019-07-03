@@ -65,7 +65,8 @@ CREATE TABLE ExperimentSchedule (
    ProbeHostIP       INET             DEFAULT NULL,
    ProbeRouterIP     INET             DEFAULT NULL,
 
-   PRIMARY KEY (Identifier)
+   PRIMARY KEY (Identifier),
+   UNIQUE (AgentHostIP,AgentTrafficClass,AgentRouterIP,ProbeID)
 );
 
 DROP INDEX IF EXISTS ExperimentSchedule_LastChange_Index;
