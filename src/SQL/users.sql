@@ -38,25 +38,25 @@
 -- ##########################################################
 
 
-REVOKE ALL ON DATABASE atlasmnsdb FROM agent;
-REVOKE ALL ON ALL TABLES IN SCHEMA public FROM agent;
-DROP ROLE agent;
-CREATE ROLE agent WITH LOGIN ENCRYPTED PASSWORD '!agent!';
-GRANT CONNECT ON DATABASE atlasmnsdb TO agent;
-GRANT SELECT ON TABLE ExperimentSchedule TO agent;
-GRANT UPDATE ON TABLE ExperimentSchedule TO agent;
+REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsagent;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM atlasmnsagent;
+DROP ROLE atlasmnsagent;
+CREATE ROLE atlasmnsagent WITH LOGIN ENCRYPTED PASSWORD '!agent!';
+GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsagent;
+GRANT SELECT ON TABLE ExperimentSchedule TO atlasmnsagent;
+GRANT UPDATE ON TABLE ExperimentSchedule TO atlasmnsagent;
 
-REVOKE ALL ON DATABASE atlasmnsdb FROM scheduler;
-REVOKE ALL ON ALL TABLES IN SCHEMA public FROM scheduler;
-DROP ROLE scheduler;
-CREATE ROLE scheduler WITH LOGIN ENCRYPTED PASSWORD '!scheduler!';
-GRANT CONNECT ON DATABASE atlasmnsdb TO scheduler;
-GRANT INSERT ON ExperimentSchedule TO scheduler;
-GRANT SELECT ON ExperimentSchedule TO scheduler;
-GRANT DELETE ON ExperimentSchedule TO scheduler;
+REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsscheduler;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM atlasmnsscheduler;
+DROP ROLE atlasmnsscheduler;
+CREATE ROLE atlasmnsscheduler WITH LOGIN ENCRYPTED PASSWORD '!scheduler!';
+GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsscheduler;
+GRANT INSERT ON ExperimentSchedule TO atlasmnsscheduler;
+GRANT SELECT ON ExperimentSchedule TO atlasmnsscheduler;
+GRANT DELETE ON ExperimentSchedule TO atlasmnsscheduler;
 
-REVOKE ALL ON DATABASE atlasmnsdb FROM maintainer;
-DROP ROLE maintainer;
-CREATE ROLE maintainer WITH LOGIN ENCRYPTED PASSWORD '!maintainer!';
-GRANT CONNECT ON DATABASE atlasmnsdb TO maintainer;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO maintainer;
+REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsmaintainer;
+DROP ROLE atlasmnsmaintainer;
+CREATE ROLE atlasmnsmaintainer WITH LOGIN ENCRYPTED PASSWORD '!maintainer!';
+GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsmaintainer;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO atlasmnsmaintainer;
