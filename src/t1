@@ -26,10 +26,10 @@ if not atlasMNS.connectToRIPEAtlas():
 
 measurementIDFile = 'measurements.list'
 if not os.path.isfile(measurementIDFile):
-   measurementID = atlasMNS.createRIPEAtlasTracerouteMeasurement(29027, ipaddress.IPv6Address('2001:700:4100:2::179'),
-                                                                '托马斯\'s AtlasMNS Traceroute Test')
-   #measurementID = atlasMNS.createRIPEAtlasPingMeasurement(29027, ipaddress.IPv4Address('128.39.37.179'),
-                                                           #'托马斯\'s AtlasMNS Ping Test')
+   # target = ipaddress.IPv6Address('2001:700:4100:2::179')
+   target = ipaddress.IPv4Address('128.39.37.179')
+   measurementID = atlasMNS.createRIPEAtlasTracerouteMeasurement(29027, target, '托马斯\'s AtlasMNS Traceroute Test')
+   #measurementID = atlasMNS.createRIPEAtlasPingMeasurement(29027, target, #'托马斯\'s AtlasMNS Ping Test')
    if measurementID != None:
       with open(measurementIDFile, 'w') as f:
          f.write(str(measurementID) + '\n')
@@ -43,3 +43,5 @@ else:
    if results != None:
       print('Results for Measurement #' + str(measurementID) + ':')
       atlasMNS.printMeasurementResults(results)
+
+   # atlasMNS.stopRIPEAtlasMeasurement(measurementID)

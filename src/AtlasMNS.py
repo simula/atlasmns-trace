@@ -142,8 +142,8 @@ class AtlasMNS:
       return (result.success == True)
 
 
-   # ###### Create RIPE Atlas measurement ###################################
-   def createRIPEAtlasMeasurement(self, source, measurement):
+   # ###### Start RIPE Atlas measurement ####################################
+   def startRIPEAtlasMeasurement(self, source, measurement):
       AtlasMNSLogger.trace('Creating ' + measurement.measurement_type + ' measurement for ' +
                            'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) + ' ...')
       atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
@@ -167,6 +167,22 @@ class AtlasMNS:
          return False
 
 
+   # ###### Stop RIPE Atlas measurement #####################################
+   def stopRIPEAtlasMeasurement(self, measurementID):
+      atlas_request = ripe.atlas.cousteau.AtlasStopRequest(
+         key    = self.configuration['atlas_api_key'],
+         msm_id = measurementID
+      )
+      ( is_success, response ) = atlas_request.create()
+      if is_success:
+         AtlasMNSLogger.trace('Stopped Measurement #' + str(measurementID))
+         return True
+      else:
+         AtlasMNSLogger.warning('Stopping Measurement #' + str(measurementID) +
+                                ' failed: ' + str(response))
+         return False
+
+
    # ###### Create RIPE Atlas Ping measurement ##############################
    def createRIPEAtlasPingMeasurement(self, probeID, targetAddress, description):
       source = ripe.atlas.cousteau.AtlasSource(
@@ -179,7 +195,7 @@ class AtlasMNS:
          target      = str(targetAddress),
          description = description
       )
-      return self.createRIPEAtlasMeasurement(source, measurement)
+      return self.startRIPEAtlasMeasurement(source, measurement)
 
 
    # ###### Create RIPE Atlas Traceroute measurement ########################
@@ -195,7 +211,7 @@ class AtlasMNS:
          description = description,
          protocol    = 'ICMP'
       )
-      return self.createRIPEAtlasMeasurement(source, measurement)
+      return self.startRIPEAtlasMeasurement(source, measurement)
 
 
    # ###### Obtain measurement results ######################################
