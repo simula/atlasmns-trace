@@ -51,7 +51,7 @@ CREATE TYPE AtlasMNSStatus AS ENUM (
 -- ###### Experiment Schedule ###############################################
 DROP TABLE IF EXISTS ExperimentSchedule;
 CREATE TABLE ExperimentSchedule (
-   Identifier        SERIAL UNIQUE    NOT NULL,
+   Identifier        SERIAL UNIQUE,
 
    State             AtlasMNSStatus   NOT NULL DEFAULT 'scheduled',
    LastChange        TIMESTAMP        NOT NULL DEFAULT NOW(),
