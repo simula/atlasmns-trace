@@ -36,6 +36,7 @@ import collections
 import configparser
 import datetime
 import io
+import ipaddress
 import os
 import psycopg2
 import pymongo
@@ -124,6 +125,12 @@ class AtlasMNS:
    # ###### Connect to RIPE Atlas ###########################################
    def connectToRIPEAtlas(self):
       AtlasMNSLogger.info('Connecting to the RIPE Atlas server ...')
+
+      if ((self.configuration['atlas_api_key'] == None) or
+          (self.configuration['atlas_api_key'] == 'PROVIDE_ATLAS_API_KEY_HERE')):
+         AtlasMNSLogger.error('No RIPE Atlas API Key specified!')
+         return False
+
       atlas_request = ripe.atlas.cousteau.AtlasRequest(
          **{
             "url_path": "/api/v2/anchors"
@@ -131,7 +138,77 @@ class AtlasMNS:
       )
       result = collections.namedtuple('Result', 'success response')
       (result.success, result.response) = atlas_request.get()
+
       return (result.success == True)
+
+
+   # ###### Create Ping measurement #########################################
+   def createRIPEAtlasPingMeasurement(self, probeID, targetAddress, description):
+      measurement = ping4 = ripe.atlas.cousteau.Ping(
+         af          = targetAddress.version,
+         target      = str(targetAddress),
+         description = description
+      )
+      source = ripe.atlas.cousteau.AtlasSource(
+         type      = 'probes',
+         value     = str(probeID),
+         requested = 1
+      )
+      AtlasMNSLogger.trace("Creating Ping measurement: Probe #" +
+                           str(probeID) + " to " + str(targetAddress))
+      atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
+         start_time   = datetime.datetime.utcnow(),
+         key          = self.configuration['atlas_api_key'],
+         measurements = [ measurement ],
+         sources      = [ source ],
+         is_oneoff    = True
+      )
+      ( is_success, response ) = atlas_request.create()
+      if is_success:
+         measurementID = response['measurements'][0]
+         AtlasMNSLogger.trace("Created Ping measurement: Probe #" +
+                              str(probeID) + " to " + str(targetAddress) +
+                              " -> Measurement #" + str(measurementID))
+         return measurementID
+      else:
+         AtlasMNSLogger.warning("Creating Ping measurement: Probe #" +
+                                str(probeID) + " to " + str(targetAddress) +
+                                " failed: " + str(response))
+         return False
+
+
+   # ###### Obtain measurement results ######################################
+   def downloadMeasurementResults(self, measurementID):
+      (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
+         msm_id = measurementID
+      ).create()
+      if is_success:
+         return results
+         for result in results:
+            probeID = int(result['prb_id'])
+            probeIDs.add(probeID)
+            print('- Result from Probe #' + str(probeID))
+            print('  ', result)
+      else:
+         AtlasMNSLogger.warning("Obtaining results for Measurement #" +
+                                str(measurementID) + " failed: " + str(results))
+         return None
+
+
+   # ###### Print measurement results #######################################
+   def printMeasurementResults(self, results):
+      probeIDs = set()
+      print('Results:')
+      for result in results:
+         probeID = int(result['prb_id'])
+         probeIDs.add(probeID)
+         print('- Result from Probe #' + str(probeID))
+         print('  ', result)
+      print('Metadata:')
+      for probeID in probeIDs:
+         print('- Metadata for Probe #' + str(probeID))
+         probe  = ripe.atlas.cousteau.Probe(id = probeID)
+         print('  ', probe.country_code, probe.address_v4, probe.asn_v4, probe.address_v6, probe.asn_v6)
 
 
    # ###### Connect to PostgreSQL scheduler database ########################

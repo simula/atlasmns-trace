@@ -13,3 +13,6 @@ results_dbuser     = importer
 results_dbpassword = !importer!
 results_database   = atlasmnsdb
 results_cafile     = IGNORE
+
+# ====== RIPE Atlas =========================================================
+atlas_api_key      = PROVIDE_ATLAS_API_KEY_HERE

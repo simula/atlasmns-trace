@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import sys
+import os
+import ipaddress
+
+import AtlasMNS
+import AtlasMNSLogger
+
+
+# ###### Main program #######################################################
+if len(sys.argv) < 2:
+   sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
+   sys.exit(1)
+
+# ====== Initialise =========================================================
+atlasMNSLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
+atlasMNS = AtlasMNS.AtlasMNS()
+if not atlasMNS.loadConfiguration(sys.argv[1]):
+   sys.exit(1)
+
+if not atlasMNS.connectToRIPEAtlas():
+   sys.exit(1)
+
+
+measurementIDFile = 'measurements.list'
+if not os.path.isfile(measurementIDFile):
+   measurementID = atlasMNS.createRIPEAtlasPingMeasurement(29027, ipaddress.IPv4Address('128.39.37.179'),
+                                                           '托马斯\'s AtlasMNS Ping Test')
+   if measurementID != None:
+      with open(measurementIDFile, 'w') as f:
+         f.write(str(measurementID) + '\n')
+
+else:
+   with open(measurementIDFile) as f:
+      line = f.readline()
+      measurementID = int(line)
+
+   results = atlasMNS.downloadMeasurementResults(measurementID)
+   if results != None:
+      print('Results for Measurement #' + str(measurementID) + ':')
+      atlasMNS.printMeasurementResults(results)
