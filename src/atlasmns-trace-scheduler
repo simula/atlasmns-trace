@@ -57,7 +57,7 @@ if len(sys.argv) < 2:
 
 
 # ====== Initialise =========================================================
-atlasMSNLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
+atlasMNSLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
 atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
