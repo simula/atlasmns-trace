@@ -204,10 +204,17 @@ class AtlasMNS:
          value     = str(probeID),
          requested = 1
       )
-      measurement = ping4 = ripe.atlas.cousteau.Ping(
+      # Attributes documentation:
+      # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
+      # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Ping_Type_Measurement_List_GET
+      measurement = ripe.atlas.cousteau.Ping(
          af          = targetAddress.version,
          target      = str(targetAddress),
-         description = description
+         description = description,
+         is_oneoff   = True,
+         packets     = 1,
+         paris       = 1,
+         size        = 16   # size without IP and ICMP headers
       )
       return self.startRIPEAtlasMeasurement(source, measurement)
 
@@ -219,11 +226,18 @@ class AtlasMNS:
          value     = str(probeID),
          requested = 1
       )
-      measurement = ping4 = ripe.atlas.cousteau.Traceroute(
+      # Attributes documentation:
+      # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
+      # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Traceroute_Type_Measurement_List_GET
+      measurement = ripe.atlas.cousteau.Traceroute(
          af          = targetAddress.version,
          target      = str(targetAddress),
          description = description,
-         protocol    = 'ICMP'
+         protocol    = 'ICMP',
+         is_oneoff   = True,
+         packets     = 1,
+         paris       = 1,
+         size        = 16   # size without IP and ICMP headers
       )
       return self.startRIPEAtlasMeasurement(source, measurement)
 
@@ -328,7 +342,7 @@ ORDER BY LastChange ASC;
             'ProbeRouterIP':     row[9],
             'Info':              row[10]
          })
-      # print(schedule)   
+      # print(schedule)
       return schedule
 
 
