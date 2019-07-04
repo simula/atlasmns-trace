@@ -131,8 +131,8 @@ atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
 
-#if not atlasMNS.connectToRIPEAtlas():
-   #sys.exit(1)
+if not atlasMNS.connectToRIPEAtlas():
+   sys.exit(1)
 
 if not atlasMNS.connectToSchedulerDB():
    sys.exit(1)
