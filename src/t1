@@ -39,8 +39,8 @@ else:
       line = f.readline()
       measurementID = int(line)
 
-   results = atlasMNS.downloadMeasurementResults(measurementID)
-   if results != None:
+   (success, results) = atlasMNS.downloadMeasurementResults(measurementID)
+   if success:
       print('Results for Measurement #' + str(measurementID) + ':')
       atlasMNS.printMeasurementResults(results)
 

@@ -35,6 +35,7 @@
 
 import atexit
 import colorlog
+import datetime
 import logging
 import logging.config
 import lzma
@@ -68,6 +69,18 @@ def CompressingRotator(source, dest):
    os.remove(dest)
 
 
+# ###### Custom formatter with timestamp in microseconds ####################
+class MicrosecondsTimestampLogFormatter(colorlog.ColoredFormatter):
+   def formatTime(self, record, datefmt = None):
+      t = datetime.datetime.fromtimestamp(record.created)
+      if datefmt:
+          s = t.strftime(datefmt)
+      else:
+          s = t.strftime("%Y-%m-%d %H:%M:%S.%f")
+      return s
+
+
+# ###### Logger class #######################################################
 class AtlasMNSLogger:
    # ###### Constructor #####################################################
    def __init__(self,
@@ -104,9 +117,7 @@ class AtlasMNSLogger:
          },
          'formatters': {
             'standard': {
-               '()': colorlog.ColoredFormatter,
-               #'msg': 'TEST',
-               #'use_color': True
+               '()': MicrosecondsTimestampLogFormatter,
                'fmt': '%(log_color)s[%(asctime)s][%(levelname)s]: %(message)s',
                'style': '%',
                'datefmt': '%Y-%m-%d %H:%M:%S.%f',

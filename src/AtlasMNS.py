@@ -42,6 +42,7 @@ import psycopg2
 import pymongo
 import re
 import shutil
+import signal
 import ripe.atlas.cousteau
 import ssl
 import socket
@@ -51,17 +52,27 @@ import AtlasMNSLogger
 
 
 # ###### Scheduler database columns #########################################
-ExperimentSchedule_TimeStamp=0
-ExperimentSchedule_AgentHostIP=1
-ExperimentSchedule_AgentTrafficClass=2
-ExperimentSchedule_AgentRouterIP=3
-ExperimentSchedule_MeasurementID=4
-ExperimentSchedule_ProbeID=5
-ExperimentSchedule_ProbeHostIP=6
-ExperimentSchedule_ProbeRouterIP=7
-ExperimentSchedule_State=8
+ExperimentSchedule_Identifier=0
+ExperimentSchedule_State=1
+ExperimentSchedule_LastChange=2
+ExperimentSchedule_AgentHostIP=3
+ExperimentSchedule_AgentTrafficClass=4
+ExperimentSchedule_AgentRouterIP=5
+ExperimentSchedule_MeasurementID=6
+ExperimentSchedule_ProbeID=7
+ExperimentSchedule_ProbeHostIP=8
+ExperimentSchedule_ProbeRouterIP=9
 
 
+
+# ###### Signal handler #####################################################
+breakDetected = False
+def signalHandler(signalNumber, frame):
+   global breakDetected
+   breakDetected = True
+
+
+# ###### AtlasMNS class #####################################################
 class AtlasMNS:
 
    # ###### Constructor #####################################################
@@ -84,6 +95,8 @@ class AtlasMNS:
 
          'atlas_api_key':        None
       }
+      signal.signal(signal.SIGINT, signalHandler)
+      signal.signal(signal.SIGTERM, signalHandler)
 
 
    # ###### Load configuration ##############################################
@@ -176,7 +189,7 @@ class AtlasMNS:
          AtlasMNSLogger.warning('Creating ' + measurement.measurement_type + ' measurement for ' +
                                 'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                                 ' failed: ' + str(response))
-         return False
+         return None
 
 
    # ###### Stop RIPE Atlas measurement #####################################
@@ -202,10 +215,17 @@ class AtlasMNS:
          value     = str(probeID),
          requested = 1
       )
-      measurement = ping4 = ripe.atlas.cousteau.Ping(
+      # Attributes documentation:
+      # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
+      # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Ping_Type_Measurement_List_GET
+      measurement = ripe.atlas.cousteau.Ping(
          af          = targetAddress.version,
          target      = str(targetAddress),
-         description = description
+         description = description,
+         is_oneoff   = True,
+         packets     = 1,
+         paris       = 1,
+         size        = 16   # size without IP and ICMP headers
       )
       return self.startRIPEAtlasMeasurement(source, measurement)
 
@@ -217,32 +237,39 @@ class AtlasMNS:
          value     = str(probeID),
          requested = 1
       )
-      measurement = ping4 = ripe.atlas.cousteau.Traceroute(
+      # Attributes documentation:
+      # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
+      # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Traceroute_Type_Measurement_List_GET
+      measurement = ripe.atlas.cousteau.Traceroute(
          af          = targetAddress.version,
          target      = str(targetAddress),
          description = description,
-         protocol    = 'ICMP'
+         protocol    = 'ICMP',
+         is_oneoff   = True,
+         packets     = 1,
+         paris       = 1,
+         size        = 16   # size without IP and ICMP headers
       )
       return self.startRIPEAtlasMeasurement(source, measurement)
 
 
    # ###### Obtain measurement results ######################################
-   def downloadMeasurementResults(self, measurementID):
+   def downloadRIPEAtlasMeasurementResults(self, measurementID):
       AtlasMNSLogger.trace('Downloading results for Measurement #' +
                            str(measurementID) + ' ...')
       (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
          msm_id = measurementID
       ).create()
       if is_success:
-         return results
+         return (True, results)
       else:
          AtlasMNSLogger.warning('Downloading results for Measurement #' +
                                 str(measurementID) + ' failed: ' + str(results))
-         return None
+         return (False, None)
 
 
    # ###### Print measurement results #######################################
-   def printMeasurementResults(self, results):
+   def printRIPEAtlasMeasurementResults(self, results):
       probeIDs = set()
       print('Results:')
       for result in results:
@@ -297,36 +324,68 @@ class AtlasMNS:
 
    # ###### Query schedule from scheduler database ##########################
    def querySchedule(self):
+      # ====== Query database ===============================================
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
          self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP
+SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP,Info
 FROM ExperimentSchedule
-ORDER BY TimeStamp ASC;
+ORDER BY LastChange ASC;
 """)
-         schedule = self.scheduler_dbCursor.fetchall()
-         return schedule
-      except (Exception, psycopg2.Error) as e:
+         table = self.scheduler_dbCursor.fetchall()
+      except Exception as e:
          AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
-      return []
+         return []
+
+      # ====== Provide result as list of dictionaries =======================
+      schedule = []
+      for row in table:
+         schedule.append({
+            'Identifier':        row[0],
+            'State':             row[1],
+            'LastChange':        row[2],
+            'AgentHostIP':       row[3],
+            'AgentTrafficClass': row[4],
+            'AgentRouterIP':     row[5],
+            'MeasurementID':     row[6],
+            'ProbeID':           row[7],
+            'ProbeHostIP':       row[8],
+            'ProbeRouterIP':     row[9],
+            'Info':              row[10]
+         })
+      # print(schedule)
+      return schedule
 
 
    # ###### Update schedule in scheduler database ###########################
-   def updateScheduledEntry(self, scheduledEntry, changes):
+   def updateScheduledEntry(self, scheduledEntry):
       AtlasMNSLogger.trace('Updating scheduled entry ...')
-      #PRIMARY KEY (AgentHostIP, AgentTrafficClass, AgentRouterIP, ProbeID)
-      #try:
-      print(self.scheduler_dbCursor.mogrify(
-"""
-UPDATE ExperimentSchedule
-SET
-   TimeStamp = NOW()
-WHERE
-   AgentHostIP = %s;
-""", ("1.1.1.1")))
-         
-         
-      
+      try:
+         self.scheduler_dbCursor.execute(
+            """
+            UPDATE ExperimentSchedule
+            SET
+               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentRouterIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeRouterIP=%s,Info=%s
+            WHERE
+               Identifier = %s;
+            """,  [
+               scheduledEntry['State'],
+               scheduledEntry['AgentHostIP'],
+               scheduledEntry['AgentTrafficClass'],
+               scheduledEntry['AgentRouterIP'],
+               scheduledEntry['MeasurementID'],
+               scheduledEntry['ProbeID'],
+               scheduledEntry['ProbeHostIP'],
+               scheduledEntry['ProbeRouterIP'],
+               scheduledEntry['Info'],
+               scheduledEntry['Identifier']
+            ] )
+         self.scheduler_dbConnection.commit()
+      except Exception as e:
+         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e))
+         self.scheduler_dbConnection.rollback()
+         return False
+
 
    # ###### Connect to MongoDB results database #############################
    def connectToResultsDB(self):
@@ -352,7 +411,29 @@ WHERE
                                       mechanism='SCRAM-SHA-1')
       except Exception as e:
          AtlasMNSLogger.error('Unable to connect to the MongoDB results database at ' +
-               self.configuration['results_dbserver'] + ': ' + str(e))
+                              self.configuration['results_dbserver'] + ': ' + str(e))
          return False
 
       return True
+
+
+   # ###### Connect to MongoDB results database #############################
+   def importResults(self, scheduledEntry, results):
+      experiment = {
+         'timestamp':         datetime.datetime.utcnow(),
+         'identifier':        scheduledEntry['Identifier'],
+         'agentHostIP':       scheduledEntry['AgentHostIP'],
+         'agentTrafficClass': scheduledEntry['AgentTrafficClass'],
+         'agentRouterIP':     scheduledEntry['AgentRouterIP'],
+         'measurementID':     scheduledEntry['MeasurementID'],
+         'probeID':           scheduledEntry['ProbeID'],
+         'probeHostIP':       scheduledEntry['ProbeHostIP'],
+         'probeRouterIP':     scheduledEntry['ProbeRouterIP']
+      }
+      try:
+         self.results_db['ripeatlastraceroute'].insert(results)
+         self.results_db['atlasmns'].insert(experiment)
+         return True
+      except Exception as e:
+         AtlasMNSLogger.error('Unable to import results: ' + str(e))
+         return False
