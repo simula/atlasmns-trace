@@ -92,11 +92,10 @@ def checkRIPEAtlasExperiment(scheduledEntry):
          if success == True:
             scheduledEntry['State'] = 'agent_scheduled'
             AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
-                                ': finished RIPE Atlas Measurement #' +
-                                str(scheduledEntry['MeasurementID']) + ': ' +
-                                'Probe #' + str(scheduledEntry['ProbeID']) + ' (' +
-                                str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeRouterIP']) +
-                                ') -> ' + '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentRouterIP']) + ')')
+                                ': finished RIPE Atlas Measurement #' + str(scheduledEntry['MeasurementID']) + ': ' +
+                                'Probe #' + str(scheduledEntry['ProbeID']) + ' (' + str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeRouterIP']) + ')' +
+                                ' -> ' +
+                                '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentRouterIP']) + ')')
 
          else:
             scheduledEntry['State'] = 'failed'
