@@ -46,10 +46,10 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
    # ====== Create measurement ==============================================
    AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
                        ': scheduling RIPE Atlas experiment ...')
-   measurementID = atlasMNS.createRIPEAtlasPingMeasurement(
+   measurementID = atlasMNS.createRIPEAtlasTracerouteMeasurement(
       int(scheduledEntry['ProbeID']),
       ipaddress.ip_address(scheduledEntry['AgentRouterIP']),
-      '托马斯\'s AtlasMNS Ping Experiment')
+      '托马斯\'s AtlasMNS Traceroute Experiment')
    
    # ====== Update state ====================================================
    if measurementID != None:
