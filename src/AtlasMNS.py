@@ -42,6 +42,7 @@ import psycopg2
 import pymongo
 import re
 import shutil
+import signal
 import ripe.atlas.cousteau
 import ssl
 import socket
@@ -61,6 +62,14 @@ ExperimentSchedule_MeasurementID=6
 ExperimentSchedule_ProbeID=7
 ExperimentSchedule_ProbeHostIP=8
 ExperimentSchedule_ProbeRouterIP=9
+
+
+
+# ###### Signal handler #####################################################
+breakDetected = False
+def signalHandler(signalNumber, frame):
+   global breakDetected
+   breakDetected = True
 
 
 # ###### AtlasMNS class #####################################################
@@ -86,6 +95,8 @@ class AtlasMNS:
 
          'atlas_api_key':        None
       }
+      signal.signal(signal.SIGINT, signalHandler)
+      signal.signal(signal.SIGTERM, signalHandler)
 
 
    # ###### Load configuration ##############################################

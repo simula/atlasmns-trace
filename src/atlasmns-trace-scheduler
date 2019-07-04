@@ -36,6 +36,7 @@ import ipaddress
 import os
 import ripe.atlas.cousteau
 import sys
+import time
 
 import AtlasMNS
 import AtlasMNSLogger
@@ -143,47 +144,61 @@ if not atlasMNS.connectToResultsDB():
 
 # ====== Main loop ==========================================================
 AtlasMNSLogger.info('Scheduler is ready!')
+while not AtlasMNS.breakDetected:
 
-schedule = atlasMNS.querySchedule()
-for scheduledEntry in schedule:
-   # print(scheduledEntry)
+   # ====== Process schedule ================================================
+   schedule = atlasMNS.querySchedule()
+   for scheduledEntry in schedule:
 
-   # ------ State == 'scheduled' --------------------------------------------
-   state = scheduledEntry['State']
-   if state == 'scheduled':
-      scheduleRIPEAtlasExperiment(scheduledEntry)
+      # ====== Check for shutdown ===========================================
+      if AtlasMNS.breakDetected:
+         break
 
-   # ------ State == 'atlas_scheduled' --------------------------------------
-   elif state == 'atlas_scheduled':
-      checkRIPEAtlasExperiment(scheduledEntry)
+      # ====== Process schedule entry =======================================
+      # print(scheduledEntry)
 
-   # ------ State == 'agent_scheduled' --------------------------------------
-   elif state == 'agent_scheduled':
+      # ------ State == 'scheduled' -----------------------------------------
+      state = scheduledEntry['State']
+      if state == 'scheduled':
+         scheduleRIPEAtlasExperiment(scheduledEntry)
 
-      print("FIXME: TEST!")
-      scheduledEntry['State'] = 'agent_completed'
-      atlasMNS.updateScheduledEntry(scheduledEntry)
+      # ------ State == 'atlas_scheduled' -----------------------------------
+      elif state == 'atlas_scheduled':
+         checkRIPEAtlasExperiment(scheduledEntry)
 
-      # Nothing to do here!
-      continue
+      # ------ State == 'agent_scheduled' -----------------------------------
+      elif state == 'agent_scheduled':
 
-   # ------ State == 'agent_completed' --------------------------------------
-   elif state == 'agent_completed':
-      finished(scheduledEntry)
+         print("FIXME: TEST!")
+         scheduledEntry['State'] = 'agent_completed'
+         atlasMNS.updateScheduledEntry(scheduledEntry)
 
-   # ------ State == 'failed' -----------------------------------------------
-   elif state == 'failed':
-      # Nothing to do here!
-      continue
-      
-   # ------ State == 'finished' ---------------------------------------------
-   elif state == 'finished':
-      # Nothing to do here!
-      continue
+         # Nothing to do here!
+         continue
 
-   # ------ Bad State -------------------------------------------------------
-   else:
-      AtlasMNSLogger.error('Bad state for scheduled entry: ' + str(scheduledEntry))
+      # ------ State == 'agent_completed' -----------------------------------
+      elif state == 'agent_completed':
+         finished(scheduledEntry)
+
+      # ------ State == 'failed' --------------------------------------------
+      elif state == 'failed':
+         # Nothing to do here!
+         continue
+
+      # ------ State == 'finished' ------------------------------------------
+      elif state == 'finished':
+         # Nothing to do here!
+         continue
+
+      # ------ Bad State ----------------------------------------------------
+      else:
+         AtlasMNSLogger.error('Bad state for scheduled entry: ' + str(scheduledEntry))
+
+   # ====== Wait ============================================================
+   for i in range(10):
+      if AtlasMNS.breakDetected:
+         break
+      time.sleep(1)
 
 
 # ====== All done! ==========================================================
