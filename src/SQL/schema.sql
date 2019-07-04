@@ -36,15 +36,31 @@
 -- ###### AtlasMNSStatus ####################################################
 CREATE TYPE AtlasMNSStatus AS ENUM (
    'scheduled',
+   --  The experiment is scheduled, but no RIPE Atlas measurement created.
+   -- Next state: atlas_scheduled.
 
    'atlas_scheduled',
-   'atlas_running',
+   -- A RIPE Atlas measurement is created. MeasurementID is set to the
+   -- ID of this measurement.
+   -- Next state: agent_scheduled OR failed.
 
    'agent_scheduled',
+   -- The RIPE Atlas measurement is finished, ProbeHostIP and ProbeRouterIP
+   -- are set. The corresponding Agent instance can schedule the reverse
+   -- measurement.
+   -- Next state: agent_completed OR failed.
+   
    'agent_completed',
+   -- The Agent has completed the measurement. The scheduler has not yet
+   -- written the result of the experiment.
+   -- Next state: finished.
 
    'failed',
+   -- The experiment has failed. Info may be set to some information about
+   -- the failure. Final state.
+
    'finished'
+   -- The experiment has succeded. Final state.
 );
 
 
