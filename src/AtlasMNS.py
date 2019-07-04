@@ -243,7 +243,7 @@ class AtlasMNS:
 
 
    # ###### Obtain measurement results ######################################
-   def downloadMeasurementResults(self, measurementID):
+   def downloadRIPEAtlasMeasurementResults(self, measurementID):
       AtlasMNSLogger.trace('Downloading results for Measurement #' +
                            str(measurementID) + ' ...')
       (is_success, results) = ripe.atlas.cousteau.AtlasResultsRequest(
@@ -258,7 +258,7 @@ class AtlasMNS:
 
 
    # ###### Print measurement results #######################################
-   def printMeasurementResults(self, results):
+   def printRIPEAtlasMeasurementResults(self, results):
       probeIDs = set()
       print('Results:')
       for result in results:
@@ -400,7 +400,29 @@ ORDER BY LastChange ASC;
                                       mechanism='SCRAM-SHA-1')
       except Exception as e:
          AtlasMNSLogger.error('Unable to connect to the MongoDB results database at ' +
-               self.configuration['results_dbserver'] + ': ' + str(e))
+                              self.configuration['results_dbserver'] + ': ' + str(e))
          return False
 
       return True
+
+
+   # ###### Connect to MongoDB results database #############################
+   def importResults(self, scheduledEntry, results):
+      experiment = {
+         'timestamp':         datetime.datetime.utcnow(),
+         'identifier':        scheduledEntry['Identifier'],
+         'agentHostIP':       scheduledEntry['AgentHostIP'],
+         'agentTrafficClass': scheduledEntry['AgentTrafficClass'],
+         'agentRouterIP':     scheduledEntry['AgentRouterIP'],
+         'measurementID':     scheduledEntry['MeasurementID'],
+         'probeID':           scheduledEntry['ProbeID'],
+         'probeHostIP':       scheduledEntry['ProbeHostIP'],
+         'probeRouterIP':     scheduledEntry['ProbeRouterIP']
+      }
+      try:
+         self.results_db['ripeatlastraceroute'].insert(results)
+         self.results_db['atlasmns'].insert(experiment)
+         return True
+      except Exception as e:
+         AtlasMNSLogger.error('Unable to import results: ' + str(e))
+         return False

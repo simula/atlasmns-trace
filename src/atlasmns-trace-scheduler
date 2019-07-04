@@ -63,10 +63,10 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
 # ###### Check RIPE Atlas experiment ########################################
 def checkRIPEAtlasExperiment(scheduledEntry):
    # ====== Check measurement status ========================================
-   (success, results) = atlasMNS.downloadMeasurementResults(scheduledEntry['MeasurementID'])
+   (success, results) = atlasMNS.downloadRIPEAtlasMeasurementResults(scheduledEntry['MeasurementID'])
    if success == True:
       if len(results) > 0:
-         # atlasMNS.printMeasurementResults(results)
+         # atlasMNS.printRIPEAtlasMeasurementResults(results)
 
          # ====== Handle results ============================================
          try:
@@ -77,13 +77,9 @@ def checkRIPEAtlasExperiment(scheduledEntry):
             scheduledEntry['ProbeRouterIP'] = str(probeRouterIP)
             
             # ====== Import results into results database ===================
-            try:
-               print('FIXME: Import TBD')
-
-            except Exception as e:
-               AtlasMNSLogger.error('FIXME: IMPORT FAILED')
+            if atlasMNS.importResults(scheduledEntry, results) == False:
                return False
-            
+
          except Exception as e:
             success = False
             scheduledEntry['Info'] = str(e)
