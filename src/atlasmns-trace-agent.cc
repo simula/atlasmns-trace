@@ -142,9 +142,9 @@ int main(int argc, char** argv)
             "SELECT * "
             "FROM ExperimentSchedule "
             "WHERE "
-               "State = 'scheduled' AND "
+               "State = 'agent_scheduled' AND "
                "AgentHostIP = " + schedulerDBTransaction.quote(sourceAddress.to_string()) + " "
-            "ORDER BY TimeStamp ASC");
+            "ORDER BY LastChange ASC");
          for (auto row : result) {
             std::cout << "- "  << row["AgentHostIP"].c_str() << " -> " << row["ProbeHostIP"].c_str() << std::endl;
          }
@@ -159,7 +159,6 @@ int main(int argc, char** argv)
       HPCT_LOG(warning) << "Unable to connect to scheduler database: " << e.what();
       return 1;
    }
-
 
    return 0;
 }
