@@ -34,16 +34,16 @@
 #include <vector>
 
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
-// #include <boost/program_options/cmdline.hpp>
 #include <boost/asio/ip/address.hpp>
+#include <boost/program_options.hpp>
 
 #include <pqxx/pqxx>
 
 #include <hipercontracer/logger.h>
-#include <hipercontracer/service.h>
-#include <hipercontracer/traceroute.h>
 #include <hipercontracer/resultswriter.h>
+#include <hipercontracer/service.h>
+#include <hipercontracer/tools.h>
+#include <hipercontracer/traceroute.h>
 
 
 static std::set<ResultsWriter*>        ResultsWriterSet;
@@ -140,9 +140,7 @@ int main(int argc, char** argv)
    commandLineOptions.add_options()
       ( "help,h",
            "Print help message" )
-      ( "source",
-           boost::program_options::value<std::vector<std::string>>(),
-           "Source address" )
+
       ( "loglevel",
            boost::program_options::value<unsigned int>(&logLevel)->default_value(boost::log::trivial::severity_level::trace),
            "Set logging level" )
@@ -153,12 +151,16 @@ int main(int argc, char** argv)
            boost::program_options::value<std::string>(&configurationFileName),
            "Configuration file" )
 
+      ( "source,S",
+           boost::program_options::value<std::vector<std::string>>(),
+           "Source address" )
+
       ( "tracerouteinterval",
            boost::program_options::value<unsigned long long>(&tracerouteInterval)->default_value(10000),
            "Traceroute interval in ms" )
-      ( "tracerouteexpiration",
+      ( "tracerouteduration",
            boost::program_options::value<unsigned int>(&tracerouteExpiration)->default_value(3000),
-           "Traceroute expiration timeout in ms" )
+           "Traceroute duration in ms" )
       ( "tracerouterounds",
            boost::program_options::value<unsigned int>(&tracerouteRounds)->default_value(1),
            "Traceroute rounds" )
@@ -172,7 +174,7 @@ int main(int argc, char** argv)
            boost::program_options::value<unsigned int>(&tracerouteIncrementMaxTTL)->default_value(6),
            "Traceroute increment maximum TTL value" )
 
-      ( "resultsdirectory",
+      ( "resultsdirectory,R",
            boost::program_options::value<std::string>(&resultsDirectory)->default_value(std::string()),
            "Results directory" )
       ( "resultstransactionlength",
@@ -254,6 +256,7 @@ int main(int argc, char** argv)
 
    // ====== Initialize =====================================================
    initialiseLogger(logLevel);
+//    const passwd* pw = getUser(user.c_str());
 
    std::srand(std::time(0));
    tracerouteExpiration      = std::min(std::max(1000U, tracerouteExpiration),   60000U);
@@ -304,8 +307,8 @@ int main(int argc, char** argv)
    }
 
 
-   // ====== Reduce permissions =============================================
-   // reducePermissions(pw);
+   // ====== Reduce privileges ==============================================
+//    reducePrivileges(pw);
 
 
    // ====== Main loop ======================================================
