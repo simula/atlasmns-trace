@@ -20,9 +20,6 @@ BuildRequires: python3-pymongo
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
-# This package does not generate debug information (no executables):
-# %global debug_package %{nil}
-
 # TEST ONLY:
 # define _unpackaged_files_terminate_build 0
 
@@ -36,7 +33,7 @@ See https://www.nntb.no for details on NorNet!
 %setup -q
 
 %build
-%cmake -DCMAKE_INSTALL_PREFIX=/usr .
+%cmake -DCMAKE_INSTALL_PREFIX=/usr -DPYTHON_LIBRARY_PREFIX=%{buildroot}/usr .
 make %{?_smp_mflags}
 
 %install
@@ -109,7 +106,6 @@ Requires: %{name}-common = %{version}-%{release}
 %package agent
 Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
-BuildArch: noarch
 Requires: hipercontracer >= 1.4.0
 Requires: nornet-trace-trigger
 Requires: %{name}-common = %{version}-%{release}
