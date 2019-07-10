@@ -46,12 +46,12 @@
 #include <hipercontracer/traceroute.h>
 
 
-static std::set<ResultsWriter*>        ResultsWriterSet;
-static std::set<Service*>              ServiceSet;
-static boost::asio::io_service         IOService;
-static boost::asio::signal_set         Signals(IOService, SIGINT, SIGTERM);
-static boost::posix_time::milliseconds CleanupTimerInterval(250);
-static boost::asio::deadline_timer     CleanupTimer(IOService, CleanupTimerInterval);
+static std::set<ResultsWriter*>                     ResultsWriterSet;
+static std::map<boost::asio::ip::address, Service*> ServiceSet;
+static boost::asio::io_service                      IOService;
+static boost::asio::signal_set                      Signals(IOService, SIGINT, SIGTERM);
+static boost::posix_time::milliseconds              CleanupTimerInterval(250);
+static boost::asio::deadline_timer                  CleanupTimer(IOService, CleanupTimerInterval);
 
 
 // ###### Signal handler ####################################################
@@ -59,8 +59,8 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 {
    if(error != boost::asio::error::operation_aborted) {
       puts("\n*** Shutting down! ***\n");   // Avoids a false positive from Helgrind.
-      for(std::set<Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
-         Service* service = *serviceIterator;
+      for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
+         Service* service = serviceIterator->second;
          service->requestStop();
       }
    }
@@ -71,8 +71,8 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 static void tryCleanup(const boost::system::error_code& errorCode)
 {
    bool finished = true;
-   for(std::set<Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
-      Service* service = *serviceIterator;
+   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
+      Service* service = serviceIterator->second;
       if(!service->joinable()) {
          finished = false;
          break;
@@ -256,7 +256,7 @@ int main(int argc, char** argv)
 
    // ====== Initialize =====================================================
    initialiseLogger(logLevel);
-//    const passwd* pw = getUser(user.c_str());
+   const passwd* pw = getUser(user.c_str());
 
    std::srand(std::time(0));
    tracerouteExpiration      = std::min(std::max(1000U, tracerouteExpiration),   60000U);
@@ -282,14 +282,13 @@ int main(int argc, char** argv)
       const boost::asio::ip::address& sourceAddress = *sourceAddressIterator;
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
-#if 0
       try {
          Service* service = new Traceroute(ResultsWriter::makeResultsWriter(
                                               ResultsWriterSet, sourceAddress, "Traceroute",
                                               resultsDirectory.c_str(), resultsTransactionLength,
                                               (pw != NULL) ? pw->pw_uid : 0, (pw != NULL) ? pw->pw_gid : 0),
                                            0, true,
-                                           sourceAddress, destinationsForSource,
+                                           sourceAddress, std::set<AddressWithTrafficClass>(),
                                            tracerouteInterval, tracerouteExpiration,
                                            tracerouteRounds,
                                            tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
@@ -297,18 +296,17 @@ int main(int argc, char** argv)
          if(service->start() == false) {
             ::exit(1);
          }
-         ServiceSet.insert(service);
+         ServiceSet.insert(std::pair<boost::asio::ip::address, Service*>(sourceAddress, service));
       }
       catch (std::exception& e) {
          HPCT_LOG(fatal) << "ERROR: Cannot create Traceroute service - " << e.what();
          ::exit(1);
       }
-#endif
    }
 
 
    // ====== Reduce privileges ==============================================
-//    reducePrivileges(pw);
+   reducePrivileges(pw);
 
 
    // ====== Main loop ======================================================
@@ -349,8 +347,8 @@ int main(int argc, char** argv)
 
 
    // ====== Shut down service threads ======================================
-   for(std::set<Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
-      Service* service = *serviceIterator;
+   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
+      Service* service = serviceIterator->second;
       service->join();
       delete service;
    }
