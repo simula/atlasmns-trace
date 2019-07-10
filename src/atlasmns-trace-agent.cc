@@ -35,7 +35,7 @@
 
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
-#include <boost/program_options/cmdline.hpp>
+// #include <boost/program_options/cmdline.hpp>
 #include <boost/asio/ip/address.hpp>
 
 #include <pqxx/pqxx>
