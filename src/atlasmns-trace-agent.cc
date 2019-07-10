@@ -346,6 +346,12 @@ int main(int argc, char** argv)
    }
 
 
+   // ====== Wait for termination signal ====================================
+   Signals.async_wait(signalHandler);
+   CleanupTimer.async_wait(tryCleanup);
+   IOService.run();
+
+
    // ====== Shut down service threads ======================================
    for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
       Service* service = serviceIterator->second;
