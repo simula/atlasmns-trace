@@ -64,7 +64,6 @@ ExperimentSchedule_ProbeHostIP=8
 ExperimentSchedule_ProbeRouterIP=9
 
 
-
 # ###### Signal handler #####################################################
 breakDetected = False
 def signalHandler(signalNumber, frame):
