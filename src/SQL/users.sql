@@ -58,4 +58,4 @@ REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsmaintainer;
 DROP ROLE atlasmnsmaintainer;
 CREATE ROLE atlasmnsmaintainer WITH LOGIN ENCRYPTED PASSWORD '!maintainer!';
 GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsmaintainer;
-GRANT ALL PRIVILEGES ON DATABASE atlasmnsdb TO atlasmnsmaintainer;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO atlasmnsmaintainer;
