@@ -106,7 +106,7 @@ Requires: %{name}-common = %{version}-%{release}
 %package agent
 Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
-Requires: hipercontracer >= 1.4.0
+Requires: hipercontracer >= 1.4.1
 Requires: nornet-trace-trigger
 Requires: %{name}-common = %{version}-%{release}
 
