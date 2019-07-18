@@ -45,11 +45,11 @@ CREATE TYPE AtlasMNSStatus AS ENUM (
    -- Next state: agent_scheduled OR failed.
 
    'agent_scheduled',
-   -- The RIPE Atlas measurement is finished, ProbeHostIP and ProbeRouterIP
+   -- The RIPE Atlas measurement is finished, ProbeHostIP and ProbeFromIP
    -- are set. The corresponding Agent instance can schedule the reverse
    -- measurement.
    -- Next state: agent_completed OR failed.
-   
+
    'agent_completed',
    -- The Agent has completed the measurement. The scheduler has not yet
    -- written the result of the experiment.
@@ -74,17 +74,17 @@ CREATE TABLE ExperimentSchedule (
 
    AgentHostIP       INET             NOT NULL,
    AgentTrafficClass SMALLINT         NOT NULL DEFAULT 0,
-   AgentRouterIP     INET             NOT NULL,
+   AgentFromIP       INET             NOT NULL,
 
    MeasurementID     INTEGER          DEFAULT NULL,
    ProbeID           INTEGER          DEFAULT NULL,
    ProbeHostIP       INET             DEFAULT NULL,
-   ProbeRouterIP     INET             DEFAULT NULL,
-   
+   ProbeFromIP       INET             DEFAULT NULL,
+
    Info              CHAR(128)        DEFAULT NULL,
 
    PRIMARY KEY (Identifier)
-   -- UNIQUE (AgentHostIP,AgentTrafficClass,AgentRouterIP,ProbeID)
+   -- UNIQUE (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
 );
 
 DROP INDEX IF EXISTS ExperimentSchedule_LastChange_Index;

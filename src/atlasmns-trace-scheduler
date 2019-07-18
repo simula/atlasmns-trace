@@ -49,7 +49,7 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
                        ': scheduling RIPE Atlas experiment ...')
    measurementID = atlasMNS.createRIPEAtlasTracerouteMeasurement(
       int(scheduledEntry['ProbeID']),
-      ipaddress.ip_address(scheduledEntry['AgentRouterIP']),
+      ipaddress.ip_address(scheduledEntry['AgentFromIP']),
       '托马斯\'s AtlasMNS Traceroute Experiment')
    
    # ====== Update state ====================================================
@@ -72,10 +72,10 @@ def checkRIPEAtlasExperiment(scheduledEntry):
          # ====== Handle results ============================================
          try:
             probeHostIP   = ipaddress.ip_address(results[0]['src_addr'])
-            probeRouterIP = ipaddress.ip_address(results[0]['from'])
+            probeFromIP = ipaddress.ip_address(results[0]['from'])
             success = True
             scheduledEntry['ProbeHostIP']   = str(probeHostIP)
-            scheduledEntry['ProbeRouterIP'] = str(probeRouterIP)
+            scheduledEntry['ProbeFromIP'] = str(probeFromIP)
             
             # ====== Import results into results database ===================
             if atlasMNS.importResults(scheduledEntry, results) == False:
@@ -90,9 +90,9 @@ def checkRIPEAtlasExperiment(scheduledEntry):
             scheduledEntry['State'] = 'agent_scheduled'
             AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
                                 ': finished RIPE Atlas Measurement #' + str(scheduledEntry['MeasurementID']) + ': ' +
-                                'Probe #' + str(scheduledEntry['ProbeID']) + ' (' + str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeRouterIP']) + ')' +
+                                'Probe #' + str(scheduledEntry['ProbeID']) + ' (' + str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeFromIP']) + ')' +
                                 ' -> ' +
-                                '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentRouterIP']) + ')')
+                                '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentFromIP']) + ')')
 
          else:
             scheduledEntry['State'] = 'failed'

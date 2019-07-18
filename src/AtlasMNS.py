@@ -57,11 +57,11 @@ ExperimentSchedule_State=1
 ExperimentSchedule_LastChange=2
 ExperimentSchedule_AgentHostIP=3
 ExperimentSchedule_AgentTrafficClass=4
-ExperimentSchedule_AgentRouterIP=5
+ExperimentSchedule_AgentFromIP=5
 ExperimentSchedule_MeasurementID=6
 ExperimentSchedule_ProbeID=7
 ExperimentSchedule_ProbeHostIP=8
-ExperimentSchedule_ProbeRouterIP=9
+ExperimentSchedule_ProbeFromIP=9
 
 
 # ###### Signal handler #####################################################
@@ -327,7 +327,7 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
          self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentRouterIP,MeasurementID,ProbeID,ProbeHostIP,ProbeRouterIP,Info
+SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentFromIP,MeasurementID,ProbeID,ProbeHostIP,ProbeFromIP,Info
 FROM ExperimentSchedule
 ORDER BY LastChange ASC;
 """)
@@ -345,11 +345,11 @@ ORDER BY LastChange ASC;
             'LastChange':        row[2],
             'AgentHostIP':       row[3],
             'AgentTrafficClass': row[4],
-            'AgentRouterIP':     row[5],
+            'AgentFromIP':       row[5],
             'MeasurementID':     row[6],
             'ProbeID':           row[7],
             'ProbeHostIP':       row[8],
-            'ProbeRouterIP':     row[9],
+            'ProbeFromIP':       row[9],
             'Info':              row[10]
          })
       # print(schedule)
@@ -364,18 +364,18 @@ ORDER BY LastChange ASC;
             """
             UPDATE ExperimentSchedule
             SET
-               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentRouterIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeRouterIP=%s,Info=%s
+               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentFromIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeFromIP=%s,Info=%s
             WHERE
                Identifier = %s;
             """,  [
                scheduledEntry['State'],
                scheduledEntry['AgentHostIP'],
                scheduledEntry['AgentTrafficClass'],
-               scheduledEntry['AgentRouterIP'],
+               scheduledEntry['AgentFromIP'],
                scheduledEntry['MeasurementID'],
                scheduledEntry['ProbeID'],
                scheduledEntry['ProbeHostIP'],
-               scheduledEntry['ProbeRouterIP'],
+               scheduledEntry['ProbeFromIP'],
                scheduledEntry['Info'],
                scheduledEntry['Identifier']
             ] )
@@ -423,11 +423,11 @@ ORDER BY LastChange ASC;
          'identifier':        scheduledEntry['Identifier'],
          'agentHostIP':       scheduledEntry['AgentHostIP'],
          'agentTrafficClass': scheduledEntry['AgentTrafficClass'],
-         'agentRouterIP':     scheduledEntry['AgentRouterIP'],
+         'agentFromIP':       scheduledEntry['AgentFromIP'],
          'measurementID':     scheduledEntry['MeasurementID'],
          'probeID':           scheduledEntry['ProbeID'],
          'probeHostIP':       scheduledEntry['ProbeHostIP'],
-         'probeRouterIP':     scheduledEntry['ProbeRouterIP']
+         'probeFromIP':       scheduledEntry['ProbeFromIP']
       }
       try:
          self.results_db['ripeatlastraceroute'].insert(results)

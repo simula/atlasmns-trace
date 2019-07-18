@@ -103,7 +103,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
          // ====== Perform scheduled measurements ===========================
          pqxx::result result = schedulerDBTransaction.exec(
-            "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeRouterIP "
+            "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeFromIP "
             "FROM ExperimentSchedule "
             "WHERE "
                "State = 'agent_scheduled' AND "
@@ -113,7 +113,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
          for (auto row : result) {
             const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
             const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
-            const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeRouterIP"].c_str());
+            const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeFromIP"].c_str());
             const AddressWithTrafficClass  destination(destinationAddress, trafficClass);
 
             Service* service = ServiceSet[sourceAddress];
