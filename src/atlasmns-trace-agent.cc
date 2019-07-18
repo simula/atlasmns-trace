@@ -239,7 +239,7 @@ int main(int argc, char** argv)
       for(std::vector<std::string>::const_iterator iterator = sourceAddressVector.begin();
           iterator != sourceAddressVector.end(); iterator++) {
          try {
-            const boost::asio::ip::address sourceAddress = boost::asio::ip::address_v4::from_string(*iterator);
+            const boost::asio::ip::address sourceAddress = boost::asio::ip::address::from_string(*iterator);
             sourceAddressArray.insert(sourceAddress);
          }
          catch(std::exception& e) {
@@ -319,19 +319,33 @@ int main(int argc, char** argv)
          "dbname="   + schedulerDatabase);
       pqxx::work schedulerDBTransaction(schedulerDBConnection);
 
-
-      boost::asio::ip::address sourceAddress = boost::asio::ip::address_v4::from_string("10.1.1.1");
+      std::string allSourcesString = "( ";
+      for(std::set<boost::asio::ip::address>::const_iterator sourceArrayIterator = sourceAddressArray.begin();
+         sourceArrayIterator != sourceAddressArray.end(); sourceArrayIterator++) {
+         const boost::asio::ip::address& sourceAddress = *sourceArrayIterator;
+         allSourcesString = allSourcesString +
+            ((sourceArrayIterator == sourceAddressArray.begin()) ? "" : ", ") +
+            schedulerDBTransaction.quote(sourceAddress.to_string());
+      }
+      allSourcesString = allSourcesString + ')';
 
       try {
          pqxx::result result = schedulerDBTransaction.exec(
-            "SELECT * "
+            "SELECT MeasurementID, AgentHostIP, AgentTrafficClass, ProbeID, ProbeRouterIP, ProbeHostIP "
             "FROM ExperimentSchedule "
             "WHERE "
                "State = 'agent_scheduled' AND "
-               "AgentHostIP = " + schedulerDBTransaction.quote(sourceAddress.to_string()) + " "
+               "AgentHostIP IN " + allSourcesString + " "
             "ORDER BY LastChange ASC");
          for (auto row : result) {
-            std::cout << "- "  << row["AgentHostIP"].c_str() << " -> " << row["ProbeHostIP"].c_str() << std::endl;
+            const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
+            const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
+            const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeRouterIP"].c_str());
+            const AddressWithTrafficClass destination(destinationAddress, trafficClass);
+            Service* service = ServiceSet[sourceAddress];
+            if(service->addDestination(destination)) {
+               HPCT_LOG(debug) << "Queued " << destination << " from " << sourceAddress;
+            }
          }
       }
       catch (const std::exception &e) {
