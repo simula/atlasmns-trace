@@ -103,7 +103,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
          // ====== Perform scheduled measurements ===========================
          pqxx::result result = schedulerDBTransaction.exec(
-            "SELECT MeasurementID, AgentHostIP, AgentTrafficClass, ProbeID, ProbeRouterIP, ProbeHostIP "
+            "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeRouterIP "
             "FROM ExperimentSchedule "
             "WHERE "
                "State = 'agent_scheduled' AND "
@@ -124,7 +124,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                   "SET "
                      "State = 'agent_completed'"
                   "WHERE "
-                     "MeasurementID = " + schedulerDBTransaction.quote(row["MeasurementID"].c_str()));
+                     "Identifier = " + schedulerDBTransaction.quote(row["Identifier"].c_str()));
                updated = true;
             }
          }
