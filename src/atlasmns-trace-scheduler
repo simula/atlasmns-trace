@@ -100,7 +100,7 @@ def checkRIPEAtlasExperiment(scheduledEntry):
                                 ': RIPE Atlas Measurement #' +
                                 str(scheduledEntry['MeasurementID']) + ' failed: ' +
                                 str(scheduledEntry['Info']))
-         # ??? atlasMNS.updateScheduledEntry(scheduledEntry)
+         atlasMNS.updateScheduledEntry(scheduledEntry)
 
       else:
          AtlasMNSLogger.trace('ID #' + str(scheduledEntry['Identifier']) +
@@ -169,9 +169,9 @@ while not AtlasMNS.breakDetected:
       # ------ State == 'agent_scheduled' -----------------------------------
       elif state == 'agent_scheduled':
 
-         print("FIXME: TEST!")
-         scheduledEntry['State'] = 'agent_completed'
-         atlasMNS.updateScheduledEntry(scheduledEntry)
+         #print("FIXME: TEST!")
+         #scheduledEntry['State'] = 'agent_completed'
+         #atlasMNS.updateScheduledEntry(scheduledEntry)
 
          # Nothing to do here!
          continue
