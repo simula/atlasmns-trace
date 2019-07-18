@@ -52,8 +52,8 @@ static std::set<boost::asio::ip::address>           SourceAddressArray;
 static std::map<boost::asio::ip::address, Service*> ServiceSet;
 static boost::asio::io_service                      IOService;
 static boost::asio::signal_set                      Signals(IOService, SIGINT, SIGTERM);
-static boost::posix_time::milliseconds              CleanupTimerInterval(250);
-static boost::asio::deadline_timer                  CleanupTimer(IOService, CleanupTimerInterval);
+static boost::posix_time::milliseconds              ScheduleCheckTimerInterval(60000);
+static boost::asio::deadline_timer                  ScheduleCheckTimer(IOService, ScheduleCheckTimerInterval);
 
 
 // ###### Signal handler ####################################################
@@ -71,8 +71,8 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 
 
 // ###### Check whether services can be cleaned up ##########################
-static void tryCleanup(const boost::system::error_code& errorCode,
-                       pqxx::lazyconnection*            schedulerDBConnection)
+static void checkSchedule(const boost::system::error_code& errorCode,
+                          pqxx::lazyconnection*            schedulerDBConnection)
 {
    bool finished = true;
    for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
@@ -136,9 +136,9 @@ static void tryCleanup(const boost::system::error_code& errorCode,
       }
 
       // ====== Set timer for next schedule check ===========================
-      CleanupTimer.expires_at(CleanupTimer.expires_at() + 
-                                 ((updated == false) ? CleanupTimerInterval : boost::posix_time::milliseconds(0)));
-      CleanupTimer.async_wait(boost::bind(&tryCleanup, boost::asio::placeholders::error,
+      ScheduleCheckTimer.expires_at(ScheduleCheckTimer.expires_at() +
+                                 ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
+      ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
                                           schedulerDBConnection));
    }
    else {
@@ -378,7 +378,7 @@ int main(int argc, char** argv)
          "password=" + schedulerDBPassword + " "
          "dbname="   + schedulerDatabase);
 
-      CleanupTimer.async_wait(boost::bind(&tryCleanup, boost::asio::placeholders::error,
+      ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
                                           &schedulerDBConnection));
 
       // ====== Main loop ===================================================
