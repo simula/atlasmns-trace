@@ -33,6 +33,7 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/program_options.hpp>
@@ -47,6 +48,7 @@
 
 
 static std::set<ResultsWriter*>                     ResultsWriterSet;
+static std::set<boost::asio::ip::address>           SourceAddressArray;
 static std::map<boost::asio::ip::address, Service*> ServiceSet;
 static boost::asio::io_service                      IOService;
 static boost::asio::signal_set                      Signals(IOService, SIGINT, SIGTERM);
@@ -69,7 +71,8 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 
 
 // ###### Check whether services can be cleaned up ##########################
-static void tryCleanup(const boost::system::error_code& errorCode)
+static void tryCleanup(const boost::system::error_code& errorCode,
+                       pqxx::lazyconnection*            schedulerDBConnection)
 {
    bool finished = true;
    for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
@@ -81,9 +84,62 @@ static void tryCleanup(const boost::system::error_code& errorCode)
       }
    }
 
+   // ====== Handle scheduled measurements ==================================
    if(!finished) {
-      CleanupTimer.expires_at(CleanupTimer.expires_at() + CleanupTimerInterval);
-      CleanupTimer.async_wait(tryCleanup);
+      bool updated = false;
+      try {
+         // ====== Query scheduled measurements =============================
+         pqxx::work schedulerDBTransaction(*schedulerDBConnection);
+         std::string allSourcesString = "( ";
+         for(std::set<boost::asio::ip::address>::const_iterator sourceArrayIterator = SourceAddressArray.begin();
+            sourceArrayIterator != SourceAddressArray.end(); sourceArrayIterator++) {
+            const boost::asio::ip::address& sourceAddress = *sourceArrayIterator;
+            allSourcesString = allSourcesString +
+               ((sourceArrayIterator == SourceAddressArray.begin()) ? "" : ", ") +
+               schedulerDBTransaction.quote(sourceAddress.to_string());
+         }
+
+         allSourcesString = allSourcesString + ')';
+
+         // ====== Perform scheduled measurements ===========================
+         pqxx::result result = schedulerDBTransaction.exec(
+            "SELECT MeasurementID, AgentHostIP, AgentTrafficClass, ProbeID, ProbeRouterIP, ProbeHostIP "
+            "FROM ExperimentSchedule "
+            "WHERE "
+               "State = 'agent_scheduled' AND "
+               "AgentHostIP IN " + allSourcesString + " "
+            "ORDER BY LastChange ASC");
+
+         for (auto row : result) {
+            const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
+            const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
+            const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeRouterIP"].c_str());
+            const AddressWithTrafficClass  destination(destinationAddress, trafficClass);
+
+            Service* service = ServiceSet[sourceAddress];
+            if(service->addDestination(destination)) {
+               HPCT_LOG(info) << "Queued " << destination << " from " << sourceAddress;
+               schedulerDBTransaction.exec(
+                  "UPDATE ExperimentSchedule "
+                  "SET "
+                     "State = 'agent_completed'"
+                  "WHERE "
+                     "MeasurementID = " + schedulerDBTransaction.quote(row["MeasurementID"].c_str()));
+               updated = true;
+            }
+         }
+
+         schedulerDBTransaction.commit();
+      }
+      catch (const std::exception &e) {
+         HPCT_LOG(warning) << "Unable to communicate with scheduler database: " << e.what();
+      }
+
+      // ====== Set timer for next schedule check ===========================
+      CleanupTimer.expires_at(CleanupTimer.expires_at() + 
+                                 ((updated == false) ? CleanupTimerInterval : boost::posix_time::milliseconds(0)));
+      CleanupTimer.async_wait(boost::bind(&tryCleanup, boost::asio::placeholders::error,
+                                          schedulerDBConnection));
    }
    else {
       Signals.cancel();
@@ -235,14 +291,13 @@ int main(int argc, char** argv)
 
 
    // ====== Handle configuration-file arguments ============================
-   std::set<boost::asio::ip::address> sourceAddressArray;
    if(vm.count("source")) {
       const std::vector<std::string>& sourceAddressVector = vm["source"].as<std::vector<std::string>>();
       for(std::vector<std::string>::const_iterator iterator = sourceAddressVector.begin();
           iterator != sourceAddressVector.end(); iterator++) {
          try {
             const boost::asio::ip::address sourceAddress = boost::asio::ip::address::from_string(*iterator);
-            sourceAddressArray.insert(sourceAddress);
+            SourceAddressArray.insert(sourceAddress);
          }
          catch(std::exception& e) {
             std::cerr << "ERROR: Bad source " << *iterator << ": " << e.what() << std::endl;
@@ -279,8 +334,8 @@ int main(int argc, char** argv)
 
 
    // ====== Start service threads ==========================================
-   for(std::set<boost::asio::ip::address>::const_iterator sourceAddressIterator = sourceAddressArray.begin();
-       sourceAddressIterator != sourceAddressArray.end(); sourceAddressIterator++) {
+   for(std::set<boost::asio::ip::address>::const_iterator sourceAddressIterator = SourceAddressArray.begin();
+       sourceAddressIterator != SourceAddressArray.end(); sourceAddressIterator++) {
       const boost::asio::ip::address& sourceAddress = *sourceAddressIterator;
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
@@ -312,7 +367,6 @@ int main(int argc, char** argv)
 
    // ====== Wait for termination signal ====================================
    Signals.async_wait(signalHandler);
-   CleanupTimer.async_wait(tryCleanup);
 
 
    // ====== Prepare scheduler database connection ==========================
@@ -324,70 +378,16 @@ int main(int argc, char** argv)
          "password=" + schedulerDBPassword + " "
          "dbname="   + schedulerDatabase);
 
+      CleanupTimer.async_wait(boost::bind(&tryCleanup, boost::asio::placeholders::error,
+                                          &schedulerDBConnection));
 
       // ====== Main loop ===================================================
-      do {
-         try {
-            // ====== Query scheduled measurements ==========================
-            pqxx::work schedulerDBTransaction(schedulerDBConnection);
-            std::string allSourcesString = "( ";
-            for(std::set<boost::asio::ip::address>::const_iterator sourceArrayIterator = sourceAddressArray.begin();
-               sourceArrayIterator != sourceAddressArray.end(); sourceArrayIterator++) {
-               const boost::asio::ip::address& sourceAddress = *sourceArrayIterator;
-               allSourcesString = allSourcesString +
-                  ((sourceArrayIterator == sourceAddressArray.begin()) ? "" : ", ") +
-                  schedulerDBTransaction.quote(sourceAddress.to_string());
-            }
-
-            allSourcesString = allSourcesString + ')';
-
-            // ====== Perform scheduled measurements ========================
-            pqxx::result result = schedulerDBTransaction.exec(
-               "SELECT MeasurementID, AgentHostIP, AgentTrafficClass, ProbeID, ProbeRouterIP, ProbeHostIP "
-               "FROM ExperimentSchedule "
-               "WHERE "
-                  "State = 'agent_scheduled' AND "
-                  "AgentHostIP IN " + allSourcesString + " "
-               "ORDER BY LastChange ASC");
-
-            for (auto row : result) {
-               const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
-               const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
-               const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeRouterIP"].c_str());
-               const AddressWithTrafficClass  destination(destinationAddress, trafficClass);
-
-               Service* service = ServiceSet[sourceAddress];
-               if(service->addDestination(destination)) {
-                  HPCT_LOG(debug) << "Queued " << destination << " from " << sourceAddress;
-                  schedulerDBTransaction.exec(
-                     "UPDATE ExperimentSchedule "
-                     "SET "
-                        "State = 'agent_completed'"
-                     "WHERE "
-                        "MeasurementID = " + schedulerDBTransaction.quote(row["MeasurementID"].c_str()));
-               }
-            }
-
-            schedulerDBTransaction.commit();
-         }
-         catch (const std::exception &e) {
-            HPCT_LOG(warning) << "Unable to communicate with scheduler database: " << e.what();
-            return 1;
-         }
-
-         puts("r1");
-        IOService.run_one();
-         puts("r2");
-
-      } while(!IOService.stopped());
+      IOService.run();
    }
    catch (const std::exception &e) {
       HPCT_LOG(warning) << "Unable to connect to scheduler database: " << e.what();
       return 1;
    }
-
-
-   IOService.run();
 
 
    // ====== Shut down service threads ======================================
