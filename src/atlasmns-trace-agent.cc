@@ -101,6 +101,20 @@ static void tryCleanup(const boost::system::error_code& errorCode)
 }
 
 
+// ###### Convert time point to string (in UTC time) ########################
+template<class clock> std::string timePointToStringUTC(const std::chrono::time_point<clock> timePoint)
+{
+   const std::chrono::microseconds us = std::chrono::duration_cast<std::chrono::microseconds>(timePoint.time_since_epoch());
+   const time_t                    tt = std::chrono::system_clock::to_time_t(timePoint);
+   tm                              localTime;
+   std::stringstream               ss;
+
+   gmtime_r(&tt, &localTime);
+   ss << std::put_time(&localTime, "%Y%m%dT%H%M%S.") << (us.count() % 1000000);
+   return ss.str();
+}
+
+
 // ###### Check schedule ####################################################
 static void checkSchedule(const boost::system::error_code& errorCode,
                           pqxx::lazyconnection*            schedulerDBConnection)
