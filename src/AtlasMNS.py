@@ -357,7 +357,7 @@ ORDER BY LastChange ASC;
             'ProbeFromIP':          row[11],
             'Info':                 row[12]
          })
-      print(schedule)
+      # print(schedule)
       return schedule
 
 
