@@ -51,11 +51,11 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
       int(scheduledEntry['ProbeID']),
       ipaddress.ip_address(scheduledEntry['AgentFromIP']),
       '托马斯\'s AtlasMNS Traceroute Experiment')
-   
+
    # ====== Update state ====================================================
    if measurementID != None:
-      scheduledEntry['State']         = 'atlas_scheduled'
-      scheduledEntry['MeasurementID'] = measurementID
+      scheduledEntry['State']              = 'atlas_scheduled'
+      scheduledEntry['ProbeMeasurementID'] = measurementID
    else:
       scheduledEntry['State'] = 'failed'
    atlasMNS.updateScheduledEntry(scheduledEntry)
@@ -64,7 +64,7 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
 # ###### Check RIPE Atlas experiment ########################################
 def checkRIPEAtlasExperiment(scheduledEntry):
    # ====== Check measurement status ========================================
-   (success, results) = atlasMNS.downloadRIPEAtlasMeasurementResults(scheduledEntry['MeasurementID'])
+   (success, results) = atlasMNS.downloadRIPEAtlasMeasurementResults(scheduledEntry['ProbeMeasurementID'])
    if success == True:
       if len(results) > 0:
          # atlasMNS.printRIPEAtlasMeasurementResults(results)
@@ -74,9 +74,9 @@ def checkRIPEAtlasExperiment(scheduledEntry):
             probeHostIP   = ipaddress.ip_address(results[0]['src_addr'])
             probeFromIP = ipaddress.ip_address(results[0]['from'])
             success = True
-            scheduledEntry['ProbeHostIP']   = str(probeHostIP)
+            scheduledEntry['ProbeHostIP'] = str(probeHostIP)
             scheduledEntry['ProbeFromIP'] = str(probeFromIP)
-            
+
             # ====== Import results into results database ===================
             if atlasMNS.importResults(scheduledEntry, results) == False:
                return False
@@ -89,7 +89,7 @@ def checkRIPEAtlasExperiment(scheduledEntry):
          if success == True:
             scheduledEntry['State'] = 'agent_scheduled'
             AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
-                                ': finished RIPE Atlas Measurement #' + str(scheduledEntry['MeasurementID']) + ': ' +
+                                ': finished RIPE Atlas Measurement #' + str(scheduledEntry['ProbeMeasurementID']) + ': ' +
                                 'Probe #' + str(scheduledEntry['ProbeID']) + ' (' + str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeFromIP']) + ')' +
                                 ' -> ' +
                                 '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentFromIP']) + ')')
@@ -98,15 +98,15 @@ def checkRIPEAtlasExperiment(scheduledEntry):
             scheduledEntry['State'] = 'failed'
             AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
                                 ': RIPE Atlas Measurement #' +
-                                str(scheduledEntry['MeasurementID']) + ' failed: ' +
+                                str(scheduledEntry['ProbeMeasurementID']) + ' failed: ' +
                                 str(scheduledEntry['Info']))
          atlasMNS.updateScheduledEntry(scheduledEntry)
 
       else:
          AtlasMNSLogger.trace('ID #' + str(scheduledEntry['Identifier']) +
                               ': RIPE Atlas Measurement #' +
-                              str(scheduledEntry['MeasurementID']) + ' is still ongoing')
-         
+                              str(scheduledEntry['ProbeMeasurementID']) + ' is still ongoing')
+
 
 # ###### Finished experiment ################################################
 def finished(scheduledEntry):

@@ -55,13 +55,16 @@ import AtlasMNSLogger
 ExperimentSchedule_Identifier=0
 ExperimentSchedule_State=1
 ExperimentSchedule_LastChange=2
-ExperimentSchedule_AgentHostIP=3
-ExperimentSchedule_AgentTrafficClass=4
-ExperimentSchedule_AgentFromIP=5
-ExperimentSchedule_MeasurementID=6
+ExperimentSchedule_AgentMeasurementTime=3
+ExperimentSchedule_AgentHostIP=4
+ExperimentSchedule_AgentTrafficClass=5
+ExperimentSchedule_AgentFromIP=6
 ExperimentSchedule_ProbeID=7
-ExperimentSchedule_ProbeHostIP=8
-ExperimentSchedule_ProbeFromIP=9
+ExperimentSchedule_ProbeMeasurementID=8
+ExperimentSchedule_ProbeCost=9
+ExperimentSchedule_ProbeHostIP=10
+ExperimentSchedule_ProbeFromIP=11
+ExperimentSchedule_Info=12
 
 
 # ###### Signal handler #####################################################
@@ -327,7 +330,7 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
          self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentHostIP,AgentTrafficClass,AgentFromIP,MeasurementID,ProbeID,ProbeHostIP,ProbeFromIP,Info
+SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
 FROM ExperimentSchedule
 ORDER BY LastChange ASC;
 """)
@@ -340,19 +343,21 @@ ORDER BY LastChange ASC;
       schedule = []
       for row in table:
          schedule.append({
-            'Identifier':        row[0],
-            'State':             row[1],
-            'LastChange':        row[2],
-            'AgentHostIP':       row[3],
-            'AgentTrafficClass': row[4],
-            'AgentFromIP':       row[5],
-            'MeasurementID':     row[6],
-            'ProbeID':           row[7],
-            'ProbeHostIP':       row[8],
-            'ProbeFromIP':       row[9],
-            'Info':              row[10]
+            'Identifier':           row[0],
+            'State':                row[1],
+            'LastChange':           row[2],
+            'AgentMeasurementTime': row[3],
+            'AgentHostIP':          row[4],
+            'AgentTrafficClass':    row[5],
+            'AgentFromIP':          row[6],
+            'ProbeID':              row[7],
+            'ProbeMeasurementID':   row[8],
+            'ProbeCost':            row[9],
+            'ProbeHostIP':          row[10],
+            'ProbeFromIP':          row[11],
+            'Info':                 row[12]
          })
-      # print(schedule)
+      print(schedule)
       return schedule
 
 
@@ -364,7 +369,7 @@ ORDER BY LastChange ASC;
             """
             UPDATE ExperimentSchedule
             SET
-               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentFromIP=%s, MeasurementID=%s,ProbeID=%s,ProbeHostIP=%s,ProbeFromIP=%s,Info=%s
+               State=%s,LastChange=NOW(),AgentHostIP=%s,AgentTrafficClass=%s, AgentFromIP=%s,ProbeID=%s,ProbeMeasurementID=%s,ProbeCost=%s,ProbeHostIP=%s,ProbeFromIP=%s,Info=%s
             WHERE
                Identifier = %s;
             """,  [
@@ -372,8 +377,9 @@ ORDER BY LastChange ASC;
                scheduledEntry['AgentHostIP'],
                scheduledEntry['AgentTrafficClass'],
                scheduledEntry['AgentFromIP'],
-               scheduledEntry['MeasurementID'],
                scheduledEntry['ProbeID'],
+               scheduledEntry['ProbeMeasurementID'],
+               scheduledEntry['ProbeCost'],
                scheduledEntry['ProbeHostIP'],
                scheduledEntry['ProbeFromIP'],
                scheduledEntry['Info'],
@@ -419,15 +425,17 @@ ORDER BY LastChange ASC;
    # ###### Connect to MongoDB results database #############################
    def importResults(self, scheduledEntry, results):
       experiment = {
-         'timestamp':         datetime.datetime.utcnow(),
-         'identifier':        scheduledEntry['Identifier'],
-         'agentHostIP':       scheduledEntry['AgentHostIP'],
-         'agentTrafficClass': scheduledEntry['AgentTrafficClass'],
-         'agentFromIP':       scheduledEntry['AgentFromIP'],
-         'measurementID':     scheduledEntry['MeasurementID'],
-         'probeID':           scheduledEntry['ProbeID'],
-         'probeHostIP':       scheduledEntry['ProbeHostIP'],
-         'probeFromIP':       scheduledEntry['ProbeFromIP']
+         'timestamp':            datetime.datetime.utcnow(),
+         'identifier':           scheduledEntry['Identifier'],
+         'agentMeasurementTime': scheduledEntry['AgentMeasurementTime'],
+         'agentHostIP':          scheduledEntry['AgentHostIP'],
+         'agentTrafficClass':    scheduledEntry['AgentTrafficClass'],
+         'agentFromIP':          scheduledEntry['AgentFromIP'],
+         'probeID':              scheduledEntry['ProbeID'],
+         'probeMeasurementID':   scheduledEntry['ProbeMeasurementID'],
+         'probeCost':            scheduledEntry['ProbeCost'],
+         'probeHostIP':          scheduledEntry['ProbeHostIP'],
+         'probeFromIP':          scheduledEntry['ProbeFromIP']
       }
       try:
          self.results_db['ripeatlastraceroute'].insert(results)

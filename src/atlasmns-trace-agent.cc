@@ -170,7 +170,8 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                   schedulerDBTransaction.exec(
                      "UPDATE ExperimentSchedule "
                      "SET "
-                        "State = 'agent_completed'"
+                        "State = 'agent_completed',"
+                        "AgentMeasurementTime = " + schedulerDBTransaction.quote(usSinceEpoch(sendTime)) + " "
                      "WHERE "
                         "Identifier = " + schedulerDBTransaction.quote(identifier)
                   );
