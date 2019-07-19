@@ -111,20 +111,21 @@ static void checkSchedule(const boost::system::error_code& errorCode,
             "ORDER BY LastChange ASC");
 
          for (auto row : result) {
+            const uint32_t                 identifier         = row["Identifier"].as<uint32_t>();
             const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
             const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
             const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeFromIP"].c_str());
-            const AddressWithTrafficClass  destination(destinationAddress, trafficClass);
+            const DestinationInfo          destinationInfo(destinationAddress, trafficClass);
 
             Service* service = ServiceSet[sourceAddress];
-            if(service->addDestination(destination)) {
-               HPCT_LOG(info) << "Queued " << destination << " from " << sourceAddress;
+            if(service->addDestination(destinationInfo)) {
+               HPCT_LOG(info) << "Queued " << destinationInfo << " from " << sourceAddress;
                schedulerDBTransaction.exec(
                   "UPDATE ExperimentSchedule "
                   "SET "
                      "State = 'agent_completed'"
                   "WHERE "
-                     "Identifier = " + schedulerDBTransaction.quote(row["Identifier"].c_str()));
+                     "Identifier = " + schedulerDBTransaction.quote(identifier));
                updated = true;
             }
          }
@@ -345,7 +346,7 @@ int main(int argc, char** argv)
                                               resultsDirectory.c_str(), resultsTransactionLength,
                                               (pw != NULL) ? pw->pw_uid : 0, (pw != NULL) ? pw->pw_gid : 0),
                                            0, true,
-                                           sourceAddress, std::set<AddressWithTrafficClass>(),
+                                           sourceAddress, std::set<DestinationInfo>(),
                                            tracerouteInterval, tracerouteExpiration,
                                            tracerouteRounds,
                                            tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
