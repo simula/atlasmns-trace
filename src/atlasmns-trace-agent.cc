@@ -30,10 +30,11 @@
 // Contact: dreibh@simula.no
 
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <vector>
+#include <mutex>
 
-#include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/program_options.hpp>
@@ -47,13 +48,18 @@
 #include <hipercontracer/traceroute.h>
 
 
-static std::set<ResultsWriter*>                     ResultsWriterSet;
-static std::set<boost::asio::ip::address>           SourceAddressArray;
-static std::map<boost::asio::ip::address, Service*> ServiceSet;
-static boost::asio::io_service                      IOService;
-static boost::asio::signal_set                      Signals(IOService, SIGINT, SIGTERM);
-static boost::posix_time::milliseconds              ScheduleCheckTimerInterval(60000);
-static boost::asio::deadline_timer                  ScheduleCheckTimer(IOService, ScheduleCheckTimerInterval);
+static std::set<ResultsWriter*>                                  ResultsWriterSet;
+static std::set<boost::asio::ip::address>                        SourceAddressArray;
+static std::map<boost::asio::ip::address, Service*>              ServiceSet;
+static std::map<uint32_t, std::chrono::system_clock::time_point> TimeStampSet;
+static const std::chrono::system_clock::time_point               TimeStampNull = std::chrono::system_clock::from_time_t(0);
+static boost::asio::io_service                                   IOService;
+static boost::asio::signal_set                                   Signals(IOService, SIGINT, SIGTERM);
+static boost::posix_time::milliseconds                           ScheduleCheckTimerInterval(15000);
+static boost::asio::deadline_timer                               ScheduleCheckTimer(IOService, boost::posix_time::milliseconds(250));
+static boost::posix_time::milliseconds                           CleanupTimerInterval(1000);
+static boost::asio::deadline_timer                               CleanupTimer(IOService, CleanupTimerInterval);
+static std::mutex                                                Mutex;
 
 
 // ###### Signal handler ####################################################
@@ -71,22 +77,38 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 
 
 // ###### Check whether services can be cleaned up ##########################
+static void tryCleanup(const boost::system::error_code& errorCode)
+{
+   if(errorCode != boost::asio::error::operation_aborted) {
+      bool finished = true;
+      for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
+         serviceIterator != ServiceSet.end(); serviceIterator++) {
+         Service* service = serviceIterator->second;
+         if(!service->joinable()) {
+            finished = false;
+            break;
+         }
+      }
+      if(!finished) {
+         CleanupTimer.expires_at(CleanupTimer.expires_at() + CleanupTimerInterval);
+         CleanupTimer.async_wait(tryCleanup);
+      }
+      else {
+         Signals.cancel();
+         ScheduleCheckTimer.cancel();
+      }
+   }
+}
+
+
+// ###### Check schedule ####################################################
 static void checkSchedule(const boost::system::error_code& errorCode,
                           pqxx::lazyconnection*            schedulerDBConnection)
 {
-   bool finished = true;
-   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
-       serviceIterator != ServiceSet.end(); serviceIterator++) {
-      Service* service = serviceIterator->second;
-      if(!service->joinable()) {
-         finished = false;
-         break;
-      }
-   }
-
    // ====== Handle scheduled measurements ==================================
-   if(!finished) {
+   if(errorCode != boost::asio::error::operation_aborted) {
       bool updated = false;
+
       try {
          // ====== Query scheduled measurements =============================
          pqxx::work schedulerDBTransaction(*schedulerDBConnection);
@@ -108,27 +130,58 @@ static void checkSchedule(const boost::system::error_code& errorCode,
             "WHERE "
                "State = 'agent_scheduled' AND "
                "AgentHostIP IN " + allSourcesString + " "
-            "ORDER BY LastChange ASC");
+            "ORDER BY LastChange ASC"
+         );
 
          for (auto row : result) {
+            const uint32_t                 identifier         = row["Identifier"].as<uint32_t>();
             const boost::asio::ip::address sourceAddress      = boost::asio::ip::address::from_string(row["AgentHostIP"].c_str());
             const uint8_t                  trafficClass       = atoi(row["AgentTrafficClass"].c_str());
             const boost::asio::ip::address destinationAddress = boost::asio::ip::address::from_string(row["ProbeFromIP"].c_str());
-            const AddressWithTrafficClass  destination(destinationAddress, trafficClass);
+            const DestinationInfo          destinationInfo(destinationAddress, trafficClass, identifier);
 
-            Service* service = ServiceSet[sourceAddress];
-            if(service->addDestination(destination)) {
-               HPCT_LOG(info) << "Queued " << destination << " from " << sourceAddress;
-               schedulerDBTransaction.exec(
-                  "UPDATE ExperimentSchedule "
-                  "SET "
-                     "State = 'agent_completed'"
-                  "WHERE "
-                     "Identifier = " + schedulerDBTransaction.quote(row["Identifier"].c_str()));
-               updated = true;
+            Mutex.lock();
+            std::map<uint32_t, std::chrono::system_clock::time_point>::iterator found = TimeStampSet.find(identifier);
+            // ====== Schedule traceroute to destination ====================
+            if(found == TimeStampSet.end()) {
+               Mutex.unlock();
+               // NOTE: The mutex is unlocked now, to prevent lock order issues!
+
+               Service* service = ServiceSet[sourceAddress];
+               if(service->addDestination(destinationInfo)) {
+                  HPCT_LOG(info) << "Queued #" << identifier << ": "
+                                 << destinationInfo << " from " << sourceAddress;
+                  updated = true;
+
+                  std::lock_guard<std::mutex> lock(Mutex);
+                  TimeStampSet.insert(std::pair<uint32_t, std::chrono::system_clock::time_point>(identifier, TimeStampNull));
+               }
+            }
+
+            // ====== Traceroute to destination already scheduled ===========
+            else {
+               if(found->second > TimeStampNull) {
+                  const std::chrono::system_clock::time_point sendTime = found->second;
+                  TimeStampSet.erase(found);
+                  Mutex.unlock();
+                  // NOTE: The mutex is unlocked now, to prevent blocking during database processing!
+
+                  std::cout << identifier << " -> " << usSinceEpoch(sendTime) << std::endl;
+                  schedulerDBTransaction.exec(
+                     "UPDATE ExperimentSchedule "
+                     "SET "
+                        "State = 'agent_completed'"
+                     "WHERE "
+                        "Identifier = " + schedulerDBTransaction.quote(identifier)
+                  );
+                  updated = true;
+               }
+               else {
+                  // NOTE: The mutex is still locked -> unlock it!
+                  Mutex.unlock();
+               }
             }
          }
-
          schedulerDBTransaction.commit();
       }
       catch (const std::exception &e) {
@@ -137,12 +190,31 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
       // ====== Set timer for next schedule check ===========================
       ScheduleCheckTimer.expires_at(ScheduleCheckTimer.expires_at() +
-                                 ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
-      ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
-                                          schedulerDBConnection));
+                                    ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
+      ScheduleCheckTimer.async_wait(std::bind(&checkSchedule, std::placeholders::_1,
+                                              schedulerDBConnection));
    }
-   else {
-      Signals.cancel();
+}
+
+
+// ###### Callback to handle new results ####################################
+static void resultCallback(Service*              service,
+                           const ResultEntry*    resultEntry,
+                           pqxx::lazyconnection* schedulerDBConnection)
+{
+   if( (resultEntry->round() == 0) && (resultEntry->hop() == 1) ) {
+      // Only the first hop of the first round is of interest to obtain
+      // the time stamp => entries of following rounds use the same send time
+      // stamp for identification!
+      const uint32_t identifier = resultEntry->destination().identifier();
+
+      std::lock_guard<std::mutex> lock(Mutex);
+#if 0
+      std::cout << identifier << "\t"
+                << usSinceEpoch(resultEntry->sendTime()) << "\t"
+                << *resultEntry  << std::endl;
+#endif
+      TimeStampSet[identifier] = resultEntry->sendTime();
    }
 }
 
@@ -340,16 +412,17 @@ int main(int argc, char** argv)
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
       try {
-         Service* service = new Traceroute(ResultsWriter::makeResultsWriter(
+         Traceroute* service = new Traceroute(ResultsWriter::makeResultsWriter(
                                               ResultsWriterSet, sourceAddress, "Traceroute",
                                               resultsDirectory.c_str(), resultsTransactionLength,
-                                              (pw != NULL) ? pw->pw_uid : 0, (pw != NULL) ? pw->pw_gid : 0),
-                                           0, true,
-                                           sourceAddress, std::set<AddressWithTrafficClass>(),
-                                           tracerouteInterval, tracerouteExpiration,
-                                           tracerouteRounds,
-                                           tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
-                                           tracerouteIncrementMaxTTL);
+                                              (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0),
+                                              0, true,
+                                              sourceAddress, std::set<DestinationInfo>(),
+                                              tracerouteInterval, tracerouteExpiration,
+                                              tracerouteRounds,
+                                              tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
+                                              tracerouteIncrementMaxTTL);
+         assert(service != nullptr);
          if(service->start() == false) {
             ::exit(1);
          }
@@ -366,6 +439,7 @@ int main(int argc, char** argv)
    reducePrivileges(pw);
 
    // ====== Wait for termination signal ====================================
+   CleanupTimer.async_wait(tryCleanup);
    Signals.async_wait(signalHandler);
 
 
@@ -378,8 +452,16 @@ int main(int argc, char** argv)
          "password=" + schedulerDBPassword + " "
          "dbname="   + schedulerDatabase);
 
-      ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
-                                          &schedulerDBConnection));
+      for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
+         serviceIterator != ServiceSet.end(); serviceIterator++) {
+         Service* service = serviceIterator->second;
+         service->setResultCallback(std::bind(&resultCallback,
+                                              std::placeholders::_1, std::placeholders::_2,
+                                              &schedulerDBConnection));
+      }
+      ScheduleCheckTimer.async_wait(std::bind(&checkSchedule,
+                                              std::placeholders::_1,
+                                              &schedulerDBConnection));
 
       // ====== Main loop ===================================================
       IOService.run();
@@ -391,12 +473,14 @@ int main(int argc, char** argv)
 
 
    // ====== Shut down service threads ======================================
-   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin(); serviceIterator != ServiceSet.end(); serviceIterator++) {
+   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
+       serviceIterator != ServiceSet.end(); serviceIterator++) {
       Service* service = serviceIterator->second;
       service->join();
       delete service;
    }
-   for(std::set<ResultsWriter*>::iterator resultsWriterIterator = ResultsWriterSet.begin(); resultsWriterIterator != ResultsWriterSet.end(); resultsWriterIterator++) {
+   for(std::set<ResultsWriter*>::iterator resultsWriterIterator = ResultsWriterSet.begin();
+       resultsWriterIterator != ResultsWriterSet.end(); resultsWriterIterator++) {
       delete *resultsWriterIterator;
    }
 

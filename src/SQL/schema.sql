@@ -67,21 +67,23 @@ CREATE TYPE AtlasMNSStatus AS ENUM (
 -- ###### Experiment Schedule ###############################################
 DROP TABLE IF EXISTS ExperimentSchedule;
 CREATE TABLE ExperimentSchedule (
-   Identifier        SERIAL UNIQUE,
+   Identifier           SERIAL UNIQUE,
 
-   State             AtlasMNSStatus   NOT NULL DEFAULT 'scheduled',
-   LastChange        TIMESTAMP        NOT NULL DEFAULT NOW(),
+   State                AtlasMNSStatus   NOT NULL DEFAULT 'scheduled',
+   LastChange           TIMESTAMP        NOT NULL DEFAULT NOW(),
 
-   AgentHostIP       INET             NOT NULL,
-   AgentTrafficClass SMALLINT         NOT NULL DEFAULT 0,
-   AgentFromIP       INET             NOT NULL,
+   AgentMeasurementTime TIMESTAMP        DEFAULT NULL,
+   AgentHostIP          INET             NOT NULL,
+   AgentTrafficClass    SMALLINT         NOT NULL DEFAULT 0,
+   AgentFromIP          INET             NOT NULL,
 
-   MeasurementID     INTEGER          DEFAULT NULL,
-   ProbeID           INTEGER          DEFAULT NULL,
-   ProbeHostIP       INET             DEFAULT NULL,
-   ProbeFromIP       INET             DEFAULT NULL,
+   ProbeID              INTEGER          DEFAULT NULL,
+   ProbeMeasurementID   INTEGER          DEFAULT NULL,
+   ProbeCost            INTEGER          NOT NULL DEFAULT 0,
+   ProbeHostIP          INET             DEFAULT NULL,
+   ProbeFromIP          INET             DEFAULT NULL,
 
-   Info              CHAR(128)        DEFAULT NULL,
+   Info                 CHAR(128)        DEFAULT NULL,
 
    PRIMARY KEY (Identifier)
    -- UNIQUE (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
