@@ -32,8 +32,9 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <vector>
+#include <iomanip>
 #include <mutex>
+#include <vector>
 
 #include <boost/format.hpp>
 #include <boost/asio/ip/address.hpp>
@@ -185,7 +186,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                      "UPDATE ExperimentSchedule "
                      "SET "
                         "State = 'agent_completed',"
-                        "AgentMeasurementTime = " + schedulerDBTransaction.quote(usSinceEpoch(sendTime)) + " "
+                        "AgentMeasurementTime = " + schedulerDBTransaction.quote(timePointToStringUTC(sendTime)) + " "
                      "WHERE "
                         "Identifier = " + schedulerDBTransaction.quote(identifier)
                   );
