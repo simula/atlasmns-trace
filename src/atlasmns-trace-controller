@@ -109,34 +109,50 @@ def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, p
       return
 
    if len(rows) > 0:
-      for row in rows:
-         print(row)
+      printMeasurementRuns(rows)
    else:
       print('No experiment run found.')
 
 
+# ###### Return string of value, or empty string for None type ##############
+def valueOrNoneString(value):
+   if value != None:
+      return str(value)
+   else:
+      return ''
+
+
+# ###### Print measurement runs #############################################
+def printMeasurementRuns(rows, indent = '* '):
+   sys.stdout.write(' ' * len(indent))
+   sys.stdout.write('{0:>8s} {1:>8s} {2:>20s} {3:>20s} {4:>20s} {5:>2s} {6:>20s} {7:>16s} {8:>10s} {9:>6s} {10:>26s} {11:s}\n'.format(
+      'ID', 'ProbeID', 'ProbeHostIP', 'ProbeFromIP', 'AgentHostIP', 'TC', 'AgentFromIP',
+      'State', 'ProbeMsmID', 'Probe₡', 'AgentMsmTime', 'Info'
+   ))
+   for row in rows:
+      # print(row)
+      sys.stdout.write(indent)
+      sys.stdout.write("{0:8d} {1:8s} {2:>20s} {3:>20s} {4:>20s} {5:02x} {6:>20s} {7:>16s} {8:10s} {9:6d} {10:>26s} {11:s}\n".format(
+         row['Identifier'],
+         valueOrNoneString(row['ProbeID']),
+         valueOrNoneString(row['ProbeHostIP']),
+         valueOrNoneString(row['ProbeFromIP']),
+         valueOrNoneString(row['AgentHostIP']),
+         row['AgentTrafficClass'],
+         valueOrNoneString(row['AgentFromIP']),
+         valueOrNoneString(row['State']),
+         valueOrNoneString(row['ProbeMeasurementID']),
+         row['ProbeCost'],
+         valueOrNoneString(row['AgentMeasurementTime']),
+         valueOrNoneString(row['Info'])
+      ))
+
+
 # ###### List measurement runs ##############################################
 def listMeasurementRuns(atlasMNS):
-   try:
-      atlasMNS.scheduler_dbCursor.execute("""
-         SELECT * FROM ExperimentSchedule
-         ORDER BY
-            LastChange DESC,
-            AgentHostIP ASC,
-            AgentTrafficClass DESC,
-            AgentFromIP ASC,
-            ProbeID ASC
-         """)
-      rows = atlasMNS.scheduler_dbCursor.fetchall()
-   except Exception as e:
-      print('Unable to list measurement runs: ' + str(e))
-      atlasMNS.scheduler_dbConnection.rollback()
-      return
-
+   rows = atlasMNS.querySchedule()
    print('Measurements: ' + str(len(rows)))
-   for row in rows:
-      print('* ', row)
-
+   printMeasurementRuns(rows)
 
 
 # ###### Main program #######################################################
