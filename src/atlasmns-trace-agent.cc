@@ -139,6 +139,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
          allSourcesString = allSourcesString + ')';
 
          // ====== Perform scheduled measurements ===========================
+         HPCT_LOG(trace) << "Querying schedule ...";
          pqxx::result result = schedulerDBTransaction.exec(
             "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeFromIP "
             "FROM ExperimentSchedule "
@@ -181,7 +182,8 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                   Mutex.unlock();
                   // NOTE: The mutex is unlocked now, to prevent blocking during database processing!
 
-                  std::cout << identifier << " -> " << usSinceEpoch(sendTime) << std::endl;
+                  HPCT_LOG(trace) << "Updating scheduled entry ...";
+                  // std::cout << identifier << " -> " << usSinceEpoch(sendTime) << std::endl;
                   schedulerDBTransaction.exec(
                      "UPDATE ExperimentSchedule "
                      "SET "
@@ -480,6 +482,7 @@ int main(int argc, char** argv)
                                               &schedulerDBConnection));
 
       // ====== Main loop ===================================================
+      HPCT_LOG(info) << "Agent is ready!";
       IOService.run();
    }
    catch (const std::exception &e) {
