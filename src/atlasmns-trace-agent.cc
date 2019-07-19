@@ -166,6 +166,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                   Mutex.unlock();
                   // NOTE: The mutex is unlocked now, to prevent blocking during database processing!
 
+                  std::cout << identifier << " -> " << usSinceEpoch(sendTime) << std::endl;
                   schedulerDBTransaction.exec(
                      "UPDATE ExperimentSchedule "
                      "SET "
@@ -205,14 +206,14 @@ static void resultCallback(Service*              service,
       // Only the first hop of the first round is of interest to obtain
       // the time stamp => entries of following rounds use the same send time
       // stamp for identification!
-
       const uint32_t identifier = resultEntry->destination().identifier();
 
+      std::lock_guard<std::mutex> lock(Mutex);
+#if 0
       std::cout << identifier << "\t"
                 << usSinceEpoch(resultEntry->sendTime()) << "\t"
                 << *resultEntry  << std::endl;
-
-      std::lock_guard<std::mutex> lock(Mutex);
+#endif
       TimeStampSet[identifier] = resultEntry->sendTime();
    }
 }
