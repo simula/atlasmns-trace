@@ -32,6 +32,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <mutex>
 
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
@@ -56,6 +57,7 @@ static boost::posix_time::milliseconds              ScheduleCheckTimerInterval(6
 static boost::asio::deadline_timer                  ScheduleCheckTimer(IOService, ScheduleCheckTimerInterval);
 static boost::posix_time::milliseconds              CleanupTimerInterval(1000);
 static boost::asio::deadline_timer                  CleanupTimer(IOService, CleanupTimerInterval);
+static std::mutex                                   Mutex;
 
 
 // ###### Signal handler ####################################################
@@ -158,6 +160,23 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                                     ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
       ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
                                                 schedulerDBConnection));
+   }
+}
+
+
+// ###### Callback to handle new results ####################################
+static void resultCallback(Service* service, const ResultEntry* resultEntry)
+{
+   if( (resultEntry->round() == 0) && (resultEntry->hop() == 1) ) {
+      // Only the first hop of the first round is of interest to obtain
+      // the time stamp => entries of following rounds use the same send time
+      // stamp for identification!
+      std::lock_guard<std::mutex> lock(Mutex);
+
+      std::cout
+         << usSinceEpoch(resultEntry->sendTime()) << "\t"
+         << *resultEntry  << std::endl;
+
    }
 }
 
@@ -355,16 +374,18 @@ int main(int argc, char** argv)
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
       try {
-         Service* service = new Traceroute(ResultsWriter::makeResultsWriter(
+         Traceroute* service = new Traceroute(ResultsWriter::makeResultsWriter(
                                               ResultsWriterSet, sourceAddress, "Traceroute",
                                               resultsDirectory.c_str(), resultsTransactionLength,
-                                              (pw != NULL) ? pw->pw_uid : 0, (pw != NULL) ? pw->pw_gid : 0),
-                                           0, true,
-                                           sourceAddress, std::set<DestinationInfo>(),
-                                           tracerouteInterval, tracerouteExpiration,
-                                           tracerouteRounds,
-                                           tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
-                                           tracerouteIncrementMaxTTL);
+                                              (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0),
+                                              0, true,
+                                              sourceAddress, std::set<DestinationInfo>(),
+                                              tracerouteInterval, tracerouteExpiration,
+                                              tracerouteRounds,
+                                              tracerouteInitialMaxTTL, tracerouteFinalMaxTTL,
+                                              tracerouteIncrementMaxTTL);
+         assert(service != nullptr);
+         service->setResultCallback(&resultCallback);
          if(service->start() == false) {
             ::exit(1);
          }
