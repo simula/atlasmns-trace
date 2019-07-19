@@ -54,6 +54,8 @@ static boost::asio::io_service                      IOService;
 static boost::asio::signal_set                      Signals(IOService, SIGINT, SIGTERM);
 static boost::posix_time::milliseconds              ScheduleCheckTimerInterval(60000);
 static boost::asio::deadline_timer                  ScheduleCheckTimer(IOService, ScheduleCheckTimerInterval);
+static boost::posix_time::milliseconds              CleanupTimerInterval(1000);
+static boost::asio::deadline_timer                  CleanupTimer(IOService, CleanupTimerInterval);
 
 
 // ###### Signal handler ####################################################
@@ -71,21 +73,36 @@ static void signalHandler(const boost::system::error_code& error, int signal_num
 
 
 // ###### Check whether services can be cleaned up ##########################
+static void tryCleanup(const boost::system::error_code& errorCode)
+{
+   if(errorCode != boost::asio::error::operation_aborted) {
+      bool finished = true;
+      for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
+         serviceIterator != ServiceSet.end(); serviceIterator++) {
+         Service* service = serviceIterator->second;
+         if(!service->joinable()) {
+            finished = false;
+            break;
+         }
+      }
+      if(!finished) {
+         CleanupTimer.expires_at(CleanupTimer.expires_at() + CleanupTimerInterval);
+         CleanupTimer.async_wait(tryCleanup);
+      }
+      else {
+         Signals.cancel();
+         ScheduleCheckTimer.cancel();
+      }
+   }
+}
+
+
+// ###### Check schedule ####################################################
 static void checkSchedule(const boost::system::error_code& errorCode,
                           pqxx::lazyconnection*            schedulerDBConnection)
 {
-   bool finished = true;
-   for(std::map<boost::asio::ip::address, Service*>::iterator serviceIterator = ServiceSet.begin();
-       serviceIterator != ServiceSet.end(); serviceIterator++) {
-      Service* service = serviceIterator->second;
-      if(!service->joinable()) {
-         finished = false;
-         break;
-      }
-   }
-
    // ====== Handle scheduled measurements ==================================
-   if(!finished) {
+   if(errorCode != boost::asio::error::operation_aborted) {
       bool updated = false;
       try {
          // ====== Query scheduled measurements =============================
@@ -138,12 +155,9 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
       // ====== Set timer for next schedule check ===========================
       ScheduleCheckTimer.expires_at(ScheduleCheckTimer.expires_at() +
-                                 ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
+                                    ((updated == false) ? ScheduleCheckTimerInterval : boost::posix_time::milliseconds(0)));
       ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
-                                          schedulerDBConnection));
-   }
-   else {
-      Signals.cancel();
+                                                schedulerDBConnection));
    }
 }
 
@@ -367,6 +381,7 @@ int main(int argc, char** argv)
    reducePrivileges(pw);
 
    // ====== Wait for termination signal ====================================
+   CleanupTimer.async_wait(tryCleanup);
    Signals.async_wait(signalHandler);
 
 
@@ -380,7 +395,7 @@ int main(int argc, char** argv)
          "dbname="   + schedulerDatabase);
 
       ScheduleCheckTimer.async_wait(boost::bind(&checkSchedule, boost::asio::placeholders::error,
-                                          &schedulerDBConnection));
+                                                &schedulerDBConnection));
 
       // ====== Main loop ===================================================
       IOService.run();
