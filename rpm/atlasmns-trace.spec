@@ -12,7 +12,7 @@ BuildRequires: boost-devel
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: hipercontracer-libhipercontracer-devel
+BuildRequires: hipercontracer-libhipercontracer-devel >= 1.4.2
 BuildRequires: libpqxx-devel
 BuildRequires: python3-colorlog
 BuildRequires: python3-psycopg2
