@@ -39,7 +39,7 @@ for stage in [ 1, 2 ]:
          probeID           = int(jsonData[i]['probeID'])
 
          if stage == 2:
-            print('=> ', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+            print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
 
       except Exception as e:
          sys.stderr.write('Bad entry #' + str(i + 1) + ': ' + str(e) + '\n')
