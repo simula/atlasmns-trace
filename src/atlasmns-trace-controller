@@ -114,6 +114,43 @@ def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, p
       print('No experiment run found.')
 
 
+# ###### List measurement runs ##############################################
+def addMeasurementRunsFromJSON(atlasMNS, jsonName):
+   # ====== Parse JSON ======================================================
+   try:
+      jsonFile = open(sys.argv[1], 'r')
+   except Exception as e:
+      print('Unable to open input file: ' + str(e))
+      return False
+
+   try:
+      jsonData = json.load(jsonFile)
+   except Exception as e:
+      print('Unable to read JSON: ' + str(e))
+      return False
+
+   print(json.dumps(jsonData, indent=3, sort_keys=True))
+
+   # ====== Create measurements from JSON ===================================
+   for stage in [ 1, 2 ]:
+      for i in range(0, len(jsonData)):
+         try:
+            agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
+            agentTrafficClass = int(jsonData[i]['agentTrafficClass'])
+            agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
+            probeID           = int(jsonData[i]['probeID'])
+
+            if stage == 2:
+               print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+               addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
+
+         except Exception as e:
+            print('Bad entry #' + str(i + 1) + ': ' + str(e))
+            return False
+
+   return True
+
+
 # ###### Return string of value, or empty string for None type ##############
 def valueOrNoneString(value):
    if value != None:
@@ -153,6 +190,7 @@ def listMeasurementRuns(atlasMNS):
    rows = atlasMNS.querySchedule()
    print('Measurements: ' + str(len(rows)))
    printMeasurementRuns(rows)
+
 
 
 # ###### Main program #######################################################
@@ -203,6 +241,12 @@ while True:
 
        elif ((argv[0] == 'list') or (argv[0] == 'ls')):
           listMeasurementRuns(atlasMNS)
+
+       elif (argv[0] == 'add-from-json'):
+          if len(argv) >= 2:
+             addMeasurementRunsFromJSON(argv[2])
+          else:
+             print('Too few arguments for ' + argv[0] + ' given!')
 
        elif ((argv[0] == 'add') or (argv[0] == 'remove') or (argv[0] == 'check')):
           if len(argv) >= 5:
