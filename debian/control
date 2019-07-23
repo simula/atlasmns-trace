@@ -59,8 +59,7 @@ Description: Atlas/MNS Trace Scheduler
 Package: atlasmns-trace-agent
 Architecture: any
 Depends: atlasmns-trace-common (= ${binary:Version}),
-         hipercontracer (>= 1.4.1),
-         nornet-trace-trigger,
+         hipercontracer (>= 1.4.2),
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Agent
