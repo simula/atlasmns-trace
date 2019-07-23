@@ -220,16 +220,28 @@ class AtlasMNS:
       # Attributes documentation:
       # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
       # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Ping_Type_Measurement_List_GET
+      is_oneoff = True
+      packets   = 1
+      size      = 16
       measurement = ripe.atlas.cousteau.Ping(
          af          = targetAddress.version,
          target      = str(targetAddress),
          description = description,
-         is_oneoff   = True,
-         packets     = 1,
+         is_oneoff   = is_oneoff,
+         packets     = packets,
          paris       = 1,
-         size        = 16   # size without IP and ICMP headers
+         size        = size   # size without IP and ICMP headers
       )
-      return self.startRIPEAtlasMeasurement(source, measurement)
+      measurementID = self.startRIPEAtlasMeasurement(source, measurement)
+      # Cost calculation:
+      # https://atlas.ripe.net/docs/credits/
+      if measurementID != None:
+         costs = packets * (int(size / 1500) + 1)
+         if is_oneoff:
+            costs = 2 * costs
+      else:
+         costs = 0
+      return ( measurementID, costs )
 
 
    # ###### Create RIPE Atlas Traceroute measurement ########################
@@ -242,17 +254,29 @@ class AtlasMNS:
       # Attributes documentation:
       # https://atlas.ripe.net/docs/api/v2/manual/measurements/types/base_attributes.html
       # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Traceroute_Type_Measurement_List_GET
+      is_oneoff = True
+      packets   = 1
+      size      = 16
       measurement = ripe.atlas.cousteau.Traceroute(
          af          = targetAddress.version,
          target      = str(targetAddress),
          description = description,
          protocol    = 'ICMP',
-         is_oneoff   = True,
-         packets     = 1,
+         is_oneoff   = is_oneoff,
+         packets     = packets,
          paris       = 1,
-         size        = 16   # size without IP and ICMP headers
+         size        = size   # size without IP and ICMP headers
       )
-      return self.startRIPEAtlasMeasurement(source, measurement)
+      measurementID = self.startRIPEAtlasMeasurement(source, measurement)
+      # Cost calculation:
+      # https://atlas.ripe.net/docs/credits/
+      if measurementID != None:
+         costs = 10 * packets * (int(size / 1500) + 1)
+         if is_oneoff:
+            costs = 2 * costs
+      else:
+         costs = 0
+      return ( measurementID, costs )
 
 
    # ###### Obtain measurement results ######################################
