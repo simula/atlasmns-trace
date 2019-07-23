@@ -174,7 +174,6 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Creating ' + measurement.measurement_type + ' measurement for ' +
                            'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) + ' ...')
       atlas_request = ripe.atlas.cousteau.AtlasCreateRequest(
-         start_time   = datetime.datetime.utcnow(),
          key          = self.configuration['atlas_api_key'],
          sources      = [ source ],
          measurements = [ measurement ],
