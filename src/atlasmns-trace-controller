@@ -36,6 +36,7 @@ import atexit
 import datetime
 import io
 import ipaddress
+import json
 import os
 import re
 import readline
@@ -118,7 +119,7 @@ def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, p
 def addMeasurementRunsFromJSON(atlasMNS, jsonName):
    # ====== Parse JSON ======================================================
    try:
-      jsonFile = open(sys.argv[1], 'r')
+      jsonFile = open(jsonName, 'r')
    except Exception as e:
       print('Unable to open input file: ' + str(e))
       return False
@@ -132,7 +133,7 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
    print(json.dumps(jsonData, indent=3, sort_keys=True))
 
    # ====== Create measurements from JSON ===================================
-   for stage in [ 1, 2 ]:
+   for dryRun in [ True, False ]:
       for i in range(0, len(jsonData)):
          try:
             agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
@@ -140,7 +141,7 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
             agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
             probeID           = int(jsonData[i]['probeID'])
 
-            if stage == 2:
+            if dryRun == False:
                print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
                addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
 
@@ -244,7 +245,7 @@ while True:
 
        elif (argv[0] == 'add-from-json'):
           if len(argv) >= 2:
-             addMeasurementRunsFromJSON(argv[2])
+             addMeasurementRunsFromJSON(atlasMNS, argv[1])
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
