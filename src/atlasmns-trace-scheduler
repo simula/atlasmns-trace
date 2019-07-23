@@ -47,7 +47,7 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
    # ====== Create measurement ==============================================
    AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
                        ': scheduling RIPE Atlas experiment ...')
-   ( measurementID, cost ) = atlasMNS.createRIPEAtlasTracerouteMeasurement(
+   ( measurementID, cost, info ) = atlasMNS.createRIPEAtlasTracerouteMeasurement(
       int(scheduledEntry['ProbeID']),
       ipaddress.ip_address(scheduledEntry['AgentFromIP']),
       '托马斯\'s AtlasMNS Traceroute Experiment')
@@ -59,6 +59,7 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
       scheduledEntry['ProbeMeasurementID'] = measurementID
    else:
       scheduledEntry['State'] = 'failed'
+      scheduledEntry['Info']  = info
    atlasMNS.updateScheduledEntry(scheduledEntry)
 
 
@@ -114,7 +115,6 @@ def finished(scheduledEntry):
    # ====== Check agent status ==============================================
    AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
                        ': finished run')
-   print('DONE: ' + str(scheduledEntry))
 
    # ====== Update state ====================================================
    scheduledEntry['State'] = 'finished'

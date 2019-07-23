@@ -144,7 +144,7 @@ def printMeasurementRuns(rows, indent = '* '):
          valueOrNoneString(row['ProbeMeasurementID']),
          row['ProbeCost'],
          valueOrNoneString(row['AgentMeasurementTime']),
-         valueOrNoneString(row['Info'])
+         valueOrNoneString(row['Info']).strip()
       ))
 
 

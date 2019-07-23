@@ -165,7 +165,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
                Service* service = ServiceSet[sourceAddress];
                if(service->addDestination(destinationInfo)) {
-                  HPCT_LOG(info) << "Queued Measurement #" << identifier << ": "
+                  HPCT_LOG(info) << "Queued ID #" << identifier << ": "
                                  << destinationInfo << " from " << sourceAddress;
                   updated = true;
 

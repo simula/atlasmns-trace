@@ -185,12 +185,12 @@ class AtlasMNS:
          AtlasMNSLogger.trace('Created ' + measurement.measurement_type + ' measurement: ' +
                               'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                               ' -> Measurement #' + str(measurementID))
-         return measurementID
+         return ( measurementID, None )
       else:
          AtlasMNSLogger.warning('Creating ' + measurement.measurement_type + ' measurement for ' +
                                 'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                                 ' failed: ' + str(response))
-         return None
+         return ( None, str(response) )
 
 
    # ###### Stop RIPE Atlas measurement #####################################
@@ -222,16 +222,23 @@ class AtlasMNS:
       is_oneoff = True
       packets   = 1
       size      = 16
-      measurement = ripe.atlas.cousteau.Ping(
-         af          = targetAddress.version,
-         target      = str(targetAddress),
-         description = description,
-         is_oneoff   = is_oneoff,
-         packets     = packets,
-         paris       = 1,
-         size        = size   # size without IP and ICMP headers
-      )
-      measurementID = self.startRIPEAtlasMeasurement(source, measurement)
+
+      try:
+         measurement = ripe.atlas.cousteau.Ping(
+            af          = targetAddress.version,
+            target      = str(targetAddress),
+            description = description,
+            is_oneoff   = is_oneoff,
+            packets     = packets,
+            paris       = 1,
+            size        = size   # size without IP and ICMP headers
+         )
+         ( measurementID, info ) = self.startRIPEAtlasMeasurement(source, measurement)
+      except Exception as e:
+         measurementID = None
+         info          = str(e)
+         AtlasMNSLogger.warning('Creating Ping experiment failed: ' + info)
+
       # Cost calculation:
       # https://atlas.ripe.net/docs/credits/
       if measurementID != None:
@@ -240,7 +247,7 @@ class AtlasMNS:
             costs = 2 * costs
       else:
          costs = 0
-      return ( measurementID, costs )
+      return ( measurementID, costs, info )
 
 
    # ###### Create RIPE Atlas Traceroute measurement ########################
@@ -256,17 +263,24 @@ class AtlasMNS:
       is_oneoff = True
       packets   = 1
       size      = 16
-      measurement = ripe.atlas.cousteau.Traceroute(
-         af          = targetAddress.version,
-         target      = str(targetAddress),
-         description = description,
-         protocol    = 'ICMP',
-         is_oneoff   = is_oneoff,
-         packets     = packets,
-         paris       = 1,
-         size        = size   # size without IP and ICMP headers
-      )
-      measurementID = self.startRIPEAtlasMeasurement(source, measurement)
+
+      try:
+         measurement = ripe.atlas.cousteau.Traceroute(
+            af          = targetAddress.version,
+            target      = str(targetAddress),
+            description = description,
+            protocol    = 'ICMP',
+            is_oneoff   = is_oneoff,
+            packets     = packets,
+            paris       = 1,
+            size        = size   # size without IP and ICMP headers
+         )
+         ( measurementID, info ) = self.startRIPEAtlasMeasurement(source, measurement)
+      except Exception as e:
+         measurementID = None
+         info          = str(e)
+         AtlasMNSLogger.warning('Creating Traceroute experiment failed: ' + info)
+
       # Cost calculation:
       # https://atlas.ripe.net/docs/credits/
       if measurementID != None:
@@ -275,7 +289,7 @@ class AtlasMNS:
             costs = 2 * costs
       else:
          costs = 0
-      return ( measurementID, costs )
+      return ( measurementID, costs, info )
 
 
    # ###### Obtain measurement results ######################################
