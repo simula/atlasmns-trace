@@ -4,9 +4,7 @@
 import sys
 import os
 import ipaddress
-
-import AtlasMNS
-import AtlasMNSLogger
+import json
 
 
 # ###### Main program #######################################################
@@ -14,34 +12,35 @@ if len(sys.argv) < 2:
    sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
    sys.exit(1)
 
-# ====== Initialise =========================================================
-atlasMNSLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
-atlasMNS = AtlasMNS.AtlasMNS()
-if not atlasMNS.loadConfiguration(sys.argv[1]):
+
+try:
+   jsonFile = open(sys.argv[1], 'r')
+except Exception as e:
+   sys.stderr.write('Unable to open input file: ' + str(e) + '\n')
    sys.exit(1)
 
-if not atlasMNS.connectToRIPEAtlas():
+
+try:
+   jsonData = json.load(jsonFile)
+except Exception as e:
+   sys.stderr.write('Unable to read JSON: ' + str(e) + '\n')
    sys.exit(1)
 
 
-measurementIDFile = 'measurements.list'
-if not os.path.isfile(measurementIDFile):
-   # target = ipaddress.IPv6Address('2001:700:4100:2::179')
-   target = ipaddress.IPv4Address('128.39.37.179')
-   measurementID = atlasMNS.createRIPEAtlasTracerouteMeasurement(29027, target, '托马斯\'s AtlasMNS Traceroute Test')
-   #measurementID = atlasMNS.createRIPEAtlasPingMeasurement(29027, target, #'托马斯\'s AtlasMNS Ping Test')
-   if measurementID != None:
-      with open(measurementIDFile, 'w') as f:
-         f.write(str(measurementID) + '\n')
+print(json.dumps(jsonData, indent=3, sort_keys=True))
 
-else:
-   with open(measurementIDFile) as f:
-      line = f.readline()
-      measurementID = int(line)
 
-   (success, results) = atlasMNS.downloadMeasurementResults(measurementID)
-   if success:
-      print('Results for Measurement #' + str(measurementID) + ':')
-      atlasMNS.printMeasurementResults(results)
+for stage in [ 1, 2 ]:
+   for i in range(0, len(jsonData)):
+      try:
+         agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
+         agentTrafficClass = int(jsonData[i]['agentTrafficClass'])
+         agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
+         probeID           = int(jsonData[i]['probeID'])
 
-   # atlasMNS.stopRIPEAtlasMeasurement(measurementID)
+         if stage == 2:
+            print('=> ', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+
+      except Exception as e:
+         sys.stderr.write('Bad entry #' + str(i + 1) + ': ' + str(e) + '\n')
+         sys.exit(1)
