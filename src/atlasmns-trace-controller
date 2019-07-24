@@ -193,6 +193,50 @@ def listMeasurementRuns(atlasMNS):
    printMeasurementRuns(rows)
 
 
+# ###### Print agents #######################################################
+def printAgents(rows, indent = '* '):
+   sys.stdout.write(' ' * len(indent))
+   sys.stdout.write('{0:>20s} {1:40s} {2:26s} {3:16s}\n'.format(
+      'AgentHostIP', 'AgentHostName', 'LastSeen', 'Location'
+   ))
+   for row in rows:
+      # print(row)
+      sys.stdout.write(indent)
+      sys.stdout.write("{0:>20s} {1:40s} {2:26s} {3:16s}\n".format(
+         row['AgentHostIP'],
+         row['AgentHostName'].strip(),
+         str(row['LastSeen']),
+         valueOrNoneString(row['Location'])
+      ))
+
+
+# ###### List measurement runs ##############################################
+def listAgents(atlasMNS):
+   rows = atlasMNS.queryAgents()
+   print('Agents: ' + str(len(rows)))
+   printAgents(rows)
+
+
+# ###### Show help ##########################################################
+def showHelp():
+   print('Commands Overview:')
+   print('')
+   print('Agent Information')
+   print('* agents')
+   print('')
+   print('Measurement Scheduling')
+   print('* add agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* add-from-json json_file')
+   print('* check agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* list')
+   print('* remove agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('')
+   print('Miscellaneous')
+   print('* exit')
+   print('* help')
+   print('')
+
+
 
 # ###### Main program #######################################################
 if len(sys.argv) < 2:
@@ -240,8 +284,14 @@ while True:
        if argv[0] == 'exit':
           break
 
+       elif ((argv[0] == 'help') or (argv[0] == '?')):
+          showHelp()
+
        elif ((argv[0] == 'list') or (argv[0] == 'ls')):
           listMeasurementRuns(atlasMNS)
+
+       elif (argv[0] == 'agents'):
+          listAgents(atlasMNS)
 
        elif (argv[0] == 'add-from-json'):
           if len(argv) >= 2:

@@ -398,6 +398,33 @@ ORDER BY LastChange ASC;
       return schedule
 
 
+   # ###### Query agents from scheduler database ############################
+   def queryAgents(self):
+      # ====== Query database ===============================================
+      AtlasMNSLogger.trace('Querying agents ...')
+      try:
+         self.scheduler_dbCursor.execute("""
+SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
+ORDER BY LastSeen DESC
+""")
+         table = self.scheduler_dbCursor.fetchall()
+      except Exception as e:
+         AtlasMNSLogger.warning('Failed to query agents: ' + str(e))
+         return []
+
+      # ====== Provide result as list of dictionaries =======================
+      agents = []
+      for row in table:
+         agents.append({
+            'AgentHostIP':     row[0],
+            'AgentHostName':   row[1],
+            'LastSeen':        row[2],
+            'Location':        row[3]
+         })
+      # print(agents)
+      return agents
+
+
    # ###### Update schedule in scheduler database ###########################
    def updateScheduledEntry(self, scheduledEntry):
       AtlasMNSLogger.trace('Updating scheduled entry ...')
