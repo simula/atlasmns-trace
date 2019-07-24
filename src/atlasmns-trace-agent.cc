@@ -50,10 +50,11 @@
 
 
 static std::set<ResultsWriter*>                                  ResultsWriterSet;
+static const std::string                                         HostName(boost::asio::ip::host_name());
 static std::set<boost::asio::ip::address>                        SourceAddressArray;
 static std::map<boost::asio::ip::address, Service*>              ServiceSet;
 static std::map<uint32_t, std::chrono::system_clock::time_point> TimeStampSet;
-static const std::chrono::system_clock::time_point               TimeStampNull = std::chrono::system_clock::from_time_t(0);
+static const std::chrono::system_clock::time_point               TimeStampNull(std::chrono::system_clock::from_time_t(0));
 static boost::asio::io_service                                   IOService;
 static boost::asio::signal_set                                   Signals(IOService, SIGINT, SIGTERM);
 static boost::posix_time::milliseconds                           ScheduleCheckTimerInterval(15000);
@@ -61,6 +62,8 @@ static boost::asio::deadline_timer                               ScheduleCheckTi
 static boost::posix_time::milliseconds                           CleanupTimerInterval(1000);
 static boost::asio::deadline_timer                               CleanupTimer(IOService, CleanupTimerInterval);
 static std::mutex                                                Mutex;
+static std::chrono::system_clock::time_point                     PreviousLastSeenUpdate(TimeStampNull);
+static std::chrono::seconds                                      LastSeenUpdateInterval(30);
 
 
 // ###### Signal handler ####################################################
@@ -116,6 +119,23 @@ template<class clock> std::string timePointToStringUTC(const std::chrono::time_p
 }
 
 
+// ###### Update Last Seen entry ############################################
+static void updateLastSeen(pqxx::work& schedulerDBTransaction)
+{
+   for(std::set<boost::asio::ip::address>::const_iterator sourceArrayIterator = SourceAddressArray.begin();
+      sourceArrayIterator != SourceAddressArray.end(); sourceArrayIterator++) {
+      const boost::asio::ip::address& sourceAddress = *sourceArrayIterator;
+      schedulerDBTransaction.exec(
+         "INSERT INTO AgentLastSeen (AgentHostIP,AgentHostName) "
+         "VALUES (" + schedulerDBTransaction.quote(sourceAddress.to_string()) + ", " + schedulerDBTransaction.quote(HostName) + ") "
+         "ON CONFLICT (AgentHostIP,AgentHostName) DO UPDATE "
+         "SET LastSeen = NOW()"
+      );
+   }
+   PreviousLastSeenUpdate = std::chrono::system_clock::now();
+}
+
+
 // ###### Check schedule ####################################################
 static void checkSchedule(const boost::system::error_code& errorCode,
                           pqxx::lazyconnection*            schedulerDBConnection)
@@ -140,6 +160,9 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 
          // ====== Perform scheduled measurements ===========================
          HPCT_LOG(trace) << "Querying schedule ...";
+         if(std::chrono::system_clock::now() - PreviousLastSeenUpdate > LastSeenUpdateInterval) {
+            updateLastSeen(schedulerDBTransaction);
+         }
          pqxx::result result = schedulerDBTransaction.exec(
             "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeFromIP "
             "FROM ExperimentSchedule "
@@ -199,6 +222,11 @@ static void checkSchedule(const boost::system::error_code& errorCode,
                   Mutex.unlock();
                }
             }
+         }
+         if(updated) {
+            // There have been some updates. Therefore, it is also a good
+            // opportunity to update the Last Seen entry.
+            updateLastSeen(schedulerDBTransaction);
          }
          schedulerDBTransaction.commit();
       }
