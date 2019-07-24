@@ -45,7 +45,7 @@ CREATE ROLE atlasmnsagent WITH LOGIN ENCRYPTED PASSWORD '!agent!';
 GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsagent;
 GRANT SELECT, UPDATE ON TABLE ExperimentSchedule TO atlasmnsagent;
 GRANT USAGE, SELECT ON SEQUENCE ExperimentSchedule_Identifier_Seq TO atlasmnsagent;
-GRANT SELECT, UPDATE ON TABLE AgentLastSeen TO atlasmnsagent;
+GRANT INSERT, UPDATE ON TABLE AgentLastSeen TO atlasmnsagent;
 
 REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsscheduler;
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM atlasmnsscheduler;
@@ -54,6 +54,7 @@ CREATE ROLE atlasmnsscheduler WITH LOGIN ENCRYPTED PASSWORD '!scheduler!';
 GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsscheduler;
 GRANT INSERT, UPDATE, SELECT, DELETE ON ExperimentSchedule TO atlasmnsscheduler;
 GRANT USAGE, SELECT ON SEQUENCE ExperimentSchedule_Identifier_Seq TO atlasmnsscheduler;
+GRANT INSERT, UPDATE, SELECT, DELETE ON TABLE AgentLastSeen TO atlasmnsscheduler;
 
 REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsmaintainer;
 DROP ROLE atlasmnsmaintainer;
