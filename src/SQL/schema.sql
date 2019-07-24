@@ -91,3 +91,16 @@ CREATE TABLE ExperimentSchedule (
 
 DROP INDEX IF EXISTS ExperimentSchedule_LastChange_Index;
 CREATE INDEX ExperimentSchedule_LastChange_Index ON ExperimentSchedule ( LastChange );
+
+
+-- ###### Agent Last Seen ###################################################
+DROP TABLE IF EXISTS AgentLastSeen;
+CREATE TABLE AgentLastSeen (
+   AgentHostIP          INET        NOT NULL,
+   AgentHostName        CHAR(255)   NOT NULL,
+
+   LastSeen             TIMESTAMP   NOT NULL DEFAULT NOW(),
+   Location             POINT       DEFAULT NULL,
+
+   PRIMARY KEY (AgentHostIP, AgentHostName)
+);

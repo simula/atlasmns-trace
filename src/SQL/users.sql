@@ -45,6 +45,7 @@ CREATE ROLE atlasmnsagent WITH LOGIN ENCRYPTED PASSWORD '!agent!';
 GRANT CONNECT ON DATABASE atlasmnsdb TO atlasmnsagent;
 GRANT SELECT, UPDATE ON TABLE ExperimentSchedule TO atlasmnsagent;
 GRANT USAGE, SELECT ON SEQUENCE ExperimentSchedule_Identifier_Seq TO atlasmnsagent;
+GRANT SELECT, UPDATE ON TABLE AgentLastSeen TO atlasmnsagent;
 
 REVOKE ALL ON DATABASE atlasmnsdb FROM atlasmnsscheduler;
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM atlasmnsscheduler;
