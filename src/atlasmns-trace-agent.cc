@@ -63,7 +63,7 @@ static boost::posix_time::milliseconds                           CleanupTimerInt
 static boost::asio::deadline_timer                               CleanupTimer(IOService, CleanupTimerInterval);
 static std::mutex                                                Mutex;
 static std::chrono::system_clock::time_point                     PreviousLastSeenUpdate(TimeStampNull);
-static std::chrono::seconds                                      LastSeenUpdateInterval(30);
+static std::chrono::seconds                                      LastSeenUpdateInterval(3600);
 
 
 // ###### Signal handler ####################################################
