@@ -98,6 +98,10 @@ class AtlasMNS:
 
          'atlas_api_key':        None
       }
+      self.scheduler_dbConnection = None
+      self.scheduler_dbCursor     = None
+      self.results_dbConnection   = None
+      self.results_db             = None
       signal.signal(signal.SIGINT, signalHandler)
       signal.signal(signal.SIGTERM, signalHandler)
 
