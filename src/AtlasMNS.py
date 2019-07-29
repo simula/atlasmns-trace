@@ -486,7 +486,7 @@ ORDER BY LastSeen DESC
       return True
 
 
-   # ###### Connect to MongoDB results database #############################
+   # ###### Import results ##################################################
    def importResults(self, scheduledEntry, results):
       experiment = {
          'timestamp':            datetime.datetime.utcnow(),
@@ -508,3 +508,34 @@ ORDER BY LastSeen DESC
       except Exception as e:
          AtlasMNSLogger.error('Unable to import results: ' + str(e))
          return False
+
+
+   # ###### Query results ###################################################
+   def queryResults(self, identifier):
+      try:
+         # ====== Find experiment ==============================================
+         experiments = self.results_db['atlasmns'].find( { 'identifier': { '$eq': identifier }} )
+         myExperiment = None
+         for experiment in experiments:
+            if myExperiment == None:
+               myExperiment = experiment
+            else:
+               print('WARNING: Multiple experiments found! Something is wrong!')
+               myExperiment = experiment
+         if myExperiment == None:
+            return [ False, None, None, None ]
+
+         myProbeMeasurementID   = myExperiment['probeMeasurementID']
+         myAgentMeasurementTime = myExperiment['agentMeasurementTime']
+
+         # ====== Find RIPE Atlas results =======================================
+         ripeAtlasResults = self.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
+
+         # ====== Find HiPerConTracer results ===================================
+         hiPerConTracerResults = self.results_db['traceroute'].find( { 'agentMeasurementTime': { '$eq': myAgentMeasurementTime }} )
+
+         return [ True, myExperiment, ripeAtlasResults, hiPerConTracerResults ]
+
+      except Exception as e:
+         AtlasMNSLogger.error('Unable to query results: ' + str(e))
+         return [ False, None, None, None ]

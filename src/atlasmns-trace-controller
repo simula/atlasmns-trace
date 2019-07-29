@@ -220,35 +220,24 @@ def listAgents(atlasMNS):
 
 # ###### Show results #######################################################
 def showResults(atlasMNS, identifier):
-   # ====== Find experiment =================================================
-   experiments = atlasMNS.results_db['atlasmns'].find( { 'identifier': { '$eq': identifier }} )
-   myExperiment = None
-   for experiment in experiments:
-      if myExperiment == None:
-         myExperiment = experiment
-      else:
-         print('WARNING: Multiple experiments found! Something is wrong!')
-         myExperiment = experiment
-   if myExperiment == None:
-      return False
+   [ success, summary, ripeAtlasResults, hiPerConTracerResults ] = \
+      atlasMNS.queryResults(identifier)
+   if success:
+      print('Summary for ID #' + str(identifier) + ':')
+      print(bson.json_util.dumps(summary, indent=3, sort_keys=True))
 
-   print('Summary for ID #' + str(identifier) + ':')
-   print(bson.json_util.dumps(myExperiment, indent=3, sort_keys=True))
+      myProbeMeasurementID   = summary['probeMeasurementID']
+      myAgentMeasurementTime = summary['agentMeasurementTime']
 
-   myProbeMeasurementID   = myExperiment['probeMeasurementID']
-   myAgentMeasurementTime = myExperiment['agentMeasurementTime']
+      # ====== Find RIPE Atlas results ======================================
+      print('RIPE Atlas Results for Measurement ID #' + str(myProbeMeasurementID) + ':')
+      for ripeAtlasResult in ripeAtlasResults:
+         print(' * ' + bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True))
 
-   # ====== Find RIPE Atlas results =========================================
-   print('RIPE Atlas Results for Measurement ID #' + str(myProbeMeasurementID) + ':')
-   ripeAtlasResults = atlasMNS.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
-   for ripeAtlasResult in ripeAtlasResults:
-      print(' * ' + bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True))
-
-   # ====== Find HiPerConTracer results =====================================
-   print('HiPerConTracer Results for Measurement Time ' + str(myAgentMeasurementTime) + ':')
-   hiPerConTracerResults = atlasMNS.results_db['traceroute'].find( { 'agentMeasurementTime': { '$eq': myAgentMeasurementTime }} )
-   for hiPerConTracerResult in hiPerConTracerResults:
-      print(' * ' + bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True))
+      # ====== Find HiPerConTracer results ==================================
+      print('HiPerConTracer Results for Measurement Time ' + str(myAgentMeasurementTime) + ':')
+      for hiPerConTracerResult in hiPerConTracerResults:
+         print(' * ' + bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True))
 
 
 # ###### Show help ##########################################################
