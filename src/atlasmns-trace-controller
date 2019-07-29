@@ -45,6 +45,7 @@ import sys
 
 import AtlasMNS
 import AtlasMNSLogger
+import AtlasMNSTools
 
 
 # ###### Add measurement run ################################################
@@ -232,12 +233,19 @@ def showResults(atlasMNS, identifier):
       # ====== Find RIPE Atlas results ======================================
       print('RIPE Atlas Results for Measurement ID #' + str(myProbeMeasurementID) + ':')
       for ripeAtlasResult in ripeAtlasResults:
-         print(' * ' + bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True))
+         # resultStr = bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True)
+         resultStr = str(ripeAtlasResult)
+         print(' * ' + resultStr)
 
       # ====== Find HiPerConTracer results ==================================
-      print('HiPerConTracer Results for Measurement Time ' + str(myAgentMeasurementTime) + ':')
+      print('HiPerConTracer Results for Measurement Time ' + str(AtlasMNSTools.timeStampToDatetime(myAgentMeasurementTime)) + ':')
       for hiPerConTracerResult in hiPerConTracerResults:
-         print(' * ' + bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True))
+         # resultStr = bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True)
+         resultStr = str(hiPerConTracerResult)
+         print(' * ' + resultStr)
+
+   else:
+      print('No results found!')
 
 
 # ###### Show help ##########################################################
@@ -352,7 +360,7 @@ while True:
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
-       elif (argv[0] == 'add-add-measurements-from-json'):
+       elif (argv[0] == 'add-measurements-from-json'):
           if len(argv) >= 2:
              addMeasurementRunsFromJSON(atlasMNS, argv[1])
           else:
