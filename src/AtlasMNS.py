@@ -512,6 +512,27 @@ ORDER BY LastSeen DESC
          return False
 
 
+   # ###### Dump RIPE Atlas result ##########################################
+   def dumpRIPEAtlasResult(self, result):
+      # print(result)
+      try:
+         print('Probe #' + str(result['prb_id']) + ': ' +
+               result['src_addr'] + ' (' + result['from'] + ') -> ' + result['dst_addr'])
+         for hop in result['result']:
+            sys.stdout.write('   - ' + '{0:>2d}'.format(hop['hop']) + ' ')
+            for run in hop['result']:
+               try:
+                  router = run['from']
+                  rtt    = '{0:1.3f} ms'.format(run['rtt'])
+               except:
+                  router = run['x']
+                  rtt    = 'N/A   '
+               sys.stdout.write('{0:>20s} {1:>11s}'.format(router, rtt) + '   ')
+            sys.stdout.write('\n')
+      except Exception as e:
+         print('Bad result: ' + str(e))
+
+
    # ###### Query results ###################################################
    def queryResults(self, identifier):
       try:
@@ -534,7 +555,6 @@ ORDER BY LastSeen DESC
          ripeAtlasResults = self.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
 
          # ====== Find HiPerConTracer results ===================================
-         print("TS=",myAgentMeasurementTime) # , AtlasMNSTools.timeStampToDatetime(myAgentMeasurementTime))
          #{ 'timestamp': { '$eq': myAgentMeasurementTime }}
          hiPerConTracerResults = self.results_db['traceroute'].find(  )
 
