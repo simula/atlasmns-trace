@@ -270,6 +270,25 @@ def showHelp():
    print('')
 
 
+# ###### Input completer ####################################################
+class SimpleCompleter(object):
+
+   def __init__(self, options):
+      self.options = sorted(options)
+      return
+
+   def complete(self, text, state):
+      if text:
+         self.matches = [s for s in self.options if s and s.startswith(text) ]
+      else:
+         self.matches = self.options[:]
+      try:
+         response = self.matches[state]
+      except IndexError:
+         response = None
+      return response
+
+
 
 # ###### Main program #######################################################
 if len(sys.argv) < 2:
@@ -299,8 +318,20 @@ except FileNotFoundError:
    pass
 
 atexit.register(readline.write_history_file, histfile)
-readline.parse_and_bind('tab: complete')
 readline.parse_and_bind('set editing-mode vi')
+readline.set_completer(SimpleCompleter([
+   'list-agents',
+   'add-measurement',
+   'check-measurement',
+   'remove-measurement',
+   'add-measurements-from-json',
+   'list-measurements',
+   'show-results',
+   'exit',
+   'help'
+]).complete)
+readline.set_completer_delims('\t')
+readline.parse_and_bind('tab: complete')
 
 
 # ====== Main loop ==========================================================
