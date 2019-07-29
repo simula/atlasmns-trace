@@ -49,6 +49,7 @@ import socket
 import sys
 
 import AtlasMNSLogger
+import AtlasMNSTools
 
 
 # ###### Scheduler database columns #########################################
@@ -489,9 +490,9 @@ ORDER BY LastSeen DESC
    # ###### Import results ##################################################
    def importResults(self, scheduledEntry, results):
       experiment = {
-         'timestamp':            datetime.datetime.utcnow(),
+         'timestamp':            AtlasMNSTools.datatimeToTimeStamp(datetime.datetime.utcnow()),   # Ensure microseconds precision!
          'identifier':           scheduledEntry['Identifier'],
-         'agentMeasurementTime': scheduledEntry['AgentMeasurementTime'],
+         'agentMeasurementTime': AtlasMNSTools.datatimeToTimeStamp(scheduledEntry['AgentMeasurementTime']),   # Ensure microseconds precision!
          'agentHostIP':          scheduledEntry['AgentHostIP'],
          'agentTrafficClass':    scheduledEntry['AgentTrafficClass'],
          'agentFromIP':          scheduledEntry['AgentFromIP'],
@@ -501,6 +502,7 @@ ORDER BY LastSeen DESC
          'probeHostIP':          scheduledEntry['ProbeHostIP'],
          'probeFromIP':          scheduledEntry['ProbeFromIP']
       }
+      # print(experiment)
       try:
          self.results_db['ripeatlastraceroute'].insert(results)
          self.results_db['atlasmns'].insert(experiment)
@@ -532,7 +534,9 @@ ORDER BY LastSeen DESC
          ripeAtlasResults = self.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
 
          # ====== Find HiPerConTracer results ===================================
-         hiPerConTracerResults = self.results_db['traceroute'].find( { 'agentMeasurementTime': { '$eq': myAgentMeasurementTime }} )
+         print("TS=",myAgentMeasurementTime) # , AtlasMNSTools.timeStampToDatetime(myAgentMeasurementTime))
+         #{ 'timestamp': { '$eq': myAgentMeasurementTime }}
+         hiPerConTracerResults = self.results_db['traceroute'].find(  )
 
          return [ True, myExperiment, ripeAtlasResults, hiPerConTracerResults ]
 
