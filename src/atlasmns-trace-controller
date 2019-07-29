@@ -33,6 +33,7 @@
 #  Contact: dreibh@simula.no
 
 import atexit
+import bson.json_util
 import datetime
 import io
 import ipaddress
@@ -217,19 +218,53 @@ def listAgents(atlasMNS):
    printAgents(rows)
 
 
+# ###### Show results #######################################################
+def showResults(atlasMNS, identifier):
+   # ====== Find experiment =================================================
+   experiments = atlasMNS.results_db['atlasmns'].find( { 'identifier': { '$eq': identifier }} )
+   myExperiment = None
+   for experiment in experiments:
+      if myExperiment == None:
+         myExperiment = experiment
+      else:
+         print('WARNING: Multiple experiments found! Something is wrong!')
+         myExperiment = experiment
+   if myExperiment == None:
+      return False
+
+   print('Summary for ID #' + str(identifier) + ':')
+   print(bson.json_util.dumps(myExperiment, indent=3, sort_keys=True))
+
+   myProbeMeasurementID   = myExperiment['probeMeasurementID']
+   myAgentMeasurementTime = myExperiment['agentMeasurementTime']
+
+   # ====== Find RIPE Atlas results =========================================
+   print('RIPE Atlas Results for Measurement ID #' + str(myProbeMeasurementID) + ':')
+   ripeAtlasResults = atlasMNS.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
+   for ripeAtlasResult in ripeAtlasResults:
+      print(' * ' + bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True))
+
+   # ====== Find HiPerConTracer results =====================================
+   print('HiPerConTracer Results for Measurement Time ' + str(myAgentMeasurementTime) + ':')
+   hiPerConTracerResults = atlasMNS.results_db['traceroute'].find( { 'agentMeasurementTime': { '$eq': myAgentMeasurementTime }} )
+   for hiPerConTracerResult in hiPerConTracerResults:
+      print(' * ' + bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True))
+
+
 # ###### Show help ##########################################################
 def showHelp():
    print('Commands Overview:')
    print('')
    print('Agent Information')
-   print('* agents')
+   print('* list-agents')
    print('')
    print('Measurement Scheduling')
-   print('* add agent_host_ip agent_traffic_class agent_from_ip probe_id')
-   print('* add-from-json json_file')
-   print('* check agent_host_ip agent_traffic_class agent_from_ip probe_id')
-   print('* list')
-   print('* remove agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* add-measurement    agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* check-measurement  agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* remove-measurement agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* add-measurements-from-json json_file')
+   print('* list-measurements')
+   print('* show-results identifier')
    print('')
    print('Miscellaneous')
    print('* exit')
@@ -250,10 +285,10 @@ atlasMNS = AtlasMNS.AtlasMNS()
 if not atlasMNS.loadConfiguration(sys.argv[1]):
    sys.exit(1)
 
-#if not atlasMNS.connectToRIPEAtlas():
-   #sys.exit(1)
-
 if not atlasMNS.connectToSchedulerDB():
+   sys.exit(1)
+
+if not atlasMNS.connectToResultsDB():
    sys.exit(1)
 
 
@@ -287,19 +322,26 @@ while True:
        elif ((argv[0] == 'help') or (argv[0] == '?')):
           showHelp()
 
-       elif ((argv[0] == 'list') or (argv[0] == 'ls')):
-          listMeasurementRuns(atlasMNS)
-
-       elif (argv[0] == 'agents'):
-          listAgents(atlasMNS)
-
-       elif (argv[0] == 'add-from-json'):
+       elif argv[0] == 'show-results':
           if len(argv) >= 2:
-             addMeasurementRunsFromJSON(atlasMNS, argv[1])
+             try:
+                identifier = int(argv[1])
+             except Exception as e:
+                print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
+
+             showResults(atlasMNS, identifier)
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
-       elif ((argv[0] == 'add') or (argv[0] == 'remove') or (argv[0] == 'check')):
+       elif argv[0] == 'list-measurements':
+          listMeasurementRuns(atlasMNS)
+
+       elif argv[0] == 'list-agents':
+          listAgents(atlasMNS)
+
+       elif ((argv[0] == 'add-measurement') or
+             (argv[0] == 'remove-measurement') or
+             (argv[0] == 'check-measurement')):
           if len(argv) >= 5:
              try:
                 agentHostIP       = ipaddress.ip_address(argv[1])
@@ -318,6 +360,12 @@ while True:
              else:
                 raise ValueError('Unexpected command')
 
+          else:
+             print('Too few arguments for ' + argv[0] + ' given!')
+
+       elif (argv[0] == 'add-add-measurements-from-json'):
+          if len(argv) >= 2:
+             addMeasurementRunsFromJSON(atlasMNS, argv[1])
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
