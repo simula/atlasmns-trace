@@ -3,44 +3,20 @@
 
 import sys
 import os
-import ipaddress
-import json
+import datetime
+from dateutil import parser
+
+import AtlasMNSTools
 
 
 # ###### Main program #######################################################
-if len(sys.argv) < 2:
-   sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
-   sys.exit(1)
+timeStamp = 1564394879579382
+print(timeStamp)
+dt = AtlasMNSTools.timeStampToDatetime(timeStamp)
+print(dt)
 
 
-try:
-   jsonFile = open(sys.argv[1], 'r')
-except Exception as e:
-   sys.stderr.write('Unable to open input file: ' + str(e) + '\n')
-   sys.exit(1)
-
-
-try:
-   jsonData = json.load(jsonFile)
-except Exception as e:
-   sys.stderr.write('Unable to read JSON: ' + str(e) + '\n')
-   sys.exit(1)
-
-
-print(json.dumps(jsonData, indent=3, sort_keys=True))
-
-
-for stage in [ 1, 2 ]:
-   for i in range(0, len(jsonData)):
-      try:
-         agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
-         agentTrafficClass = int(jsonData[i]['agentTrafficClass'])
-         agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
-         probeID           = int(jsonData[i]['probeID'])
-
-         if stage == 2:
-            print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
-
-      except Exception as e:
-         sys.stderr.write('Bad entry #' + str(i + 1) + ': ' + str(e) + '\n')
-         sys.exit(1)
+dt = parser.parse('2019-07-29 10:07:59.579382')
+print(dt)
+timeStamp = AtlasMNSTools.datatimeToTimeStamp(dt)
+print(timeStamp)
