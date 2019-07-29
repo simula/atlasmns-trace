@@ -79,10 +79,6 @@ def checkRIPEAtlasExperiment(scheduledEntry):
             scheduledEntry['ProbeHostIP'] = str(probeHostIP)
             scheduledEntry['ProbeFromIP'] = str(probeFromIP)
 
-            # ====== Import results into results database ===================
-            if atlasMNS.importResults(scheduledEntry, results) == False:
-               return False
-
          except Exception as e:
             success = False
             scheduledEntry['Info'] = str(e)
@@ -112,13 +108,25 @@ def checkRIPEAtlasExperiment(scheduledEntry):
 
 # ###### Finished experiment ################################################
 def finished(scheduledEntry):
-   # ====== Check agent status ==============================================
-   AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
-                       ': finished run')
+   # ====== Import RIPE Atlas results into results database =================
+   # NOTE: We again download the results here, to avoid caching them after
+   #       obtaining them to extract the ProbeHostIP and ProbeFromIP. The
+   #       summary was not written before, since there was still no
+   #       HiPerConTracer result available.
+   (success, results) = atlasMNS.downloadRIPEAtlasMeasurementResults(scheduledEntry['ProbeMeasurementID'])
+   if ((success == True) and (len(results) > 0)):
+      if atlasMNS.importResults(scheduledEntry, results) == True:
+         # ====== Update state ==============================================
+         AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
+                           ': finished run')
+         scheduledEntry['State'] = 'finished'
+         atlasMNS.updateScheduledEntry(scheduledEntry)
 
-   # ====== Update state ====================================================
-   scheduledEntry['State'] = 'finished'
-   atlasMNS.updateScheduledEntry(scheduledEntry)
+      else:
+         AtlasMNSLogger.trace('ID #' + str(scheduledEntry['Identifier']) +
+                              ': unable to download results of RIPE Atlas Measurement #' +
+                              str(scheduledEntry['ProbeMeasurementID']) + ' -> retrying later!')
+
 
 
 # ###### Main program #######################################################
