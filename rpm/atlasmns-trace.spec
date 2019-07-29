@@ -58,6 +58,7 @@ Requires: python3-pymongo
 /usr/lib/python*/*-packages/AtlasMNS*.egg-info
 /usr/lib/python*/*-packages/AtlasMNS.py
 /usr/lib/python*/*-packages/AtlasMNSLogger.py
+/usr/lib/python*/*-packages/AtlasMNSTools.py
 /usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
 %{_datadir}/doc/atlasmns-trace/examples/atlasmns-configuration
 %{_datadir}/doc/atlasmns-trace/examples/SQL/README
