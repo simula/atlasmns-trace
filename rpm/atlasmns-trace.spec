@@ -60,7 +60,7 @@ Requires: python3-pymongo
 /usr/lib/python*/*-packages/AtlasMNSLogger.py
 /usr/lib/python*/*-packages/AtlasMNSTools.py
 /usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
-%{_datadir}/doc/atlasmns-trace/examples/atlasmns-configuration
+%{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
 %{_datadir}/doc/atlasmns-trace/examples/SQL/README
 %{_datadir}/doc/atlasmns-trace/examples/SQL/database.sql
 %{_datadir}/doc/atlasmns-trace/examples/SQL/install-database-and-users
@@ -117,7 +117,8 @@ Requires: %{name}-common = %{version}-%{release}
 %files agent
 %{_bindir}/atlasmns-trace-agent
 %{_mandir}/man1/atlasmns-trace-agent.1.gz
-
+%{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
+%{_datadir}/doc/atlasmns-trace/examples/atlasmns-tracedataimporter-configuration
 
 
 %changelog
