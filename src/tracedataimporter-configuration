@@ -1,0 +1,12 @@
+# ====== Trace configuration ================================================
+transactions_path = /tmp/xy
+bad_file_path     = /tmp/xy/bad
+
+# ====== Database configuration =============================================
+dbbackend         = MongoDB
+dbserver          = rolfsbukta.alpha.test
+dbport            = 27017
+dbuser            = importer
+dbpassword        = !importer!
+database          = atlasmnsdb
+dbcafile          = IGNORE
