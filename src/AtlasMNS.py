@@ -519,7 +519,7 @@ ORDER BY LastSeen DESC
          print('Probe #' + str(result['prb_id']) + ': ' +
                result['src_addr'] + ' (' + result['from'] + ') -> ' + result['dst_addr'])
          for hop in result['result']:
-            sys.stdout.write('   - ' + '{0:>2d}'.format(hop['hop']) + ' ')
+            sys.stdout.write('   - ' + '{0:>2d}'.format(hop['hop']) + ': ')
             for run in hop['result']:
                try:
                   router = run['from']
@@ -535,9 +535,20 @@ ORDER BY LastSeen DESC
 
    # ###### Dump HiPerConTracer result ######################################
    def dumpHiPerConTracerResult(self, result):
-      print(result)
+      # print(result)
       try:
-         print(result['source'] + ' -> ' + result['destination'])
+         print(str(AtlasMNSTools.binaryToIPAddress(result['source'])) +
+               '/0x{0:02x}'.format(result['tc']) +
+               ' -> ' + str(AtlasMNSTools.binaryToIPAddress(result['destination'])) +
+               ', round ' + str(1 + result['round']))
+         n = 1
+         for hop in result['hops']:
+            rtt    = '{0:1.3f} ms'.format(hop['rtt'] / 1000.0)   # Note: stored RTT is in microseconds!
+            print('   - ' +
+                  '{0:>2d}: {1:>20s} {2:>11s} {3:>3d}'.format(
+                     n, str(AtlasMNSTools.binaryToIPAddress(hop['hop'])),
+                     rtt, hop['status']))
+            n = n + 1
       except Exception as e:
          print('Bad result: ' + str(e))
 

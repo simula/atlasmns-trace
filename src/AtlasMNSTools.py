@@ -34,6 +34,7 @@
 
 
 import datetime
+import ipaddress
 
 
 TheEpoch = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
@@ -51,3 +52,13 @@ def datatimeToTimeStamp(dt):
    ts = ts + diff.seconds * 1000000
    ts = ts + diff.microseconds
    return ts
+
+
+# ###### Convert IP address to binary #######################################
+def ipAddressToBinary(address):
+   return address.packed
+
+
+# ###### Convert binary to IP address #######################################
+def binaryToIPAddress(binary):
+   return ipaddress.ip_address(binary)

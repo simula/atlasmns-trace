@@ -4,8 +4,8 @@
 import sys
 import os
 import datetime
-from dateutil import parser
-
+import dateutil.parser
+import ipaddress
 import AtlasMNSTools
 
 
@@ -16,7 +16,34 @@ dt = AtlasMNSTools.timeStampToDatetime(timeStamp)
 print(dt)
 
 
-dt = parser.parse('2019-07-29 10:07:59.579382')
+dt = dateutil.parser.parse('2019-07-29 10:07:59.579382')
 print(dt)
 timeStamp = AtlasMNSTools.datatimeToTimeStamp(dt)
 print(timeStamp)
+
+
+
+# ###### Convert IP address to binary #######################################
+def ipAddressToBinary(address):
+   return address.packed
+
+
+# ###### Convert binary to IP address #######################################
+def binaryToIPAddress(binary):
+   return ipaddress.ip_address(binary)
+
+
+
+b1 = ipAddressToBinary(ipaddress.ip_address('192.168.1.1'))
+print(str(b1))
+b2 = ipAddressToBinary(ipaddress.ip_address('2001:1:2:3:4::dead:beef'))
+print(str(b2))
+b3 = b'MXG\x9a'
+
+
+a1 = binaryToIPAddress(b1)
+print(a1)
+a2 = binaryToIPAddress(b2)
+print(a2)
+a3 = binaryToIPAddress(b3)
+print(a3)
