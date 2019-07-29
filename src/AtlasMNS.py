@@ -533,6 +533,15 @@ ORDER BY LastSeen DESC
          print('Bad result: ' + str(e))
 
 
+   # ###### Dump HiPerConTracer result ######################################
+   def dumpHiPerConTracerResult(self, result):
+      print(result)
+      try:
+         print(result['source'] + ' -> ' + result['destination'])
+      except Exception as e:
+         print('Bad result: ' + str(e))
+
+
    # ###### Query results ###################################################
    def queryResults(self, identifier):
       try:
@@ -555,8 +564,7 @@ ORDER BY LastSeen DESC
          ripeAtlasResults = self.results_db['ripeatlastraceroute'].find( { 'msm_id': { '$eq': myProbeMeasurementID }} )
 
          # ====== Find HiPerConTracer results ===================================
-         #{ 'timestamp': { '$eq': myAgentMeasurementTime }}
-         hiPerConTracerResults = self.results_db['traceroute'].find(  )
+         hiPerConTracerResults = self.results_db['traceroute'].find( { 'timestamp': { '$eq': myAgentMeasurementTime }} )
 
          return [ True, myExperiment, ripeAtlasResults, hiPerConTracerResults ]
 

@@ -233,15 +233,14 @@ def showResults(atlasMNS, identifier):
       # ====== Find RIPE Atlas results ======================================
       print('RIPE Atlas Results for Measurement ID #' + str(myProbeMeasurementID) + ':')
       for ripeAtlasResult in ripeAtlasResults:
-         # print(' * ' + resultStr)
          sys.stdout.write(' * ')
          atlasMNS.dumpRIPEAtlasResult(ripeAtlasResult)
-         ## resultStr = bson.json_util.dumps(ripeAtlasResult, indent=3, sort_keys=True)
-         #resultStr = str(ripeAtlasResult)
 
       # ====== Find HiPerConTracer results ==================================
       print('HiPerConTracer Results for Measurement Time ' + str(AtlasMNSTools.timeStampToDatetime(myAgentMeasurementTime)) + ':')
-      #for hiPerConTracerResult in hiPerConTracerResults:
+      for hiPerConTracerResult in hiPerConTracerResults:
+         sys.stdout.write(' * ')
+         atlasMNS.dumpHiPerConTracerResult(hiPerConTracerResult)
          ## resultStr = bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True)
          #resultStr = str(hiPerConTracerResult)
          #print(' * ' + resultStr)
