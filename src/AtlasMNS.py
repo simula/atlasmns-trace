@@ -84,14 +84,14 @@ class AtlasMNS:
       self.configuration = {
          'scheduler_dbserver':   'localhost',
          'scheduler_dbport':     '5432',
-         'scheduler_dbuser':     'scheduler',
+         'scheduler_dbuser':     'atlasmnsscheduler',
          'scheduler_dbpassword': None,
          'scheduler_database':   'atlasmsdb',
          'scheduler_cafile':     'None',
 
          'results_dbserver':     'localhost',
          'results_dbport':       '27017',
-         'results_dbuser':       'importer',
+         'results_dbuser':       'atlasmnsimporter',
          'results_dbpassword':   None,
          'results_database':     'atlasmnsdb',
          'results_cafile':       'None',

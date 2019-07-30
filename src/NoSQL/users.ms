@@ -1,5 +1,5 @@
 use atlasmnsdb
-db.dropUser("importer")
-db.dropUser("researcher")
-db.createUser({ user: "importer",   pwd: "!importer!",   roles: [ "readWrite" ] })
-db.createUser({ user: "researcher", pwd: "!researcher!", roles: [ "dbAdmin", "readWrite" ] })
+db.dropUser("atlasmnsimporter")
+db.dropUser("atlasmnsresearcher")
+db.createUser({ user: "atlasmnsimporter",   pwd: "!importer!",   roles: [ "readWrite" ] })
+db.createUser({ user: "atlasmnsresearcher", pwd: "!researcher!", roles: [ "dbAdmin", "readWrite" ] })
