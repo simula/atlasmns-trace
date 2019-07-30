@@ -1,3 +1,1062 @@
+commit 360eb38296d993eede8fd1eb0693cd95bfd9fe07
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 15:26:14 2019 +0200
+
+    Packaging improvements.
+
+commit 99c4cc466733e69c6cdedc657fae0bcf48534eb5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 11:27:49 2019 +0200
+
+    Added comments.
+
+commit 1ec3ce0babd2a2c1a783e6aaadbd9be49b749349
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 11:22:49 2019 +0200
+
+    Updated README.
+
+commit bde4e545648758efac978fb142230e451d432d55
+Merge: 5539110 e488cee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 11:03:13 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 5539110de26c765e0debf7e073d63bda7ca4414c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 11:02:58 2019 +0200
+
+    Improved README.
+
+commit e488ceef48d82163d6f1798007d240994453bb59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 10:55:06 2019 +0200
+
+    Minor update.
+
+commit 09b374095a5061f22c771dbf88d7f922bf3088b4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 10:54:32 2019 +0200
+
+    Improved Controller and Scheduler configuration.
+
+commit f55f03350351edade2d58873f688a9b0a5ab067b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 10:05:18 2019 +0200
+
+    Fedora 28 is deprecated. Removed from Travis CI configuration.
+
+commit f6d47f50c0dbccc4e6595b6f613635a57f38dec0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 09:27:59 2019 +0200
+
+    Renamed example users.
+
+commit 406d4cb2e487613c373ac13c207f5c98ce62f609
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 15:03:09 2019 +0200
+
+    Some clean-ups.
+
+commit 7e5e6c273d5bdd3fbfab9feafa5cb691e2bc2a2a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 14:55:39 2019 +0200
+
+    Improved readline configuration.
+
+commit d78410a0ec931f616f5a2055352c218de656b0d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 14:55:28 2019 +0200
+
+    Minor improvements.
+
+commit 3feba3521ff4b2c913febcab6a1af10ef1d4ffe2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 13:15:12 2019 +0200
+
+    Controller improvements.
+
+commit 83afa58725034c083ad968724f799d7399fa9b27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 13:11:22 2019 +0200
+
+    Improved output of results.
+
+commit ada950526fd8d9324b1d7b1f07de7693fe9f9b11
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:47:31 2019 +0200
+
+    Further updates.
+
+commit 3c2c3bba8c19cbc4f1cf61f2ff1b08cc7174ce74
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:38:54 2019 +0200
+
+    Improved output.
+
+commit 41a4f709678df2bf50e82bae91c33cb5831140ec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:14:58 2019 +0200
+
+    Updated packaging files.
+
+commit feba42cf6a68ea32d480df17ae37b57558156123
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:14:53 2019 +0200
+
+    Updated test program.
+
+commit d6a81841e19be22ce851e7ebaafd244bbbe45287
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:14:43 2019 +0200
+
+    Improved Controller.
+
+commit 4d3b0b35fea57a1230c84369b482a6324d5c8899
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 12:14:26 2019 +0200
+
+    Improved time stamp handling.
+
+commit 4918e7aec3a9c5bbe6a879560cfa7fad966d1e35
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 11:56:42 2019 +0200
+
+    Added configuration file.
+
+commit f0bc6a91c1b1a24e7c25d47ab2ec3551989d508b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 10:51:08 2019 +0200
+
+    Scheduler improvements.
+
+commit e6f99eefdccb52e5826847ab1a4cd6a90cafcc28
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 10:21:42 2019 +0200
+
+    Some clean-ups.
+
+commit b36472d8c62328b06b5d33ba96aefcb556c2fcf6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 29 10:15:10 2019 +0200
+
+    Improved Controller.
+
+commit 7d860b97f52896cd387647dc8af322da03791fb0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 11:46:25 2019 +0200
+
+    Minor update.
+
+commit 0f69a615589e03a8ca4a5f7bee70f3654b8d68a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 11:28:39 2019 +0200
+
+    Improved controller.
+
+commit f67f823ed254d69b0bcbc8ecb830b30a223e9202
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 11:09:58 2019 +0200
+
+    Maintain "Last Seen" table for the agents.
+
+commit 75e54d714f80ab00216752917331fd0e05d75e9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 11:09:44 2019 +0200
+
+    Updated schema.
+
+commit bd51ecfaf0718347ca66878fcade9756d9e16bbf
+Merge: fbde226 64435ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 10:27:27 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit fbde226e0fa9a5839a616a53943e1ab0df8f8ea2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 24 10:27:11 2019 +0200
+
+    Updated schema.
+
+commit 64435ac1377b717f267386a29325ad1d317ee850
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:43:42 2019 +0200
+
+    An update.
+
+commit e56f534cfbb275a9ded07ce2e631b11dc14fed69
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:34:32 2019 +0200
+
+    Improved JSON input handling.
+
+commit 7e55eed7a4abbd956bd547a37b1a8515e2d95c33
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:29:42 2019 +0200
+
+    Read input from JSON.
+
+commit fc5fd73a1c98a79e6df2f2572060f97bd9394262
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:29:33 2019 +0200
+
+    Updated test script.
+
+commit ba5cb5d57ad3950b501759aa9ebcc0b358236cd3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:22:29 2019 +0200
+
+    Updated test script.
+
+commit 9f069c914bc876bb6db6790b94fe3dba3dc6cee0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:00:10 2019 +0200
+
+    Renamed test input file.
+
+commit 206c4fec07c3be1fa657ae66e679209d2c3c3571
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 16:00:05 2019 +0200
+
+    Added test input file.
+
+commit eb65b41bd0b0e069f3656414ba16c469b907e8b0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 15:49:06 2019 +0200
+
+    Dependency fix.
+
+commit 8e3081a34f3a44621ac5edd308eddaa4059e8017
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 13:44:18 2019 +0200
+
+    Renamed file.
+
+commit 0d1771d93b3a16833a460bcc9fe4558511679c3f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 12:32:43 2019 +0200
+
+    Dependency update.
+
+commit e1dc70f9dddfb454ee7eb048eb52c74f1b6ee790
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 11:12:40 2019 +0200
+
+    Improved error handling.
+
+commit 7952e9df7a70b6d6d9472589c06fe9584004f66b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 10:51:04 2019 +0200
+
+    Minor update.
+
+commit 32c3ac858f5cdae7fe8619100d42d4c9665b9a90
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 10:49:00 2019 +0200
+
+    No specification of start time => now.
+
+commit 7acc633df4d5ce7ed073e08371c38870c3833c9e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 23 10:48:45 2019 +0200
+
+    Added cost calculation.
+
+commit e97604993fb6b3db61d30ce9cf3174854da867e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 18:42:38 2019 +0200
+
+    Updated example.
+
+commit 3a84c997cf1e5cf4bb6344e18473aa925a98d11d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 18:39:56 2019 +0200
+
+    Improved Controller.
+
+commit 7f89e31ec3532926ff8a0413bc5133a538fec382
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:32:50 2019 +0200
+
+    Some clean-ups.
+
+commit 0e353f4bfd227b9f7cd7d708520726507d04431c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:23:54 2019 +0200
+
+    Removed debug output.
+
+commit 05e70c8df64290e4d591ffd698fc426b39eee4f4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:23:29 2019 +0200
+
+    Agent now handles time stamp correctly.
+
+commit 0a1bde005810b04c6e21cfbaf8ae437046832487
+Merge: 3c4b07f c7a8944
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:17:09 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 3c4b07f3477609afe86c4eafe9dc7bebe69b2823
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:16:54 2019 +0200
+
+    Update for changed SQL schema.
+
+commit c7a894446092ffecb00b40d77739b50eb8856068
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:16:28 2019 +0200
+
+    Added function to convert time object to string.
+
+commit d0da60a8cc10e269d9e4f05b37df4260cdc50ae8
+Merge: 1213c02 e30effd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 17:15:50 2019 +0200
+
+    Merge branch 'master' of github.com:simula/atlasmns-trace
+
+commit e30effdfffc0276f848baf13c9d38f18d57241b5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 16:28:32 2019 +0200
+
+    Updated SQL schema.
+
+commit 892f92e02cc56adff057fcb6dfe5e9c75e7aa0ff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 16:28:21 2019 +0200
+
+    Further improvements for agent.
+
+commit 65e42980afe72292062e24b0ad037ab79c7ece9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 16:16:00 2019 +0200
+
+    Improved agent.
+
+commit 1213c02f69633bd56d30c79e6c2a70c1a7e74782
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 12:48:20 2019 +0200
+
+    Updated manpage.
+
+commit b8ef0032460a3455af3ceb4df2c0dbbb3cf01c4f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 12:48:13 2019 +0200
+
+    Added test.
+
+commit 3e298bcc50200f37238507bd78a09d0276593129
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 12:09:05 2019 +0200
+
+    Improved agent.
+
+commit 475ecb54f857c5328289a749696875a330e0ee97
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 11:13:33 2019 +0200
+
+    Improved timer handling.
+
+commit e44282eda9007bd73066d689e1ed8a1535ee8f54
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 19 11:00:52 2019 +0200
+
+    Some improvements. Now, the latest libhipercontracer is needed!
+
+commit ef0d3bc7ba1417a61dc8787344574dbb575e7244
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 17:30:33 2019 +0200
+
+    Improved naming of fields.
+
+commit 7572c6b5046c7b8a97d6ae646f64a9f0a5949bc7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 17:22:52 2019 +0200
+
+    Improved agent.
+
+commit f2bc5e9a56f3d434acd347cd401e544afa21b4e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 15:31:02 2019 +0200
+
+    Some clean-ups.
+
+commit b83f3ac4f78d38e9a3c5770fa8f9592530b62896
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 15:26:23 2019 +0200
+
+    Improved agent.
+
+commit 93b4b207d99ddbe2b1ddf05ff5d0095e3a8ef8e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 14:55:39 2019 +0200
+
+    Improved main loop of agent.
+
+commit f1c6287f8c556bedc5d01106325a0ea0dd096c87
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 14:08:27 2019 +0200
+
+    More work on the agent.
+
+commit d1813efdd358c5670600832f73393b26ff004185
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 13:39:22 2019 +0200
+
+    Some scheduler updates.
+
+commit ba92ee802d9d87d7981eb746a42781b1eb28cd89
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 18 13:31:33 2019 +0200
+
+    Added test JSON input file.
+
+commit 49f88676f269ce1b8874294d2b00bccf8200e057
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 11 12:32:41 2019 +0200
+
+    A fix.
+
+commit 3ec98d13491f83663e5a8f1b4f5b394eae6c77ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 11 11:39:08 2019 +0200
+
+    A fix.
+
+commit 4ff5afde6b464156f5d76e5378b86f23b0e3e041
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 11 09:57:14 2019 +0200
+
+    Dependency update.
+
+commit ae0026bc1f2e499748fbcf05cc6f955728b8cac3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 11 09:47:40 2019 +0200
+
+    Updated slides.
+
+commit c65c2f248ad7ab0cc2c87c294e1012074e98f790
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 11 09:22:07 2019 +0200
+
+    Added slides.
+
+commit d80179dca3dd7e50efebfead7bb117db8d2b6c43
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:38:12 2019 +0200
+
+    Added signal handler initialisation.
+
+commit 6c88a87884b039c4a3859687b3284888b3ddc912
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:37:04 2019 +0200
+
+    Improved service initialisation.
+
+commit 0e905ca0f96d47e717e2b558ebafa97ac135eacf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:11:20 2019 +0200
+
+    Some improvements.
+
+commit 2eb915c82d552fc0cac1c4e3279d722c1dddb9b2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:01:53 2019 +0200
+
+    Minor clean-up.
+
+commit 9f48b1106cdce6310aaf44362eb5331e3ae72dee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:01:42 2019 +0200
+
+    Fixed installation path.
+
+commit 2ed411117ec8bead0ba834218804ac3ae8305a9a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 16:01:18 2019 +0200
+
+    RPM spec fixes.
+
+commit a62aa5ac996d15b1e8db6e11a51267ab4a8b2f00
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 13:03:11 2019 +0200
+
+    Minor clean-up.
+
+commit b29f0415ed3ae456572ec95364024d6c31f5cfbc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 13:02:59 2019 +0200
+
+    Some updates for the agent.
+
+commit e9c8e271a51cabccb6dcb5b664dd337a4ec61205
+Merge: 6a5a1d0 97262d8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 16:29:45 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 6a5a1d0508b8c16c58919643cd8fbfbc4603194f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 16:29:23 2019 +0200
+
+    Updated configuration.
+
+commit 97262d818648a9736a9f00b044331131b8dc2e4d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 14:58:16 2019 +0200
+
+    Improved log output.
+
+commit 8b75ae50165b65ac19ff7d57b4b080f8752fd074
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 14:56:45 2019 +0200
+
+    Updated test program.
+
+commit 42644af0d9c28e7c10810921f2b4849a2781c3e5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 14:16:55 2019 +0200
+
+    Minor updates.
+
+commit d9ab2587393f3a4801c7645f3c9ab3adbded507d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 14:07:06 2019 +0200
+
+    Added some comments about the states.
+
+commit d4bf9e20de073642db2111c665b2b52ee35a9b47
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:58:32 2019 +0200
+
+    Added scheduler loop.
+
+commit eb5c0f03e9c63676e444196aa79f19857bf5693a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:40:48 2019 +0200
+
+    Some clean-ups.
+
+commit 85e3a8c35ff9cfb385c7e6a1790b499f5947dd9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:36:46 2019 +0200
+
+    Renamed script.
+
+commit bc093785d630929db4b63620573f92ab65a517af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:36:32 2019 +0200
+
+    Added helper script.
+
+commit e07a1890a5776d3e0d7ea191a96e76b703c34956
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:10:04 2019 +0200
+
+    Improved scheduler.
+
+commit b36e215301c9ce225b889989322ea36156cbdf3e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 13:09:58 2019 +0200
+
+    Updated schema.
+
+commit fa900ef0fd9b984ee6fff4ae9b22e5d64efe1311
+Author: Thomas Dreibholz <dreibh@iem.uni-due.de>
+Date:   Thu Jul 4 12:31:13 2019 +0200
+
+    An update.
+
+commit 9016b5e2ea5f8c8ee90e3b29528ded73a0889dc5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 09:56:54 2019 +0200
+
+    Some clean-ups.
+
+commit d3f60cc37fccb4f2b1202a437232e3c2fdf1711e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 09:54:52 2019 +0200
+
+    An update.
+
+commit 471f33caabc6c4d5c74a72afc589b5f8a73d7bcd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 4 09:49:46 2019 +0200
+
+    Further scheduler work.
+
+commit 21511ba8e289baf2b170c0bb56e3650186dea579
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 16:58:55 2019 +0200
+
+    Another schema update.
+
+commit 867334a12bba1863f9f19ea50bfc8b36fb6e2448
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 16:37:47 2019 +0200
+
+    Updated schema.
+
+commit 38d757984aafeb0dfd9292aefc6c7f4887b9d79d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 16:13:28 2019 +0200
+
+    Updated privilegues.
+
+commit 0e1520532475e9a4b85914645d7ffd4971bac0cb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 15:33:49 2019 +0200
+
+    Added unique constraint.
+
+commit a8d7aa1593e8e24ce46851df91bc1347e1793710
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 15:26:35 2019 +0200
+
+    Updated privileges.
+
+commit 69774e0cb1e9cedbedf99ecf015679dc7c5b400d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 15:16:59 2019 +0200
+
+    Updated schema.
+
+commit 8606f783ffdfe75c979cc91db301eeed3de630d6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 15:13:34 2019 +0200
+
+    Updated users.
+
+commit e95e99ac259c9f07ae42b05c2accf87cee4ff51b
+Merge: 43fd926 21511ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 23:13:04 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 43fd9262da775e61c5d2a0677ae28e70e0496060
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 23:12:53 2019 +0200
+
+    Further scheduler updates.
+
+commit fa62ce1f7f898421f68a99e390f2e61c84101e57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 22:51:47 2019 +0200
+
+    Further work on the scheduler.
+
+commit 3b0cb75b92ab64350c4eb7ab6af549131343c0f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 21:19:53 2019 +0200
+
+    Added more scheduler functionality.
+
+commit 144766b868ea8edf01d98b1dc414cbdfa454d351
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 21:19:44 2019 +0200
+
+    Updated scheduler.
+
+commit 0e94c0a1d0884d4f9ea2f284966d8bb2ccf4440f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jun 30 21:16:57 2019 +0200
+
+    Updated schema.
+
+commit cb40556eb1aab9d22510aec3ea50e3e602412218
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 11:51:10 2019 +0200
+
+    Further improvements.
+
+commit 0f8c0ee02ca259a8d2302faa8bf5eae382522b2c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 11:35:53 2019 +0200
+
+    Further RIPE Atlas handling improvements.
+
+commit b89cd66f699af5a9319e2fe89244488a48ac3ee5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 11:13:15 2019 +0200
+
+    Added RIPE Atlas helper functions.
+
+commit 0506648d9ad4328dd9550a29da76d3e1d9bd74be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 3 10:37:34 2019 +0200
+
+    Minor updates.
+
+commit 2eab6ffc6d5e4d81b5770a35c1b24e68908f164a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 16:59:20 2019 +0200
+
+    An update.
+
+commit 9489d0b1ffb5da5a2c0bc08b86ba57577c522b0b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 16:49:15 2019 +0200
+
+    Packaging file updates.
+
+commit a42d8042f1a35e1869da520a7a3c31596089beaf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 16:13:35 2019 +0200
+
+    Updated packaging files.
+
+commit 4b00f6e73807b00e27052405c98707eced6d0115
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 16:13:24 2019 +0200
+
+    Script improvements.
+
+commit ee2d0fd9186d85d0607b4755b519f0486936b91a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 16:13:16 2019 +0200
+
+    Some clean-ups.
+
+commit 05c5f608684c45895b4c6a063cb8c833bb7d7d99
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 15:59:15 2019 +0200
+
+    Added file.
+
+commit 38009dfb46c1131c3ae795016353137eefc357ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 15:59:03 2019 +0200
+
+    Updated test script.
+
+commit 4c523c6d97e63ca31ce03e6601715b1a700732c9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 15:20:24 2019 +0200
+
+    Some updates.
+
+commit a3cff2a2d6045544deae16c95d1d1eb7c5324213
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 2 11:00:07 2019 +0200
+
+    Added test script.
+
+commit 5e39efb9cfb1471484b8c048da3625d1386e9938
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 28 22:25:13 2019 +0200
+
+    Some updates.
+
+commit f7e991e3bf73465173cd6dd3fdf8a0ac243df22c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 1 16:03:44 2019 +0200
+
+    Added further database functionality.
+
+commit 6e2ba8bd292cdade8f1f453b6c6c71e824a194f0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 1 15:48:46 2019 +0200
+
+    Added database handling.
+
+commit 9056fec2a8078ad86f596dfa61d647c20b07b752
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 1 14:55:30 2019 +0200
+
+    Added program options handling.
+
+commit 25d585bc0c64ff359cda52c45c143cf9ae6cf12a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 1 12:42:15 2019 +0200
+
+    Added libpgxx into CMakeLists.txt.
+
+commit 1c9329e9017e5fd1ef3a4826bd6625708ec9d2c8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 15:00:31 2019 +0200
+
+    Another schema update.
+
+commit 4b9ca508d3d11b173289101219c3a4c5a8d68df6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 14:20:44 2019 +0200
+
+    Further improvements.
+
+commit 6c15d3c0534758d0f915bb469db954f17749a41d
+Merge: d084643 49c96f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 14:11:05 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit d084643390558665a05dba5c14a0001838ce5fc5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 14:10:55 2019 +0200
+
+    Updated controller.
+
+commit 49c96f8c6612007d969ae5802f35e70ea252283c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 14:02:22 2019 +0200
+
+    Updated schema.
+
+commit cffdca1452a2298322459d6de354db478b9ba347
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 11:25:23 2019 +0200
+
+    Updated schema.
+
+commit 5fe54880a98b2e5c507c915c71b2ff93ab10279a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 11:24:55 2019 +0200
+
+    Improved controller.
+
+commit e536f0e821818a04fcff5bf1844d01853dadf495
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 11:24:50 2019 +0200
+
+    Updated test script.
+
+commit 046e5f0db08885e5473edd7c91ebc74f85779cbd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 11:04:18 2019 +0200
+
+    Some work on the controller.
+
+commit aee85994255697f688ac72b3fe50f80f7d6c06a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 15:52:50 2019 +0200
+
+    Improved CI script.
+
+commit 72faeb831a8f0c32dce41ac79d78189a2eb9d822
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:46:19 2019 +0200
+
+    Minor clean-ups.
+
+commit 511c007746b95437f638006cc7c0a7324d6c9d83
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:37:19 2019 +0200
+
+    Updated packaging files.
+
+commit c1749fb568e47cf491adc317ccf8d2c2233ac4fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:37:04 2019 +0200
+
+    Updated manpages.
+
+commit 340cc2058d4e420875c7a7543cb9c653f38489dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:30:10 2019 +0200
+
+    Some updates.
+
+commit 5d5cb7a3fddb34b45dd48154e03215115df4e6d7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:21:53 2019 +0200
+
+    Added test script.
+
+commit c8fb675806c6d0d5704144407ed0c18584266eef
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 14:09:15 2019 +0200
+
+    Started to write Controller.
+
+commit 1e0fb9cedd9373d56167e9ad3006a324ea7c89ec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 11:38:41 2019 +0200
+
+    Added missing files.
+
+commit d3c335ee8be0c9f10a55c441d7b349d7463c74e9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 11:34:07 2019 +0200
+
+    Updated spec file.
+
+commit d965423217d5396055a251db45659e21cb383a0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 11:30:38 2019 +0200
+
+    Dependency fix.
+
+commit 28e75de372d90bc305310674d5a70bfdcb6a5160
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 11:08:27 2019 +0200
+
+    Moved functions into separate Python library.
+
+commit ebb28fa3871ef300ae38b4d1ca3671233715535f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 10:57:51 2019 +0200
+
+    Improved scheduler code.
+
+commit 30a17d0677ca9de4a74350ac1a0ace5f5ebeacb2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 10:31:18 2019 +0200
+
+    Added file.
+
+commit eb735ad92cc77162f7a032a094818924411986a0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 09:13:55 2019 +0200
+
+    Updated test script.
+
+commit f9ffa2ef098a4cbb21491ff349078def94c1aab6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 08:54:01 2019 +0200
+
+    Improved script.
+
+commit 12d435073e8bb9dfd3ee760deb6e31484819ceb7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 25 08:51:36 2019 +0200
+
+    Added test script.
+
+commit 1d986eb4c10da4810300de060b30fdfee934d285
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 16:28:37 2019 +0200
+
+    Added RIPE Atlas connection handling.
+
+commit a05e2fe57c1d0e6d0ce1bec46c749cded2427be9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 16:13:21 2019 +0200
+
+    Updated Travis CI configuration.
+
+commit bf2596e1c5908596625ea00423951d275d663707
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 14:09:03 2019 +0200
+
+    Reverted script changes.
+
+commit 014feca70fa40c98a4d006ae4f93151f3965dd4b
+Merge: e380caa 62dcc97
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 14:06:34 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit e380caa50e2535a411cf217b61a9a69d281cd012
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 14:06:19 2019 +0200
+
+    Another update.
+
+commit 62dcc97dfaea2920464910517745c1c72b696371
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 14:06:01 2019 +0200
+
+    Some updates.
+
+commit b46a5b2ea3fba00b9636d6fb5a0816c1d68e307c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 13:34:21 2019 +0200
+
+    Some improvements.
+
+commit 3bdfe56acc528da64050fb77cbe461e8ba15a5ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 13:34:11 2019 +0200
+
+    Updated build scripts.
+
+commit 4a162cb9c618bd350d6be3582868f498124e1e9a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 13:33:58 2019 +0200
+
+    Updated script.
+
+commit ba3a965c50eb9905fd71dd8744708a117fbf2159
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:40:55 2019 +0200
+
+    Added configuration file.
+
+commit 9b1eea5817622965a85a976a66f3b95c81ba419f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:27:02 2019 +0200
+
+    Dependency fix.
+
+commit f9c987c3948b8aeb86254725a3931c1c76fc6f50
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:26:55 2019 +0200
+
+    Build script updates.
+
+commit 5b9678d4b3e0957efde84f07b50f75ecbf3057c3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:19:49 2019 +0200
+
+    Compile with C++14 standard.
+
+commit 846e0fabc74156414f66dee76b6354c5de22226a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:19:44 2019 +0200
+
+    A fix.
+
+commit 7a78023f8f53e1be8e3e3eacc36e08bdd34d1554
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 12:16:43 2019 +0200
+
+    Minor update.
+
+commit b33c1b6e890fcfc77b31753ad8a23b6e68250aac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 11:57:36 2019 +0200
+
+    A fix.
+
+commit ce54b9e3fd760945ee724b8956ac5e5278eb6995
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 11:49:59 2019 +0200
+
+    Some more work on the scheduler.
+
+commit e5cbd77d7a92b13baca1ec4009cdad1955d9996a
+Merge: 79cbad3 95066f0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:43:11 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 79cbad37253abdf85a048759fcbb6618eae6d3e5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:41:30 2019 +0200
+
+    MongoDB updates.
+
+commit 2430d95eeeabc11aa04452fb2deb7d5a0ed882a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:39:09 2019 +0200
+
+    Some SQL updates.
+
+commit 95066f0f41871f2d64431ec196922108710b8a89
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 24 10:37:16 2019 +0200
+
+    Minor updates.
+
 commit 82d16bbed7c7eaf16a9e19e0b80ef0ae75eaf812
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Jun 24 10:28:32 2019 +0200
