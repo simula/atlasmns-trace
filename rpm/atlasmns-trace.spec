@@ -49,7 +49,7 @@ Requires: nornet-management
 Requires: python3-colorlog
 Requires: python3-psycopg2
 Requires: python3-pymongo
-Requires: ripe-atlas-cousteau (>= 1.4.2)
+Requires: ripe-atlas-cousteau >= 1.4.2
 
 %description common
  This package contains common functions for the Atlas/MNS Trace programs.
