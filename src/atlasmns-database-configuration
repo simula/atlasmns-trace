@@ -1,4 +1,5 @@
 # ====== PostgreSQL database server for scheduler ===========================
+# This part is needed for Controller, Scheduler and Agent.
 scheduler_dbserver   = rolfsbukta.alpha.test
 scheduler_dbport     = 5432
 scheduler_dbuser     = atlasmnsscheduler
@@ -7,6 +8,7 @@ scheduler_database   = atlasmnsdb
 scheduler_cafile     = IGNORE
 
 # ====== MongoDB database server for results ================================
+# This part is needed for Controller and Scheduler.
 results_dbserver     = rolfsbukta.alpha.test
 results_dbport       = 27017
 results_dbuser       = atlasmnsimporter
@@ -15,4 +17,5 @@ results_database     = atlasmnsdb
 results_cafile       = IGNORE
 
 # ====== RIPE Atlas =========================================================
+# This part is needed for the Scheduler.
 atlas_api_key        = PROVIDE_ATLAS_API_KEY_HERE
