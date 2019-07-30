@@ -291,15 +291,16 @@ class SimpleCompleter(object):
 
 
 # ###### Main program #######################################################
-if len(sys.argv) < 2:
-   sys.stderr.write('Usage: ' + sys.argv[0] + ' configuration_file\n')
-   sys.exit(1)
-
 
 # ====== Initialise =========================================================
+if len(sys.argv) == 1:
+   configurationFile = os.path.expanduser('~/.atlasmns-database-configuration')
+else:
+   configurationFile = sys.argv[1]
+
 atlasMNSLogger = AtlasMNSLogger.AtlasMNSLogger(AtlasMNSLogger.TRACE)
 atlasMNS = AtlasMNS.AtlasMNS()
-if not atlasMNS.loadConfiguration(sys.argv[1]):
+if not atlasMNS.loadConfiguration(configurationFile):
    sys.exit(1)
 
 if not atlasMNS.connectToSchedulerDB():
