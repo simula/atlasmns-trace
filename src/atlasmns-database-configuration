@@ -7,12 +7,12 @@ scheduler_database   = atlasmnsdb
 scheduler_cafile     = IGNORE
 
 # ====== MongoDB database server for results ================================
-results_dbserver   = rolfsbukta.alpha.test
-results_dbport     = 27017
-results_dbuser     = atlasmnsimporter
-results_dbpassword = !importer!
-results_database   = atlasmnsdb
-results_cafile     = IGNORE
+results_dbserver     = rolfsbukta.alpha.test
+results_dbport       = 27017
+results_dbuser       = atlasmnsimporter
+results_dbpassword   = !importer!
+results_database     = atlasmnsdb
+results_cafile       = IGNORE
 
 # ====== RIPE Atlas =========================================================
-atlas_api_key      = PROVIDE_ATLAS_API_KEY_HERE
+atlas_api_key        = PROVIDE_ATLAS_API_KEY_HERE
