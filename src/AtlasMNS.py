@@ -113,7 +113,7 @@ class AtlasMNS:
       try:
          parsedConfigFile.readfp(io.StringIO(u'[root]\n' + open(configFileName, 'r').read()))
       except Exception as e:
-         AtlasMNSLogger.error('Unable to read database configuration file' +  configFileName + ': ' + str(e))
+         AtlasMNSLogger.error('Unable to read database configuration file ' +  configFileName + ': ' + str(e))
          return False
 
       for parameterName in parsedConfigFile.options('root'):
