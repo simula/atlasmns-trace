@@ -29,7 +29,7 @@ Depends: nornet-management,
          python3-colorlog,
          python3-psycopg2,
          python3-pymongo,
-         ripe-atlas-cousteau (>= 1.4.2),
+         ripe-atlas-cousteau,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace common functions

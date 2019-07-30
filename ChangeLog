@@ -1,3 +1,21 @@
+commit d343ff7f9e879942cdccbf08cef234105f7bb8e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 16:08:02 2019 +0200
+
+    Updated CMakeLists.txt.
+
+commit 7482e17aa3482fc25f10bff6db8d300118339bba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 16:04:39 2019 +0200
+
+    Added ripe-atlas-cousteau as submodule.
+
+commit b146a77da0c926f72141a06f3e539c4cfc2c626a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 30 15:30:57 2019 +0200
+
+    New release atlasmns-trace-0.1.1.
+
 commit c1cc248978a139caf3f10118a3163124bfd1fbdd
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Jul 30 15:30:48 2019 +0200
