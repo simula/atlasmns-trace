@@ -44,7 +44,7 @@ INSTALL(FILES atlasmns-trace-agent.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 # EXAMPLES
 #############################################################################
 
-INSTALL(FILES atlasmns-trace-importer DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/cron.d)
+INSTALL(FILES atlasmns-tracedataimporter DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/cron.d)
 
 INSTALL(FILES atlasmns-database-configuration atlasmns-tracedataimporter-configuration
         DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/atlasmns-trace/examples)

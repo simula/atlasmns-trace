@@ -410,7 +410,7 @@ ORDER BY LastChange ASC;
       try:
          self.scheduler_dbCursor.execute("""
 SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
-ORDER BY LastSeen DESC
+ORDER BY AgentHostName,AgentHostIP
 """)
          table = self.scheduler_dbCursor.fetchall()
       except Exception as e:

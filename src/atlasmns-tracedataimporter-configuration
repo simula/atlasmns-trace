@@ -1,6 +1,6 @@
 # ====== Trace configuration ================================================
-transactions_path = /tmp/xy
-bad_file_path     = /tmp/xy/bad
+transactions_path = /var/atlasmns
+bad_file_path     = /var/atlasmns/bad
 
 # ====== Database configuration =============================================
 dbbackend         = MongoDB
