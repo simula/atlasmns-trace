@@ -178,11 +178,6 @@ while not AtlasMNS.breakDetected:
 
       # ------ State == 'agent_scheduled' -----------------------------------
       elif state == 'agent_scheduled':
-
-         #print("FIXME: TEST!")
-         #scheduledEntry['State'] = 'agent_completed'
-         #atlasMNS.updateScheduledEntry(scheduledEntry)
-
          # Nothing to do here!
          continue
 
