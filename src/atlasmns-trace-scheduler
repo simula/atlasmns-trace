@@ -118,7 +118,10 @@ def finished(scheduledEntry):
       if atlasMNS.importResults(scheduledEntry, results) == True:
          # ====== Update state ==============================================
          AtlasMNSLogger.info('ID #' + str(scheduledEntry['Identifier']) +
-                           ': finished run')
+                             ': finished Agent run ' +
+                             '(' +  str(scheduledEntry['AgentHostIP']) + '/' + str(scheduledEntry['AgentFromIP']) + ')'
+                             ' -> ' +
+                             'Probe #' + str(scheduledEntry['ProbeID']) + ' (' + str(scheduledEntry['ProbeHostIP']) + '/' + str(scheduledEntry['ProbeFromIP']) + ')')
          scheduledEntry['State'] = 'finished'
          atlasMNS.updateScheduledEntry(scheduledEntry)
 
