@@ -359,6 +359,10 @@ int main(int argc, char** argv)
       ( "resultstransactionlength",
            boost::program_options::value<unsigned int>(&resultsTransactionLength)->default_value(60),
            "Results directory in s" )
+
+      ( "config-file",
+          boost::program_options::value<std::string>(&configurationFileName),
+          "Configuration file" )
     ;
    commandLineOptions.add(configurationFileOptions);
    boost::program_options::positional_options_description positionalOptions;
