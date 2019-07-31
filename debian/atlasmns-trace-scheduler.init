@@ -34,7 +34,7 @@ ATLASMNS_TRACE_SCHEDULER_DAEMON="/usr/bin/atlasmns-trace-scheduler"
 ATLASMNS_TRACE_SCHEDULER_PIDFILE="/var/run/${NAME}.pid"
 ATLASMNS_TRACE_SCHEDULER_LOGFILE="/var/log/${NAME}.log"
 ATLASMNS_TRACE_SCHEDULER_DATABASE_CONFIGURATION="/etc/nornet/atlasmns-database-configuration"
-ATLASMNS_TRACE_SCHEDULER_ARGS="--config-file ${ATLASMNS_TRACE_SCHEDULER_DATABASE_CONFIGURATION}"
+ATLASMNS_TRACE_SCHEDULER_ARGS="${ATLASMNS_TRACE_SCHEDULER_DATABASE_CONFIGURATION}"
 
 test -x ${ATLASMNS_TRACE_SCHEDULER_DAEMON} || exit 0
 
@@ -67,7 +67,7 @@ echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>$
 case "$1" in
   start)
    echo -n "Starting $DESC: "
-   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} -- ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
    echo "${NAME}."
    ;;
   stop)
@@ -86,7 +86,7 @@ case "$1" in
    start-stop-daemon --stop --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} || true
    rm -f ${ATLASMNS_TRACE_SCHEDULER_PIDFILE}
    sleep 1
-   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} -- ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
    echo "${NAME}."
    ;;
   status)
