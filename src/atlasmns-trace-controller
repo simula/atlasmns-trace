@@ -219,11 +219,26 @@ def printAgents(rows, indent = '* '):
       ))
 
 
-# ###### List measurement runs ##############################################
+# ###### List agents ########################################################
 def listAgents(atlasMNS):
    rows = atlasMNS.queryAgents()
    print('Agents: ' + str(len(rows)))
    printAgents(rows)
+
+
+# ###### Purge agents #######################################################
+def purgeAgents(atlasMNS):
+   try:
+      atlasMNS.scheduler_dbCursor.execute("""
+         DELETE FROM AgentLastSeen
+         WHERE
+            LastSeen < (NOW() - INTERVAL '24 HOURS')
+         """)
+      atlasMNS.scheduler_dbConnection.commit()
+   except Exception as e:
+      print('Unable to purge agents: ' + str(e))
+      atlasMNS.scheduler_dbConnection.rollback()
+      return
 
 
 # ###### Show results #######################################################
@@ -262,6 +277,7 @@ def showHelp():
    print('')
    print('Agent Information')
    print('* list-agents')
+   print('* purge-agents')
    print('')
    print('Measurement Scheduling')
    print('* add-measurement    agent_host_ip agent_traffic_class agent_from_ip probe_id')
@@ -329,6 +345,7 @@ atexit.register(readline.write_history_file, histfile)
 readline.parse_and_bind('set editing-mode vi')
 readline.set_completer(SimpleCompleter([
    'list-agents',
+   'purge-agents',
    'add-measurement',
    'check-measurement',
    'remove-measurement',
@@ -378,6 +395,9 @@ while True:
 
        elif argv[0] == 'list-agents':
           listAgents(atlasMNS)
+
+       elif argv[0] == 'purge-agents':
+          purgeAgents(atlasMNS)
 
        elif ((argv[0] == 'add-measurement') or
              (argv[0] == 'remove-measurement') or
