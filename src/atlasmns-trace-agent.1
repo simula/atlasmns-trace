@@ -17,7 +17,7 @@
 .\" Contact: dreibh@iem.uni-due.de
 .\"
 .\" ###### Setup ############################################################
-.Dd June 14, 2019
+.Dd July 31, 2019
 .Dt atlasmns-trace-agent 1
 .Os atlasmns-trace-agent
 .\" ###### Name #############################################################
@@ -27,6 +27,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm atlasmns-trace-agent
+database_configuration_file
 .Op \-L|--loglevel level
 .Op \-q|--quiet
 .Op \-v|--verbose
@@ -49,6 +50,8 @@ is the Atlas/MNS Trace agent.
 .Sh ARGUMENTS
 The following arguments may be provided:
 .Bl -tag -width indent
+.It database_configuration_file
+This is the database configuration file.
 .It \-L|\--loglevel level
 Sets the minimum logging level to the provided value: 0=trace, 1=debug, 2=info, 3=warning, 4=error, 5=fatal.
 .It \-q|\--quiet
