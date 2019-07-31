@@ -1,3 +1,139 @@
+commit a2f12456aba6a3a5de6e591108807442e252759d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:56:58 2019 +0200
+
+    Improved init script.
+
+commit f5dda10f4bbfb0ee6779e94500f66a4455a1fe74
+Merge: 04f62f8 d88a6f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:51:10 2019 +0200
+
+    Merge branch 'master' of github.com:simula/atlasmns-trace
+
+commit 04f62f870d8939eaeb82ec8429540e8379b4c602
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:50:57 2019 +0200
+
+    A fix.
+
+commit d88a6f7b4fccfb335472770dc7f068edcfed36eb
+Merge: cc30887 0427324
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:45:20 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit 04273240137e721803664540090fd751851d74da
+Merge: 09a8e62 67c0200
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:44:55 2019 +0200
+
+    Merge branch 'master' of github.com:simula/atlasmns-trace
+
+commit 09a8e62637331d54b15f86606d15b37d49cf5c25
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:44:35 2019 +0200
+
+    Further updates.
+
+commit bb35d5a289f728782cc6c705f545227ddbfc513b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:41:15 2019 +0200
+
+    Updated manpage.
+
+commit 2e63b6608d667cc282a60b68ef727e165a395d59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:36:01 2019 +0200
+
+    Improved options handling to be compatible with latest HiPerConTracer options.
+
+commit cc3088707ff591aa2ccfe1b9027f674bc307bd0d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:31:47 2019 +0200
+
+    Removed executable bit from non-program files.
+
+commit 67c0200eb558616ba92716d829bb2941b710f8f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:30:30 2019 +0200
+
+    Improved log output.
+
+commit 251411bb4b980dbcb8b94ec766474eec845cbe8c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 14:15:54 2019 +0200
+
+    Improved Controller.
+
+commit ecc14e88502d838444c6217f66c9d8de1d02031c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:49:07 2019 +0200
+
+    Controller improvements.
+
+commit 0bbea3d1ae4e6495ebf51bd314a55a97cf13b9c4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:35:57 2019 +0200
+
+    Removed test code.
+
+commit 98095f58e7acf62478f02a42dd07729b2526c736
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:33:21 2019 +0200
+
+    Improved Scheduler init script.
+
+commit 619146e6382d553f47c376f31bf42f445ffe20a7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:28:02 2019 +0200
+
+    Fixed name.
+
+commit 26e8a6b880d546bae6e4089f960e38345aa8ebd3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:12:45 2019 +0200
+
+    Configuration improvements.
+
+commit d9f8dd07152abc41769ac621cefa251ae11d9858
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 13:04:35 2019 +0200
+
+    Fixed naming inconsistencies.
+
+commit f32fdba5091e4f02c34d874dd24a1528155080ed
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 12:58:23 2019 +0200
+
+    Added further Agent configuration.
+
+commit 024706ebda618d5b2975330d8e80bae282aa0b4f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 12:42:00 2019 +0200
+
+    Further init script updates.
+
+commit c658804896dcc43d790668e8e1433a4dcd77cf34
+Merge: a047676 5971183
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 12:33:22 2019 +0200
+
+    Merge branch 'master' of https://github.com/simula/atlasmns-trace
+
+commit a0476761f2a4aa5923d50945f5e1b50efe0a3afc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 12:32:59 2019 +0200
+
+    Improved init script.
+
+commit 59711834f248c9e930b7d2d6b00bad8a8964ee47
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 09:42:24 2019 +0200
+
+    New release atlasmns-trace-0.1.3.
+
 commit 7e80981cbf36dfee6ca45342acc34096b1be9bc3
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Jul 30 16:28:46 2019 +0200
