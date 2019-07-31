@@ -317,15 +317,18 @@ int main(int argc, char** argv)
       ( "help,h",
            "Print help message" )
 
-      ( "loglevel",
-           boost::program_options::value<unsigned int>(&logLevel)->default_value(boost::log::trivial::severity_level::trace),
+      ( "loglevel,L",
+           boost::program_options::value<unsigned int>(&logLevel)->default_value(boost::log::trivial::severity_level::info),
            "Set logging level" )
-      ( "user",
+      ( "verbose,v",
+           boost::program_options::value<unsigned int>(&logLevel)->implicit_value(boost::log::trivial::severity_level::trace),
+           "Verbose logging level" )
+      ( "quiet,q",
+           boost::program_options::value<unsigned int>(&logLevel)->implicit_value(boost::log::trivial::severity_level::warning),
+           "Quiet logging level" )
+      ( "user,U",
            boost::program_options::value<std::string>(&user),
            "User" )
-      ( "config-file",
-           boost::program_options::value<std::string>(&configurationFileName),
-           "Configuration file" )
 
       ( "source,S",
            boost::program_options::value<std::vector<std::string>>(),
