@@ -17,7 +17,7 @@
 .\" Contact: dreibh@iem.uni-due.de
 .\"
 .\" ###### Setup ############################################################
-.Dd June 14, 2019
+.Dd July 31, 2019
 .Dt atlasmns-trace-agent 1
 .Os atlasmns-trace-agent
 .\" ###### Name #############################################################
@@ -27,19 +27,68 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm atlasmns-trace-agent
-.\" configuration_file
+database_configuration_file
+.Op \-L|--loglevel level
+.Op \-q|--quiet
+.Op \-v|--verbose
+.Op \-U|--user=user|uid
+.Op \-S|--source=address
+.Op \--tracerouteinterval milliseconds
+.Op \--tracerouteduration milliseconds
+.Op \--tracerouterounds rounds
+.Op \--tracerouteinitialmaxttl value
+.Op \--traceroutefinalmaxttl value
+.Op \--tracerouteincrementmaxttl value
+.Op \-R|--resultsdirectory directory
+.Op \--resultstransactionlength seconds
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm atlasmns-trace-agent
 is the Atlas/MNS Trace agent.
 .Pp
 .\" ###### Arguments ########################################################
-.\" .Sh ARGUMENTS
-.\" The following arguments have to be provided:
-.\" .Bl -tag -width indent
-.\" .It configuration_file
-.\" .El
-.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following arguments may be provided:
+.Bl -tag -width indent
+.It database_configuration_file
+This is the database configuration file.
+.It \-L|\--loglevel level
+Sets the minimum logging level to the provided value: 0=trace, 1=debug, 2=info, 3=warning, 4=error, 5=fatal.
+.It \-q|\--quiet
+Sets the minimum logging level to 3 (warning).
+.It \-v|\--verbose
+Sets the minimum logging level to 0 (trace).
+.It \-U|\--user user|uid
+After startup, HiPerConTracer uses UID and GID of the given user (by name or GID).
+The output directory's ownership as well as the ownership of the created results
+files will be set accordingly.
+.It \-S|\--source address
+Adds the given source address.
+.It \--tracerouteinterval milliseconds
+Sets the traceroute interval (time for each full round of destinations).
+.It \--tracerouteduration milliseconds
+Sets the traceroute duration (timeout for each destination).
+.It \--tracerouterounds rounds
+For each traceroute measurement, perform the given number of rounds simultaneously.
+Default is 1 round.
+Each TTL test of a round will have the same ICMP checksum value ("Oslo Traceroute"),
+in order to deal with load balancing in the Internet.
+Different rounds will have different checksums. That is, different rounds may
+experience different paths in the network.
+.It \--tracerouteinitialmaxttl value
+Start with the given maximum TTL.
+.It \--traceroutefinalmaxttl value
+Finish with the given maximum TTL
+(when destination is not reached with current TTL setting).
+.It \--tracerouteincrementmaxttl value
+Increase the maximum TTL by the given value
+(when destination is not reached with current TTL setting).
+.It \-R|\--resultsdirectory directory
+Sets the results files directory. The results will be stored there. If not specified, to results will be stored.
+.It \--resultstransactionlength seconds
+After a given number of seconds, begin a new results file.
+.El
+.\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It atlasmns-trace-agent
