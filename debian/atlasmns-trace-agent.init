@@ -9,7 +9,7 @@
 # Description:       This service provides the Atlas/MNS Trace Agent
 ### END INIT INFO
 #
-# Atlas/MNS Trace Service
+# Atlas/MNS Trace Agent
 # Copyright (C) 2014-2019 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,27 +28,27 @@
 # Contact: dreibh@simula.no
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-NAME=atlasmns-trace-agent
+NAME="atlasmns-trace-agent"
 DESC="Atlas/MNS Trace Agent"
 ATLASMNS_TRACE_AGENT_DAEMON="/usr/bin/atlasmns-trace-agent"
-ATLASMNS_TRACE_AGENT_PIDFILE="/var/run/$NAME.pid"
-ATLASMNS_TRACE_AGENT_LOGFILE="/var/log/$NAME.log"
+ATLASMNS_TRACE_AGENT_PIDFILE="/var/run/${NAME}.pid"
+ATLASMNS_TRACE_AGENT_LOGFILE="/var/log/${NAME}.log"
 ATLASMNS_TRACE_AGENT_DATABASE_CONFIGURATION="/etc/nornet/atlasmns-database-configuration"
-ATLASMNS_TRACE_AGENT_ARGS="--config-file $ATLASMNS_TRACE_AGENT_DATABASE_CONFIGURATION"
+ATLASMNS_TRACE_AGENT_ARGS="--config-file ${ATLASMNS_TRACE_AGENT_DATABASE_CONFIGURATION}"
 ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE="/var/log/atlasmns-trace-import.log"
 
-test -x $ATLASMNS_TRACE_AGENT_DAEMON || exit 0
+test -x ${ATLASMNS_TRACE_AGENT_DAEMON} || exit 0
 
 # Get source addresses:
 sourceAddresses=`get-default-ips`
 for sourceAddress in ${sourceAddresses} ; do
-   ATLASMNS_TRACE_AGENT_ARGS="$ATLASMNS_TRACE_AGENT_ARGS --source ${sourceAddress}"
+   ATLASMNS_TRACE_AGENT_ARGS="${ATLASMNS_TRACE_AGENT_ARGS} --source ${sourceAddress}"
 done
 
 # Get configuration:
 # First, set default (if available).
-if [ -f /etc/default/atlasmns-trace ] ; then
-   . /etc/default/atlasmns-trace
+if [ -f /etc/default/atlasmns-trace-agent ] ; then
+   . /etc/default/atlasmns-trace-agent
 fi
 # Then, apply local settings (if available).
 if [ -f /etc/nornet/atlasmns-trace-agent.local ] ; then
@@ -67,42 +67,42 @@ fi
 set -e
 
 
-echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>$ATLASMNS_TRACE_AGENT_LOGFILE
+echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>${ATLASMNS_TRACE_AGENT_LOGFILE}
 
 case "$1" in
   start)
    echo -n "Starting $DESC: "
-   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE --exec /bin/bash -- -c "exec $ATLASMNS_TRACE_AGENT_DAEMON $ATLASMNS_TRACE_AGENT_ARGS >>$ATLASMNS_TRACE_AGENT_LOGFILE 2>&1"
-   echo "$NAME."
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_AGENT_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_AGENT_DAEMON} ${ATLASMNS_TRACE_AGENT_ARGS} >>${ATLASMNS_TRACE_AGENT_LOGFILE} 2>&1"
+   echo "${NAME}."
    # Ensure that importer's log file is writable by user "hipercontracer":
    touch $ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE
    chown hipercontracer:hipercontracer $ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE
    ;;
   stop)
    echo -n "Stopping $DESC: "
-   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE || true
-   rm -f $ATLASMNS_TRACE_AGENT_PIDFILE
-   echo "$NAME."
+   start-stop-daemon --stop --pidfile ${ATLASMNS_TRACE_AGENT_PIDFILE} || true
+   rm -f ${ATLASMNS_TRACE_AGENT_PIDFILE}
+   echo "${NAME}."
    ;;
   force-reload)
-   start-stop-daemon --stop --test --quiet --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE \
+   start-stop-daemon --stop --test --quiet --pidfile ${ATLASMNS_TRACE_AGENT_PIDFILE} \
    && $0 restart \
    || exit 0
    ;;
   restart)
    echo -n "Restarting $DESC: "
-   start-stop-daemon --stop --quiet --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE || true
-   rm -f $ATLASMNS_TRACE_AGENT_PIDFILE
+   start-stop-daemon --stop --quiet --pidfile ${ATLASMNS_TRACE_AGENT_PIDFILE} || true
+   rm -f ${ATLASMNS_TRACE_AGENT_PIDFILE}
    sleep 1
-   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_AGENT_PIDFILE --exec /bin/bash -- -c "exec $ATLASMNS_TRACE_AGENT_DAEMON -- $ATLASMNS_TRACE_AGENT_ARGS >>$ATLASMNS_TRACE_AGENT_LOGFILE 2>&1"
-   echo "$NAME."
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_AGENT_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_AGENT_DAEMON} -- ${ATLASMNS_TRACE_AGENT_ARGS} >>${ATLASMNS_TRACE_AGENT_LOGFILE} 2>&1"
+   echo "${NAME}."
    ;;
   status)
-   status_of_proc -p $ATLASMNS_TRACE_AGENT_PIDFILE $ATLASMNS_TRACE_AGENT_DAEMON $NAME \
+   status_of_proc -p ${ATLASMNS_TRACE_AGENT_PIDFILE} ${ATLASMNS_TRACE_AGENT_DAEMON} ${NAME} \
    && exit 0 || exit $?
    ;;
   *)
-   N=/etc/init.d/$NAME
+   N=/etc/init.d/${NAME}
    echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
    exit 1
    ;;

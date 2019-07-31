@@ -28,30 +28,26 @@
 # Contact: dreibh@simula.no
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-NAME=atlasmns-trace-scheduler
+NAME="atlasmns-trace-scheduler"
 DESC="Atlas/MNS Trace Scheduler"
 ATLASMNS_TRACE_SCHEDULER_DAEMON="/usr/bin/atlasmns-trace-scheduler"
-ATLASMNS_TRACE_SCHEDULER_PIDFILE=/var/run/$NAME.pid
-ATLASMNS_TRACE_SCHEDULER_LOGFILE=/var/log/$NAME.log
-ATLASMNS_TRACE_SCHEDULER_ARGS=""
+ATLASMNS_TRACE_SCHEDULER_PIDFILE="/var/run/${NAME}.pid"
+ATLASMNS_TRACE_SCHEDULER_LOGFILE="/var/log/${NAME}.log"
+ATLASMNS_TRACE_SCHEDULER_DATABASE_CONFIGURATION="/etc/nornet/atlasmns-database-configuration"
+ATLASMNS_TRACE_SCHEDULER_ARGS="--config-file ${ATLASMNS_TRACE_SCHEDULER_DATABASE_CONFIGURATION}"
 
-test -x $ATLASMNS_TRACE_SCHEDULER_DAEMON || exit 0
+test -x ${ATLASMNS_TRACE_SCHEDULER_DAEMON} || exit 0
 
 
 # Get configuration:
 # First, set default (if available).
 SOURCE_ARGS=""
-if [ -f /etc/default/atlasmns-trace ] ; then
-   # NOTE: The trace service is configured as well => get the SOURCE_ARGS setting here!
-   . /etc/default/atlasmns-trace
+if [ -f /etc/default/atlasmns-trace-scheduler ] ; then
+   . /etc/default/atlasmns-trace-scheduler
 fi
 # Then, apply local settings (if available).
 if [ -f /etc/nornet/atlasmns-trace-scheduler.local ] ; then
    . /etc/nornet/atlasmns-trace-scheduler.local
-fi
-if [ "$ATLASMNS_TRACE_SCHEDULER_ARGS" == "" ] ; then
-   # NOTE: No specific configuration => try to use existing source settings with defaults!
-   ATLASMNS_TRACE_SCHEDULER_ARGS=""
 fi
 
 # Load the VERBOSE setting and other rcS variables
@@ -66,39 +62,39 @@ fi
 set -e
 
 
-echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE
+echo -e "\x1b[33m`env LANG=C date +%FT%H:%M:%S`: ###### $0 $@ ######\x1b[0m" >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE}
 
 case "$1" in
   start)
    echo -n "Starting $DESC: "
-   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE --exec $ATLASMNS_TRACE_SCHEDULER_DAEMON -- $ATLASMNS_TRACE_SCHEDULER_ARGS >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE 2>&1
-   echo "$NAME."
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} -- ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
+   echo "${NAME}."
    ;;
   stop)
    echo -n "Stopping $DESC: "
-   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE || true
-   rm -f $ATLASMNS_TRACE_SCHEDULER_PIDFILE
-   echo "$NAME."
+   start-stop-daemon --stop --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} || true
+   rm -f ${ATLASMNS_TRACE_SCHEDULER_PIDFILE}
+   echo "${NAME}."
    ;;
   force-reload)
-   start-stop-daemon --stop --test --quiet --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE \
+   start-stop-daemon --stop --test --quiet --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} \
    && $0 restart \
    || exit 0
    ;;
   restart)
    echo -n "Restarting $DESC: "
-   start-stop-daemon --stop --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE || true
-   rm -f $ATLASMNS_TRACE_SCHEDULER_PIDFILE
+   start-stop-daemon --stop --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} || true
+   rm -f ${ATLASMNS_TRACE_SCHEDULER_PIDFILE}
    sleep 1
-   start-stop-daemon --start --background --make-pidfile --pidfile $ATLASMNS_TRACE_SCHEDULER_PIDFILE --exec $ATLASMNS_TRACE_SCHEDULER_DAEMON -- $ATLASMNS_TRACE_SCHEDULER_ARGS >>$ATLASMNS_TRACE_SCHEDULER_LOGFILE 2>&1
-   echo "$NAME."
+   start-stop-daemon --start --background --make-pidfile --pidfile ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} --exec /bin/bash -- -c "exec ${ATLASMNS_TRACE_SCHEDULER_DAEMON} -- ${ATLASMNS_TRACE_SCHEDULER_ARGS} >>${ATLASMNS_TRACE_SCHEDULER_LOGFILE} 2>&1"
+   echo "${NAME}."
    ;;
   status)
-   status_of_proc -p $ATLASMNS_TRACE_SCHEDULER_PIDFILE $ATLASMNS_TRACE_SCHEDULER_DAEMON $NAME \
+   status_of_proc -p ${ATLASMNS_TRACE_SCHEDULER_PIDFILE} ${ATLASMNS_TRACE_SCHEDULER_DAEMON} ${NAME} \
    && exit 0 || exit $?
    ;;
   *)
-   N=/etc/init.d/$NAME
+   N=/etc/init.d/${NAME}
    echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
    exit 1
    ;;
