@@ -1,5 +1,5 @@
 Name: atlasmns-trace
-Version: 0.1.2
+Version: 0.1.3
 Release: 1
 Summary: NorNet Control
 Group: Applications/Internet
@@ -49,7 +49,7 @@ Requires: nornet-management
 Requires: python3-colorlog
 Requires: python3-psycopg2
 Requires: python3-pymongo
-Requires: ripe-atlas-cousteau
+Requires: ripe.atlas.cousteau
 
 %description common
  This package contains common functions for the Atlas/MNS Trace programs.
@@ -123,6 +123,8 @@ Requires: %{name}-common = %{version}-%{release}
 
 
 %changelog
+* Wed Jul 31 2019 Thomas Dreibholz <dreibh@simula.no> - 0.1.3
+- New upstream release.
 * Tue Jul 30 2019 Thomas Dreibholz <dreibh@simula.no> - 0.1.2
 - New upstream release.
 * Tue Jul 30 2019 Thomas Dreibholz <dreibh@simula.no> - 0.1.1
