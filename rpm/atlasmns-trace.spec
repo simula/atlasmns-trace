@@ -120,6 +120,7 @@ Requires: %{name}-common = %{version}-%{release}
 %{_mandir}/man1/atlasmns-trace-agent.1.gz
 %{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
 %{_datadir}/doc/atlasmns-trace/examples/atlasmns-tracedataimporter-configuration
+/etc/cron.d/atlasmns-trace-importer
 
 
 %changelog

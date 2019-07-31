@@ -1,1 +1,2 @@
 /usr/bin/atlasmns-trace-agent
+/etc/cron.d/atlasmns-trace-importer
