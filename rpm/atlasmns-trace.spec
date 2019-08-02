@@ -25,9 +25,11 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 
 %description
-NorNet is a testbed for multi-homed systems. This package
-contains the Atlas/MNS Trace experiment scripts.
-See https://www.nntb.no for details on NorNet!
+This package contains the Atlas/MNS Trace experiment software.
+It is used to perform Traceroute experiments between Internet
+hosts and RIPE Atlas nodes, based on the HiPerConTracer
+library and results importer script. The results are imported
+into a MongoDB database for later analysis.
 
 %prep
 %setup -q
