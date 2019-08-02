@@ -1,0 +1,14 @@
+[
+   {
+      "agentHostIP":       "132.252.152.105",
+      "agentTrafficClass": 0,
+      "agentFromIP":       "132.252.152.105",
+      "probeID":           29027
+   },
+   {
+      "agentHostIP":       "2001:638:501:4ef2::105",
+      "agentTrafficClass": 0,
+      "agentFromIP":       "2001:638:501:4ef2::105",
+      "probeID":           51230
+   }
+]
