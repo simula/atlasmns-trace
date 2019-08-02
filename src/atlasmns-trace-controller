@@ -260,12 +260,16 @@ def showResults(atlasMNS, identifier):
 
       # ====== Find HiPerConTracer results ==================================
       print('HiPerConTracer Results for Measurement Time ' + str(AtlasMNSTools.timeStampToDatetime(myAgentMeasurementTime)) + ':')
+      isEmpty = True
       for hiPerConTracerResult in hiPerConTracerResults:
          sys.stdout.write(' * ')
          atlasMNS.dumpHiPerConTracerResult(hiPerConTracerResult)
+         isEmpty = False
          ## resultStr = bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True)
          #resultStr = str(hiPerConTracerResult)
          #print(' * ' + resultStr)
+      if isEmpty:
+         print('-- No results, yet. Note, it may take some time until next importer cronjob run! --')
 
    else:
       print('No results found!')
