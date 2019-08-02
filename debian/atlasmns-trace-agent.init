@@ -35,7 +35,7 @@ ATLASMNS_TRACE_AGENT_PIDFILE="/var/run/${NAME}.pid"
 ATLASMNS_TRACE_AGENT_LOGFILE="/var/log/${NAME}.log"
 ATLASMNS_TRACE_AGENT_DATABASE_CONFIGURATION="/etc/nornet/atlasmns-database-configuration"
 ATLASMNS_TRACE_AGENT_ARGS="--config-file ${ATLASMNS_TRACE_AGENT_DATABASE_CONFIGURATION} -user=hipercontracer -tracerouteduration=2000 -tracerouteinitialmaxttl=5 -traceroutefinalmaxttl=35 -tracerouteincrementmaxttl=5 -resultstransactionlength=900 -resultsdirectory=/var/atlasmns -quiet"
-ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE="/var/log/atlasmns-trace-import.log"
+ATLASMNS_TRACE_AGENT_IMPORTER_LOGFILE="/var/log/atlasmns-tracedataimporter.log"
 
 test -x ${ATLASMNS_TRACE_AGENT_DAEMON} || exit 0
 
