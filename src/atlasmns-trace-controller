@@ -198,7 +198,7 @@ def listMeasurementRuns(atlasMNS):
 # ###### Print agents #######################################################
 def printAgents(rows, indent = '* '):
    sys.stdout.write(' ' * len(indent))
-   sys.stdout.write('{0:40s} {1:>20s} {2:>15s} {3:16s}\n'.format(
+   sys.stdout.write('{0:40s} {1:>32s} {2:>15s} {3:16s}\n'.format(
       'AgentHostName', 'AgentHostIP', 'LastSeen', 'Location'
    ))
 
@@ -211,7 +211,7 @@ def printAgents(rows, indent = '* '):
       else:
          lastSeenStr = str(lastSeen) + ' min ago'
       sys.stdout.write(indent)
-      sys.stdout.write("{0:40s} {1:>20s} {2:>15s} {3:16s}\n".format(
+      sys.stdout.write("{0:40s} {1:>32s} {2:>15s} {3:16s}\n".format(
          row['AgentHostName'].strip(),
          row['AgentHostIP'],
          lastSeenStr,
