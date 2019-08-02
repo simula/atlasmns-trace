@@ -1,3 +1,21 @@
+commit 2955d481d47ca5abcfc00973077b8af1f33342e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 1 09:03:17 2019 +0200
+
+    Updated README.
+
+commit d3d222e7a1804798573aa52b88f76bb96b031036
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 16:46:07 2019 +0200
+
+    Minor clean-up.
+
+commit a7509dd76c76da944b150069c43847e15009179e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 31 16:44:46 2019 +0200
+
+    New release atlasmns-trace-0.2.0.
+
 commit a2f12456aba6a3a5de6e591108807442e252759d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Jul 31 14:56:58 2019 +0200
