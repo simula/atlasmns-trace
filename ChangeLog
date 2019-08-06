@@ -1,3 +1,27 @@
+commit e0921d220be79cd340abc1ce068549736637dee7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 09:15:38 2019 +0200
+
+    Updated CI scripts.
+
+commit 965bfee522386cb31fa1f094c28928ae76d42e0a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 5 19:13:45 2019 +0200
+
+    Updated Travis CI configuration.
+
+commit 94e6f89a143f1a5b5e0bfecfb457b73052e227bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 5 19:11:06 2019 +0200
+
+    Updated build scripts.
+
+commit 5c5dd382da88dd63e0210f4612549196d3099c87
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 2 14:29:33 2019 +0200
+
+    New release atlasmns-trace-0.2.3.
+
 commit a0eb4b8d1102e47b7594efde0a1ca852fc07fa1e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Aug 2 14:26:14 2019 +0200
