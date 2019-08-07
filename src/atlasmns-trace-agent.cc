@@ -439,6 +439,10 @@ int main(int argc, char** argv)
    // ====== Initialize =====================================================
    initialiseLogger(logLevel);
    const passwd* pw = getUser(user.c_str());
+   if(pw == nullptr) {
+      HPCT_LOG(fatal) << "Cannot find user!";
+      exit(1);
+   }
 
    std::srand(std::time(0));
    tracerouteExpiration      = std::min(std::max(1000U, tracerouteExpiration),   60000U);
@@ -465,12 +469,16 @@ int main(int argc, char** argv)
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
       try {
-         ResultsWriter* resultsWriter = ResultsWriter::makeResultsWriter(
-                                           ResultsWriterSet, sourceAddress, "Traceroute",
-                                           resultsDirectory.c_str(), resultsTransactionLength,
-                                           (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0);
-         if(resultsWriter == nullptr) {
-            exit(1);
+         ResultsWriter* resultsWriter = nullptr;
+         if(!resultsDirectory.empty()) {
+            resultsWriter = ResultsWriter::makeResultsWriter(
+                               ResultsWriterSet, sourceAddress, "Traceroute",
+                               resultsDirectory.c_str(), resultsTransactionLength,
+                               (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0);
+            if(resultsWriter == nullptr) {
+               HPCT_LOG(fatal) << "Cannot initialise results directory " << resultsDirectory << "!";
+               exit(1);
+            }
          }
          Traceroute* service = new Traceroute(resultsWriter, 0, true,
                                               sourceAddress, std::set<DestinationInfo>(),
@@ -492,7 +500,11 @@ int main(int argc, char** argv)
 
 
    // ====== Reduce privileges ==============================================
-   reducePrivileges(pw);
+   if(reducePrivileges(pw) == false) {
+      HPCT_LOG(fatal) << "Failed to reduce privileges!";
+      exit(1);
+   }
+
 
    // ====== Wait for termination signal ====================================
    CleanupTimer.async_wait(tryCleanup);
