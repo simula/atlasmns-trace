@@ -465,11 +465,14 @@ int main(int argc, char** argv)
       HPCT_LOG(info) << "Source: " << sourceAddress;
 
       try {
-         Traceroute* service = new Traceroute(ResultsWriter::makeResultsWriter(
-                                              ResultsWriterSet, sourceAddress, "Traceroute",
-                                              resultsDirectory.c_str(), resultsTransactionLength,
-                                              (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0),
-                                              0, true,
+         ResultsWriter* resultsWriter = ResultsWriter::makeResultsWriter(
+                                           ResultsWriterSet, sourceAddress, "Traceroute",
+                                           resultsDirectory.c_str(), resultsTransactionLength,
+                                           (pw != nullptr) ? pw->pw_uid : 0, (pw != nullptr) ? pw->pw_gid : 0);
+         if(resultsWriter == nullptr) {
+            exit(1);
+         }
+         Traceroute* service = new Traceroute(resultsWriter, 0, true,
                                               sourceAddress, std::set<DestinationInfo>(),
                                               tracerouteInterval, tracerouteExpiration,
                                               tracerouteRounds,
