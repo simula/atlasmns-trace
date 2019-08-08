@@ -1,3 +1,57 @@
+commit 8ea0e5256dfb534660af7f2d4aa5fa2d265f2f56
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 8 09:23:51 2019 +0200
+
+    Some updates.
+
+commit 734818ec58cdb75ff148f0d9057850f4a8b02d60
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 8 09:23:38 2019 +0200
+
+    Updated watch file.
+
+commit f6d2c02541bc0952baf47f778c50185d9d67a8f0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 10:33:04 2019 +0200
+
+    Fixed some inconsistencies in different packaging files.
+
+commit b4b81b92ffdac4865f2e75fe0fb7b2c3d950f4c7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 10:04:34 2019 +0200
+
+    Updated build scripts.
+
+commit eb184e4c6eefeecd413e79333a1e07203142b4d5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 09:44:31 2019 +0200
+
+    Further improvements.
+
+commit e0b90622e73ca97a6e5c919f5f83e1d1d654a233
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 09:16:54 2019 +0200
+
+    Updated ResultsWriter::makeResultsWriter() results handling, for compatibility with updated libhipercontracer.
+
+commit a26729ccbe9811d8218c89abdea54fa21ceb4b46
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 16:50:36 2019 +0200
+
+    Removed leading / from Ubuntu/Debian install files.
+
+commit 7779a0222be362910916f5ceb0c02059db28552f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 12:55:38 2019 +0200
+
+    Updated LSM entry.
+
+commit 045e8f51de093a4698bf4e92d9151139caa42027
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 12:53:47 2019 +0200
+
+    New release atlasmns-trace-0.2.4.
+
 commit e0921d220be79cd340abc1ce068549736637dee7
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Aug 6 09:15:38 2019 +0200
