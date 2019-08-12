@@ -113,14 +113,6 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
    return True
 
 
-# ###### Return string of value, or empty string for None type ##############
-def valueOrNoneString(value):
-   if value != None:
-      return str(value)
-   else:
-      return ''
-
-
 # ###### Print measurement runs #############################################
 def printMeasurementRuns(rows, indent = '* '):
    sys.stdout.write(' ' * len(indent))
@@ -133,17 +125,17 @@ def printMeasurementRuns(rows, indent = '* '):
       sys.stdout.write(indent)
       sys.stdout.write("{0:8d} {1:8s} {2:>36s} {3:>36s} {4:>24s} {5:02x} {6:>24s} {7:>16s} {8:10s} {9:6d} {10:>26s} {11:s}\n".format(
          row['Identifier'],
-         valueOrNoneString(row['ProbeID']),
-         valueOrNoneString(row['ProbeHostIP']),
-         valueOrNoneString(row['ProbeFromIP']),
-         valueOrNoneString(row['AgentHostIP']),
+         AtlasMNSTools.valueOrNoneString(row['ProbeID']),
+         AtlasMNSTools.valueOrNoneString(row['ProbeHostIP']),
+         AtlasMNSTools.valueOrNoneString(row['ProbeFromIP']),
+         AtlasMNSTools.valueOrNoneString(row['AgentHostIP']),
          row['AgentTrafficClass'],
-         valueOrNoneString(row['AgentFromIP']),
-         valueOrNoneString(row['State']),
-         valueOrNoneString(row['ProbeMeasurementID']),
+         AtlasMNSTools.valueOrNoneString(row['AgentFromIP']),
+         AtlasMNSTools.valueOrNoneString(row['State']),
+         AtlasMNSTools.valueOrNoneString(row['ProbeMeasurementID']),
          row['ProbeCost'],
-         valueOrNoneString(row['AgentMeasurementTime']),
-         valueOrNoneString(row['Info']).strip()
+         AtlasMNSTools.valueOrNoneString(row['AgentMeasurementTime']),
+         AtlasMNSTools.valueOrNoneString(row['Info']).strip()
       ))
 
 
@@ -174,7 +166,7 @@ def printAgents(rows, indent = '* '):
          row['AgentHostName'].strip(),
          row['AgentHostIP'],
          lastSeenStr,
-         valueOrNoneString(row['Location'])
+         AtlasMNSTools.valueOrNoneString(row['Location'])
       ))
 
 
