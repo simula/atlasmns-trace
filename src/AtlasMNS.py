@@ -358,9 +358,9 @@ class AtlasMNS:
                                                            sslmode='verify-ca',
                                                            sslrootcert=self.configuration['scheduler_cafile'])
          self.scheduler_dbConnection.autocommit = False
-      except Exception as e:
+      except psycopg2.OperationalError as e:
          AtlasMNSLogger.error('Unable to connect to the PostgreSQL scheduler database at ' +
-               self.configuration['scheduler_dbserver'] + ': ' + str(e))
+               self.configuration['scheduler_dbserver'] + ': ' + str(e).strip())
          return False
 
       self.scheduler_dbCursor = self.scheduler_dbConnection.cursor()
@@ -378,8 +378,9 @@ FROM ExperimentSchedule
 ORDER BY LastChange ASC;
 """)
          table = self.scheduler_dbCursor.fetchall()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to query schedule: ' + str(e).strip())
+         self.connectToSchedulerDB()
          return []
 
       # ====== Provide result as list of dictionaries =======================
@@ -414,8 +415,9 @@ SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
 ORDER BY AgentHostName,AgentHostIP
 """)
          table = self.scheduler_dbCursor.fetchall()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to query agents: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to query agents: ' + str(e).strip())
+         self.connectToSchedulerDB()
          return []
 
       # ====== Provide result as list of dictionaries =======================
@@ -456,9 +458,10 @@ ORDER BY AgentHostName,AgentHostIP
                scheduledEntry['Identifier']
             ] )
          self.scheduler_dbConnection.commit()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
          return False
 
 
