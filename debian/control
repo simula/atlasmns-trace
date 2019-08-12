@@ -12,7 +12,7 @@ Build-Depends: cmake (>= 3.0.2) | cmake3,
                libboost-program-options-dev (>= 1.58.0) | libboost-program-options1.58-dev,
                libboost-system-dev (>= 1.58.0) | libboost-system1.58-dev,
                libboost-thread-dev (>= 1.58.0) | libboost-thread1.58-dev,
-               libhipercontracer-dev (>= 1.4.4),
+               libhipercontracer-dev (>= 1.4.6),
                libpqxx-dev,
                pkg-config,
                python3-all,
@@ -68,7 +68,7 @@ Description: Atlas/MNS Trace Scheduler
 Package: atlasmns-trace-agent
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
-Depends: hipercontracer (>= 1.4.4),
+Depends: hipercontracer (>= 1.4.6),
          lsb-base,
          ${misc:Depends},
          ${shlibs:Depends}

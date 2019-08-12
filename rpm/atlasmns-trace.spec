@@ -12,7 +12,7 @@ BuildRequires: boost-devel
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: hipercontracer-libhipercontracer-devel >= 1.4.2
+BuildRequires: hipercontracer-libhipercontracer-devel >= 1.4.6
 BuildRequires: libpqxx-devel
 BuildRequires: python3-colorlog
 BuildRequires: python3-psycopg2
@@ -110,7 +110,7 @@ Requires: %{name}-common = %{version}-%{release}
 %package agent
 Summary: Atlas/MNS Trace Agent
 Group: Applications/Internet
-Requires: hipercontracer >= 1.4.2
+Requires: hipercontracer >= 1.4.6
 Requires: %{name}-common = %{version}-%{release}
 
 %description agent
