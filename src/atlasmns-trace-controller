@@ -159,7 +159,7 @@ def listAgents(atlasMNS):
 
 
 # ###### Purge agents #######################################################
-def purgeAgents(atlasMNS):
+def purgeAgents(atlasMNS, hours = 24):
    try:
       atlasMNS.scheduler_dbCursor.execute("""
          DELETE FROM AgentLastSeen
@@ -197,9 +197,9 @@ def showResults(atlasMNS, identifier):
          sys.stdout.write(' * ')
          atlasMNS.dumpHiPerConTracerResult(hiPerConTracerResult)
          isEmpty = False
-         ## resultStr = bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True)
-         #resultStr = str(hiPerConTracerResult)
-         #print(' * ' + resultStr)
+         # resultStr = bson.json_util.dumps(hiPerConTracerResult, indent=3, sort_keys=True)
+         # resultStr = str(hiPerConTracerResult)
+         # print(' * ' + resultStr)
       if isEmpty:
          print('-- No results, yet. Note, it may take some time until next importer cronjob run! --')
 
@@ -217,7 +217,7 @@ def showHelp():
    print('')
    print('Measurement Scheduling')
    print('* add-measurement    agent_host_ip agent_traffic_class agent_from_ip probe_id')
-   print('* check-measurement  agent_host_ip agent_traffic_class agent_from_ip probe_id')
+   print('* check-measurement  identifier')
    print('* remove-measurement agent_host_ip agent_traffic_class agent_from_ip probe_id')
    print('* add-measurements-from-json json_file')
    print('* list-measurements')
@@ -226,7 +226,6 @@ def showHelp():
    print('Miscellaneous')
    print('* exit')
    print('* help')
-   print('')
 
 
 # ###### Input completer ####################################################
@@ -306,15 +305,19 @@ while True:
     argv = re.split('\s+', line)
     if len(argv) > 0:
 
+       # ------ Newline -----------------------------------------------------
        if argv[0].strip() == '':
           continue
 
+       # ------ "exit" ------------------------------------------------------
        elif argv[0] == 'exit':
           break
 
+       # ------ "exit" ------------------------------------------------------
        elif ((argv[0] == 'help') or (argv[0] == '?')):
           showHelp()
 
+       # ------ "exit" ------------------------------------------------------
        elif argv[0] == 'show-results':
           if len(argv) >= 2:
              try:
@@ -326,15 +329,19 @@ while True:
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
+       # ------ "list-measurements" -----------------------------------------
        elif argv[0] == 'list-measurements':
           listMeasurementRuns(atlasMNS)
 
+       # ------ "list-agents" -----------------------------------------------
        elif argv[0] == 'list-agents':
           listAgents(atlasMNS)
 
+       # ------ "purge-agents" ----------------------------------------------
        elif argv[0] == 'purge-agents':
           purgeAgents(atlasMNS)
 
+       # ------ "add-measurement" and "remove-measurement" ------------------
        elif ((argv[0] == 'add-measurement') or
              (argv[0] == 'remove-measurement')):
           if len(argv) >= 5:
@@ -357,12 +364,14 @@ while True:
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
+       # ------ "add-measurements-from-json" --------------------------------
        elif (argv[0] == 'add-measurements-from-json'):
           if len(argv) >= 2:
              addMeasurementRunsFromJSON(atlasMNS, argv[1])
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
+       # ------ "check-measurement" -----------------------------------------
        elif (argv[0] == 'check-measurement'):
           if len(argv) >= 2:
              try:
@@ -375,6 +384,7 @@ while True:
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 
+       # ------ Unknown command ---------------------------------------------
        else:
           print('Unknown command: ' + argv[0])
 
