@@ -48,47 +48,6 @@ import AtlasMNSLogger
 import AtlasMNSTools
 
 
-# ###### Add measurement run ################################################
-def addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID):
-   try:
-      atlasMNS.scheduler_dbCursor.execute("""
-         INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
-         VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
-         """, {
-            'AgentHostIP':       str(agentHostIP),
-            'AgentTrafficClass': int(agentTrafficClass),
-            'AgentFromIP':       str(agentFromIP),
-            'ProbeID':           int(probeID)
-         })
-      atlasMNS.scheduler_dbConnection.commit()
-   except Exception as e:
-      print('Unable to add measurement run: ' + str(e))
-      atlasMNS.scheduler_dbConnection.rollback()
-
-
-# ###### Remove measurement run #############################################
-def removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID):
-   try:
-      atlasMNS.scheduler_dbCursor.execute("""
-         DELETE FROM ExperimentSchedule
-         WHERE
-            AgentHostIP = %(AgentHostIP)s AND
-            AgentTrafficClass = %(AgentTrafficClass)s AND
-            AgentFromIP = %(AgentFromIP)s AND
-            ProbeID = %(ProbeID)s
-         """, {
-            'AgentHostIP':       str(agentHostIP),
-            'AgentTrafficClass': int(agentTrafficClass),
-            'AgentFromIP':       str(agentFromIP),
-            'ProbeID':           int(probeID)
-         })
-      atlasMNS.scheduler_dbConnection.commit()
-   except Exception as e:
-      print('Unable to list measurement runs: ' + str(e))
-      atlasMNS.scheduler_dbConnection.rollback()
-      return
-
-
 # ###### Check status of measurement run ####################################
 def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID):
    try:
@@ -106,7 +65,7 @@ def checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, p
             'ProbeID':           int(probeID)
          })
       rows = atlasMNS.scheduler_dbCursor.fetchall()
-   except Exception as e:
+   except psycopg2.OperationalError as e:
       print('Unable to list measurement runs: ' + str(e))
       atlasMNS.scheduler_dbConnection.rollback()
       return
@@ -145,7 +104,7 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
 
             if dryRun == False:
                print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
-               addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
+               atlasMNS.addMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID)
 
          except Exception as e:
             print('Bad entry #' + str(i + 1) + ': ' + str(e))
@@ -416,9 +375,9 @@ while True:
                 print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
 
              if argv[0] == 'add':
-                addMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
+                atlasMNS.addMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID)
              elif argv[0] == 'remove':
-                removeMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
+                atlasMNS.removeMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID)
              elif argv[0] == 'check':
                 checkMeasurementRun(atlasMNS, agentHostIP, agentTrafficClass, agentFromIP, probeID)
              else:

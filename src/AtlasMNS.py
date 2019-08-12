@@ -405,6 +405,54 @@ ORDER BY LastChange ASC;
       return schedule
 
 
+   # ###### Add measurement run #############################################
+   def addMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
+      try:
+         self.scheduler_dbCursor.execute("""
+            INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
+            VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
+            """, {
+               'AgentHostIP':       str(agentHostIP),
+               'AgentTrafficClass': int(agentTrafficClass),
+               'AgentFromIP':       str(agentFromIP),
+               'ProbeID':           int(probeID)
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to add measurement run: ' + str(e))
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return False
+
+      return True
+
+
+   # ###### Remove measurement run ##########################################
+   def removeMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
+      try:
+         self.scheduler_dbCursor.execute("""
+            DELETE FROM ExperimentSchedule
+            WHERE
+               AgentHostIP = %(AgentHostIP)s AND
+               AgentTrafficClass = %(AgentTrafficClass)s AND
+               AgentFromIP = %(AgentFromIP)s AND
+               ProbeID = %(ProbeID)s
+            """, {
+               'AgentHostIP':       str(agentHostIP),
+               'AgentTrafficClass': int(agentTrafficClass),
+               'AgentFromIP':       str(agentFromIP),
+               'ProbeID':           int(probeID)
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to list measurement runs: ' + str(e))
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return False
+
+      return True
+
+
    # ###### Query agents from scheduler database ############################
    def queryAgents(self):
       # ====== Query database ===============================================
