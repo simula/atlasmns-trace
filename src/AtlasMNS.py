@@ -331,7 +331,8 @@ class AtlasMNS:
    # ###### Connect to PostgreSQL scheduler database ########################
    def connectToSchedulerDB(self):
       AtlasMNSLogger.info('Connecting to the PostgreSQL scheduler database at ' + self.configuration['scheduler_dbserver'] + ' ...')
-      self.scheduler_dbCursor = None
+      self.scheduler_dbCursor     = None
+      self.scheduler_dbConnection = None
       try:
          if self.configuration['scheduler_cafile'] == 'IGNORE':   # Ignore TLS certificate
             AtlasMNSLogger.warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
