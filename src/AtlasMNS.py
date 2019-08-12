@@ -358,9 +358,9 @@ class AtlasMNS:
                                                            sslmode='verify-ca',
                                                            sslrootcert=self.configuration['scheduler_cafile'])
          self.scheduler_dbConnection.autocommit = False
-      except Exception as e:
+      except psycopg2.OperationalError as e:
          AtlasMNSLogger.error('Unable to connect to the PostgreSQL scheduler database at ' +
-               self.configuration['scheduler_dbserver'] + ': ' + str(e))
+               self.configuration['scheduler_dbserver'] + ': ' + str(e).strip())
          return False
 
       self.scheduler_dbCursor = self.scheduler_dbConnection.cursor()
@@ -368,18 +368,28 @@ class AtlasMNS:
 
 
    # ###### Query schedule from scheduler database ##########################
-   def querySchedule(self):
+   def querySchedule(self, identifier = None):
       # ====== Query database ===============================================
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
-         self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
-FROM ExperimentSchedule
-ORDER BY LastChange ASC;
-""")
+         if identifier != None:
+            self.scheduler_dbCursor.execute("""
+               SELECT * FROM ExperimentSchedule
+               WHERE
+                  Identifier = %(Identifier)s
+               """, {
+                  'Identifier': int(identifier)
+               })
+         else:
+            self.scheduler_dbCursor.execute("""
+               SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+               FROM ExperimentSchedule
+               ORDER BY LastChange ASC;
+               """)
          table = self.scheduler_dbCursor.fetchall()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to query schedule: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to query schedule: ' + str(e).strip())
+         self.connectToSchedulerDB()
          return []
 
       # ====== Provide result as list of dictionaries =======================
@@ -404,6 +414,54 @@ ORDER BY LastChange ASC;
       return schedule
 
 
+   # ###### Add measurement run #############################################
+   def addMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
+      try:
+         self.scheduler_dbCursor.execute("""
+            INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
+            VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
+            """, {
+               'AgentHostIP':       str(agentHostIP),
+               'AgentTrafficClass': int(agentTrafficClass),
+               'AgentFromIP':       str(agentFromIP),
+               'ProbeID':           int(probeID)
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to add measurement run: ' + str(e).strip())
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return False
+
+      return True
+
+
+   # ###### Remove measurement run ##########################################
+   def removeMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
+      try:
+         self.scheduler_dbCursor.execute("""
+            DELETE FROM ExperimentSchedule
+            WHERE
+               AgentHostIP = %(AgentHostIP)s AND
+               AgentTrafficClass = %(AgentTrafficClass)s AND
+               AgentFromIP = %(AgentFromIP)s AND
+               ProbeID = %(ProbeID)s
+            """, {
+               'AgentHostIP':       str(agentHostIP),
+               'AgentTrafficClass': int(agentTrafficClass),
+               'AgentFromIP':       str(agentFromIP),
+               'ProbeID':           int(probeID)
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to list measurement runs: ' + str(e).strip())
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return False
+
+      return True
+
+
    # ###### Query agents from scheduler database ############################
    def queryAgents(self):
       # ====== Query database ===============================================
@@ -414,8 +472,9 @@ SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
 ORDER BY AgentHostName,AgentHostIP
 """)
          table = self.scheduler_dbCursor.fetchall()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to query agents: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to query agents: ' + str(e).strip())
+         self.connectToSchedulerDB()
          return []
 
       # ====== Provide result as list of dictionaries =======================
@@ -429,6 +488,24 @@ ORDER BY AgentHostName,AgentHostIP
          })
       # print(agents)
       return agents
+
+
+   # ###### Purge agents #######################################################
+   def purgeAgents(self, seconds = 24*3600):
+      try:
+         self.scheduler_dbCursor.execute("""
+            DELETE FROM AgentLastSeen
+            WHERE
+               LastSeen < (NOW() - INTERVAL %(Interval)s)
+            """, {
+               'Interval': str(str(seconds) + ' SECONDS')
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to purge agents: ' + str(e).strip())
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return
 
 
    # ###### Update schedule in scheduler database ###########################
@@ -456,9 +533,10 @@ ORDER BY AgentHostName,AgentHostIP
                scheduledEntry['Identifier']
             ] )
          self.scheduler_dbConnection.commit()
-      except Exception as e:
-         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e))
+      except psycopg2.OperationalError as e:
+         AtlasMNSLogger.warning('Failed to update schedule: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
          return False
 
 

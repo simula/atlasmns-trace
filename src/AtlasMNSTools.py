@@ -62,3 +62,11 @@ def ipAddressToBinary(address):
 # ###### Convert binary to IP address #######################################
 def binaryToIPAddress(binary):
    return ipaddress.ip_address(binary)
+
+
+# ###### Return string of value, or empty string for None type ##############
+def valueOrNoneString(value):
+   if value != None:
+      return str(value)
+   else:
+      return ''
