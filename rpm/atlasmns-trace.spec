@@ -15,6 +15,7 @@ BuildRequires: gcc-c++
 BuildRequires: hipercontracer-libhipercontracer-devel >= 1.4.6
 BuildRequires: libpqxx-devel
 BuildRequires: python3-colorlog
+BuildRequires: python3-devel
 BuildRequires: python3-psycopg2
 BuildRequires: python3-pymongo
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
@@ -37,9 +38,11 @@ into a MongoDB database for later analysis.
 %build
 %cmake -DCMAKE_INSTALL_PREFIX=/usr -DPYTHON_LIBRARY_PREFIX=%{buildroot}/usr .
 make %{?_smp_mflags}
+%py3_build
 
 %install
 make DESTDIR=%{buildroot} install
+%py3_install
 
 
 
@@ -58,11 +61,11 @@ This package contains common functions for the Atlas/MNS Trace programs.
 See https://www.nntb.no for details on NorNet!
 
 %files common
-/usr/lib/python*/*-packages/AtlasMNS*.egg-info
-/usr/lib/python*/*-packages/AtlasMNS.py
-/usr/lib/python*/*-packages/AtlasMNSLogger.py
-/usr/lib/python*/*-packages/AtlasMNSTools.py
-/usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
+%{python3_sitelib}/AtlasMNS*.egg-info
+%{python3_sitelib}/AtlasMNS.py
+%{python3_sitelib}/AtlasMNSLogger.py
+%{python3_sitelib}/AtlasMNSTools.py
+%{python3_sitelib}/__pycache__/AtlasMNS*.pyc
 %{_datadir}/doc/atlasmns-trace/examples/atlasmns-database-configuration
 %{_datadir}/doc/atlasmns-trace/examples/SQL/README
 %{_datadir}/doc/atlasmns-trace/examples/SQL/database.sql
