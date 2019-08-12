@@ -490,6 +490,24 @@ ORDER BY AgentHostName,AgentHostIP
       return agents
 
 
+   # ###### Purge agents #######################################################
+   def purgeAgents(self, seconds = 24*3600):
+      try:
+         self.scheduler_dbCursor.execute("""
+            DELETE FROM AgentLastSeen
+            WHERE
+               LastSeen < (NOW() - INTERVAL %(Interval)s)
+            """, {
+               'Interval': str(str(seconds) + ' SECONDS')
+            })
+         self.scheduler_dbConnection.commit()
+      except psycopg2.OperationalError as e:
+         print('Unable to purge agents: ' + str(e).strip())
+         self.scheduler_dbConnection.rollback()
+         self.connectToSchedulerDB()
+         return
+
+
    # ###### Update schedule in scheduler database ###########################
    def updateScheduledEntry(self, scheduledEntry):
       AtlasMNSLogger.trace('Updating scheduled entry ...')

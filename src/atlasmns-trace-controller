@@ -158,21 +158,6 @@ def listAgents(atlasMNS):
    printAgents(rows)
 
 
-# ###### Purge agents #######################################################
-def purgeAgents(atlasMNS, hours = 24):
-   try:
-      atlasMNS.scheduler_dbCursor.execute("""
-         DELETE FROM AgentLastSeen
-         WHERE
-            LastSeen < (NOW() - INTERVAL '24 HOURS')
-         """)
-      atlasMNS.scheduler_dbConnection.commit()
-   except Exception as e:
-      print('Unable to purge agents: ' + str(e))
-      atlasMNS.scheduler_dbConnection.rollback()
-      return
-
-
 # ###### Show results #######################################################
 def showResults(atlasMNS, identifier):
    [ success, summary, ripeAtlasResults, hiPerConTracerResults ] = \
@@ -213,7 +198,7 @@ def showHelp():
    print('')
    print('Agent Information')
    print('* list-agents')
-   print('* purge-agents')
+   print('* purge-agents [minutes]')
    print('')
    print('Measurement Scheduling')
    print('* add-measurement    agent_host_ip agent_traffic_class agent_from_ip probe_id')
@@ -309,6 +294,10 @@ while True:
        if argv[0].strip() == '':
           continue
 
+       # ------ Comment -----------------------------------------------------
+       elif argv[0].strip().startswith('#'):
+          continue
+
        # ------ "exit" ------------------------------------------------------
        elif argv[0] == 'exit':
           break
@@ -339,7 +328,16 @@ while True:
 
        # ------ "purge-agents" ----------------------------------------------
        elif argv[0] == 'purge-agents':
-          purgeAgents(atlasMNS)
+          seconds = 24 * 3600
+          if len(argv) >= 2:
+             try:
+                seconds = int(60 * float(argv[1]))
+             except Exception as e:
+                print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
+                continue
+
+          print('Purging agents last seen more than ' + str(seconds / 60) + ' min ago ...')
+          atlasMNS.purgeAgents(seconds)
 
        # ------ "add-measurement" and "remove-measurement" ------------------
        elif ((argv[0] == 'add-measurement') or
@@ -379,7 +377,6 @@ while True:
              except Exception as e:
                 print('Bad parameter for ' + argv[0] + ' given: ' + str(e) + '!')
                 continue
-
              checkMeasurementRun(atlasMNS, identifier)
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
