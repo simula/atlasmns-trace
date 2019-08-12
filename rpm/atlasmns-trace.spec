@@ -54,8 +54,8 @@ Requires: python3-pymongo
 Requires: ripe.atlas.cousteau
 
 %description common
- This package contains common functions for the Atlas/MNS Trace programs.
- See https://www.nntb.no for details on NorNet!
+This package contains common functions for the Atlas/MNS Trace programs.
+See https://www.nntb.no for details on NorNet!
 
 %files common
 /usr/lib/python*/*-packages/AtlasMNS*.egg-info
@@ -99,8 +99,8 @@ BuildArch: noarch
 Requires: %{name}-common = %{version}-%{release}
 
 %description scheduler
- Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
- See https://www.nntb.no for details on NorNet!
+Atlas/MNS Trace Scheduler is the scheduler for the Atlas/MNS Trace experiments.
+See https://www.nntb.no for details on NorNet!
 
 %files scheduler
 %{_bindir}/atlasmns-trace-scheduler
@@ -114,8 +114,8 @@ Requires: hipercontracer >= 1.4.6
 Requires: %{name}-common = %{version}-%{release}
 
 %description agent
- Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.
- See https://www.nntb.no for details on NorNet!
+Atlas/MNS Trace Agent is the agent for the Atlas/MNS Trace experiments.
+See https://www.nntb.no for details on NorNet!
 
 %files agent
 %{_bindir}/atlasmns-trace-agent
