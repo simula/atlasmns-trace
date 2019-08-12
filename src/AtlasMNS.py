@@ -368,15 +368,24 @@ class AtlasMNS:
 
 
    # ###### Query schedule from scheduler database ##########################
-   def querySchedule(self):
+   def querySchedule(self, identifier = None):
       # ====== Query database ===============================================
       AtlasMNSLogger.trace('Querying schedule ...')
       try:
-         self.scheduler_dbCursor.execute("""
-SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
-FROM ExperimentSchedule
-ORDER BY LastChange ASC;
-""")
+         if identifier != None:
+            self.scheduler_dbCursor.execute("""
+               SELECT * FROM ExperimentSchedule
+               WHERE
+                  Identifier = %(Identifier)s
+               """, {
+                  'Identifier': int(identifier)
+               })
+         else:
+            self.scheduler_dbCursor.execute("""
+               SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+               FROM ExperimentSchedule
+               ORDER BY LastChange ASC;
+               """)
          table = self.scheduler_dbCursor.fetchall()
       except psycopg2.OperationalError as e:
          AtlasMNSLogger.warning('Failed to query schedule: ' + str(e).strip())
@@ -419,7 +428,7 @@ ORDER BY LastChange ASC;
             })
          self.scheduler_dbConnection.commit()
       except psycopg2.OperationalError as e:
-         print('Unable to add measurement run: ' + str(e))
+         print('Unable to add measurement run: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
          return False
@@ -445,7 +454,7 @@ ORDER BY LastChange ASC;
             })
          self.scheduler_dbConnection.commit()
       except psycopg2.OperationalError as e:
-         print('Unable to list measurement runs: ' + str(e))
+         print('Unable to list measurement runs: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
          return False
