@@ -1,2 +1,3 @@
 etc/cron.d/atlasmns-tracedataimporter
 usr/bin/atlasmns-trace-agent
+usr/share/doc/atlasmns-trace/examples/atlasmns-tracedataimporter-configuration

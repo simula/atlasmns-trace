@@ -2,4 +2,15 @@ usr/lib/python*/*-packages/AtlasMNS*.egg-info
 usr/lib/python*/*-packages/AtlasMNS.py
 usr/lib/python*/*-packages/AtlasMNSLogger.py
 usr/lib/python*/*-packages/AtlasMNSTools.py
-usr/lib/python*/*-packages/__pycache__/AtlasMNS*.pyc
+usr/share/doc/atlasmns-trace/examples/NoSQL/README
+usr/share/doc/atlasmns-trace/examples/NoSQL/admin.ms
+usr/share/doc/atlasmns-trace/examples/NoSQL/database.ms
+usr/share/doc/atlasmns-trace/examples/NoSQL/install-database-and-users
+usr/share/doc/atlasmns-trace/examples/NoSQL/schema.ms
+usr/share/doc/atlasmns-trace/examples/NoSQL/users.ms
+usr/share/doc/atlasmns-trace/examples/SQL/README
+usr/share/doc/atlasmns-trace/examples/SQL/database.sql
+usr/share/doc/atlasmns-trace/examples/SQL/install-database-and-users
+usr/share/doc/atlasmns-trace/examples/SQL/schema.sql
+usr/share/doc/atlasmns-trace/examples/SQL/users.sql
+usr/share/doc/atlasmns-trace/examples/atlasmns-database-configuration
