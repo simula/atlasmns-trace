@@ -1,5 +1,5 @@
 Name: atlasmns-trace
-Version: 0.2.5
+Version: 0.3.0
 Release: 1
 Summary: NorNet Control
 Group: Applications/Internet
@@ -126,6 +126,8 @@ Requires: %{name}-common = %{version}-%{release}
 
 
 %changelog
+* Mon Aug 12 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.3.0
+- New upstream release.
 * Thu Aug 08 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.2.5
 - New upstream release.
 * Tue Aug 06 2019 Thomas Dreibholz <dreibh@simula.no> - 0.2.4
