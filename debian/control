@@ -5,6 +5,7 @@ Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: https://www.nntb.no/
 Build-Depends: cmake (>= 3.0.2) | cmake3,
                debhelper (>= 9),
+               dh-python,
                libboost-date-time-dev (>= 1.58.0) | libboost-date-time1.58-dev,
                libboost-filesystem-dev (>= 1.58.0) | libboost-filesystem1.58-dev,
                libboost-iostreams-dev (>= 1.58.0) | libboost-iostreams1.58-dev,
@@ -26,12 +27,12 @@ Vcs-Browser: https://github.com/simula/atlasmns-trace
 Package: atlasmns-trace-common
 Architecture: all
 Depends: nornet-management,
-         python3,
          python3-colorlog,
          python3-psycopg2,
          python3-pymongo,
          ripe.atlas.cousteau,
          ${misc:Depends},
+         ${python3:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace common functions
  This package contains common functions for the
@@ -42,8 +43,8 @@ Description: Atlas/MNS Trace common functions
 Package: atlasmns-trace-controller
 Architecture: all
 Depends: atlasmns-trace-common (= ${binary:Version}),
-         python3,
          ${misc:Depends},
+         ${python3:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Controller
  Atlas/MNS Trace Controller is the controller for the
@@ -56,8 +57,8 @@ Architecture: all
 Pre-Depends: ${misc:Pre-Depends}
 Depends: atlasmns-trace-common (= ${binary:Version}),
          lsb-base,
-         python3,
          ${misc:Depends},
+         ${python3:Depends},
          ${shlibs:Depends}
 Description: Atlas/MNS Trace Scheduler
  Atlas/MNS Trace Scheduler is the scheduler for the
