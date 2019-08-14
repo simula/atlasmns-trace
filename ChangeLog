@@ -1,3 +1,51 @@
+commit 4e7eeb3e6b04959e778dbafafa79e3e76c45048c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 14 09:51:34 2019 +0200
+
+    Updated CI scripts.
+
+commit d7feeb0d3a4f8b5730d2fe94fcdf5ffcdb7e72bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:31:07 2019 +0200
+
+    Updated RPM spec file.
+
+commit d45a8730d1d47f03c12c929b1a51208d805af4c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:30:31 2019 +0200
+
+    Updated build script.
+
+commit f61015be7205a9f13c3acb604fc5ca1d57e6fa34
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:29:47 2019 +0200
+
+    Removed Ubuntu Cosmic from Travis CI builds, since it is deprecated.
+
+commit 6f893f683dbe6986885872dafb70e2d0bf97ee6c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:17:55 2019 +0200
+
+    Debian packaging improvements.
+
+commit 5da5568f24140d593efe54bd44e43484d9bee2ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:11:43 2019 +0200
+
+    Improved Debian Python packaging.
+
+commit e59a3ff1c39165f97d91a5660bf3f7ab8d26cfeb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:08:08 2019 +0200
+
+    Improved RPM spec file.
+
+commit c973bfee43d25e1dc485ffcd86f9c9c5e2efa4f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 14:39:18 2019 +0200
+
+    New release atlasmns-trace-0.3.0.
+
 commit 4dc5e6ca8898d8d5e93f1368457e74af0d2e3599
 Merge: 7330d8a 99f8d17
 Author: Thomas Dreibholz <dreibh@simula.no>

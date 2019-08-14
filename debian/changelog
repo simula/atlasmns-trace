@@ -1,3 +1,9 @@
+atlasmns-trace (0.3.1-1ubuntu1) disco; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 14 Aug 2019 16:55:50 +0200
+
 atlasmns-trace (0.3.0-1ubuntu1) disco; urgency=medium
 
   * New upstream release.
