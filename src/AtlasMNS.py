@@ -358,7 +358,7 @@ class AtlasMNS:
                                                            sslmode='verify-ca',
                                                            sslrootcert=self.configuration['scheduler_cafile'])
          self.scheduler_dbConnection.autocommit = False
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          AtlasMNSLogger.error('Unable to connect to the PostgreSQL scheduler database at ' +
                self.configuration['scheduler_dbserver'] + ': ' + str(e).strip())
          return False
@@ -387,7 +387,7 @@ class AtlasMNS:
                ORDER BY LastChange ASC;
                """)
          table = self.scheduler_dbCursor.fetchall()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          AtlasMNSLogger.warning('Failed to query schedule: ' + str(e).strip())
          self.connectToSchedulerDB()
          return []
@@ -427,7 +427,7 @@ class AtlasMNS:
                'ProbeID':           int(probeID)
             })
          self.scheduler_dbConnection.commit()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          print('Unable to add measurement run: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
@@ -453,7 +453,7 @@ class AtlasMNS:
                'ProbeID':           int(probeID)
             })
          self.scheduler_dbConnection.commit()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          print('Unable to list measurement runs: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
@@ -472,7 +472,7 @@ SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
 ORDER BY AgentHostName,AgentHostIP
 """)
          table = self.scheduler_dbCursor.fetchall()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          AtlasMNSLogger.warning('Failed to query agents: ' + str(e).strip())
          self.connectToSchedulerDB()
          return []
@@ -501,7 +501,7 @@ ORDER BY AgentHostName,AgentHostIP
                'Interval': str(str(seconds) + ' SECONDS')
             })
          self.scheduler_dbConnection.commit()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          print('Unable to purge agents: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
@@ -533,7 +533,7 @@ ORDER BY AgentHostName,AgentHostIP
                scheduledEntry['Identifier']
             ] )
          self.scheduler_dbConnection.commit()
-      except psycopg2.OperationalError as e:
+      except psycopg2.Error as e:
          AtlasMNSLogger.warning('Failed to update schedule: ' + str(e).strip())
          self.scheduler_dbConnection.rollback()
          self.connectToSchedulerDB()
