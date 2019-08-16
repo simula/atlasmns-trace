@@ -1,3 +1,33 @@
+commit f3bc1178f8bd01e7404a9f31747d26cd652d600a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 16 17:11:50 2019 +0200
+
+    CI script update.
+
+commit 80f659b1dc4b12b35e8e7427bb654d95fd4d596b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 16 11:48:40 2019 +0200
+
+    Improved build scripts.
+
+commit 9c71b06de9e3148f3ab68bd5e5fc51f2fbc0fa12
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 16 10:09:18 2019 +0200
+
+    Improved PostgreSQL database error handling.
+
+commit 85d76d695ec93b4fa60de0a29d48bd11b93fe9a4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 15 09:27:54 2019 +0200
+
+    Check for psycopg2.Error is needed (i.e. connection timeout), not only for psycopg2.OperationalError.
+
+commit 7994b80738701a00e63bf5067c014b80c6435d21
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 14 16:55:52 2019 +0200
+
+    New release atlasmns-trace-0.3.1.
+
 commit 4e7eeb3e6b04959e778dbafafa79e3e76c45048c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Aug 14 09:51:34 2019 +0200
