@@ -433,7 +433,6 @@ class AtlasMNS:
             self.scheduler_dbConnection.commit()
             break
          except psycopg2.Error as e:
-            self.scheduler_dbConnection.rollback()
             self.connectToSchedulerDB()
             if stage == 2:
                print('Unable to add measurement run: ' + str(e).strip())
@@ -462,7 +461,6 @@ class AtlasMNS:
             self.scheduler_dbConnection.commit()
             break
          except psycopg2.Error as e:
-            self.scheduler_dbConnection.rollback()
             self.connectToSchedulerDB()
             if stage == 2:
                print('Unable to list measurement runs: ' + str(e).strip())
@@ -516,7 +514,6 @@ class AtlasMNS:
             self.scheduler_dbConnection.commit()
             break
          except psycopg2.Error as e:
-            self.scheduler_dbConnection.rollback()
             self.connectToSchedulerDB()
             if stage == 2:
                print('Unable to purge agents: ' + str(e).strip())
@@ -551,7 +548,6 @@ class AtlasMNS:
             self.scheduler_dbConnection.commit()
             break
          except psycopg2.Error as e:
-            self.scheduler_dbConnection.rollback()
             self.connectToSchedulerDB()
             if stage == 2:
                AtlasMNSLogger.warning('Failed to update schedule: ' + str(e).strip())
