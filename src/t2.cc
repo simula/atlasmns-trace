@@ -31,6 +31,19 @@ template<class clock> std::string timePointToStringUTC(const std::chrono::time_p
 }
 
 
+// ###### Randomise std::chrono::duration value #############################
+template<class rep, class period = std::ratio<1>>
+   std::chrono::duration<rep, period> randomiseInterval(const std::chrono::duration<rep, period>& avg, const double variance)
+{
+   // Get random value from [avg - variance*avg, avg + variance*avg]:
+   const double r = rand() / (double)RAND_MAX;
+   const rep    v = avg.count() +
+      (2 * r * (variance * avg.count()) - (variance * avg.count()));
+   return std::chrono::duration<rep, period>(v);
+}
+
+
+
 int main(int argc, char** argv)
 {
    std::function<void(double, int)> f1 = std::bind(&t1, std::placeholders::_1, std::placeholders::_2, "TEST");
@@ -52,6 +65,18 @@ int main(int argc, char** argv)
    std::cout << ss.str() << std::endl;
 
    std::cout << timePointToStringUTC(std::chrono::system_clock::now()) << std::endl;
+
+   std::srand(std::time(0));
+
+   double       s = 0;
+   unsigned int n = 0;
+   for(unsigned int i = 0; i < 1000000; i++) {
+      std::chrono::seconds lastSeenUpdateInterval = randomiseInterval<long>(std::chrono::seconds(3600), 0.50);
+      s += lastSeenUpdateInterval.count();
+      n++;
+//       std::cout << " interval=" << lastSeenUpdateInterval.count() << std::endl;
+   }
+   std::cout << " avgInterval=" << (s / n) << std::endl;
 
    return 0;
 }

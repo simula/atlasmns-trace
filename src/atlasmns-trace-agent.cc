@@ -48,6 +48,8 @@
 #include <hipercontracer/tools.h>
 #include <hipercontracer/traceroute.h>
 
+#include "tools.h"
+
 
 static std::set<ResultsWriter*>                                  ResultsWriterSet;
 static const std::string                                         HostName(boost::asio::ip::host_name());
@@ -63,7 +65,8 @@ static boost::posix_time::milliseconds                           CleanupTimerInt
 static boost::asio::deadline_timer                               CleanupTimer(IOService, CleanupTimerInterval);
 static std::mutex                                                Mutex;
 static std::chrono::system_clock::time_point                     PreviousLastSeenUpdate(TimeStampNull);
-static std::chrono::seconds                                      LastSeenUpdateInterval(3600);
+static const std::chrono::seconds                                AvgLastSeenUpdateInterval(3600);
+static std::chrono::seconds                                      LastSeenUpdateInterval = randomiseInterval<long>(AvgLastSeenUpdateInterval, 0.50);
 
 
 // ###### Signal handler ####################################################
@@ -102,20 +105,6 @@ static void tryCleanup(const boost::system::error_code& errorCode)
          ScheduleCheckTimer.cancel();
       }
    }
-}
-
-
-// ###### Convert time point to string (in UTC time) ########################
-template<class clock> std::string timePointToStringUTC(const std::chrono::time_point<clock> timePoint)
-{
-   const std::chrono::microseconds us = std::chrono::duration_cast<std::chrono::microseconds>(timePoint.time_since_epoch());
-   const time_t                    tt = std::chrono::system_clock::to_time_t(timePoint);
-   tm                              localTime;
-   std::stringstream               ss;
-
-   gmtime_r(&tt, &localTime);
-   ss << std::put_time(&localTime, "%Y%m%dT%H%M%S.") << (us.count() % 1000000);
-   return ss.str();
 }
 
 
@@ -162,6 +151,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
          HPCT_LOG(trace) << "Querying schedule ...";
          if(std::chrono::system_clock::now() - PreviousLastSeenUpdate > LastSeenUpdateInterval) {
             updateLastSeen(schedulerDBTransaction);
+            LastSeenUpdateInterval = randomiseInterval<long>(AvgLastSeenUpdateInterval, 0.50);
          }
          pqxx::result result = schedulerDBTransaction.exec(
             "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeFromIP "
