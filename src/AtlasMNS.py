@@ -41,11 +41,11 @@ import os
 import psycopg2
 import pymongo
 import re
+import ripe.atlas.cousteau
 import shutil
 import signal
-import ripe.atlas.cousteau
-import ssl
 import socket
+import ssl
 import sys
 
 import AtlasMNSLogger
@@ -333,6 +333,7 @@ class AtlasMNS:
       AtlasMNSLogger.info('Connecting to the PostgreSQL scheduler database at ' + self.configuration['scheduler_dbserver'] + ' ...')
       self.scheduler_dbCursor     = None
       self.scheduler_dbConnection = None
+      options='-c statement_timeout=30'
       try:
          if self.configuration['scheduler_cafile'] == 'IGNORE':   # Ignore TLS certificate
             AtlasMNSLogger.warning('TLS certificate check for PostgreSQL scheduler database is turned off!')
@@ -341,14 +342,16 @@ class AtlasMNS:
                                                            user=str(self.configuration['scheduler_dbuser']),
                                                            password=str(self.configuration['scheduler_dbpassword']),
                                                            dbname=str(self.configuration['scheduler_database']),
-                                                           sslmode='require')
+                                                           sslmode='require',
+                                                           options=options)
          elif self.configuration['scheduler_cafile'] == 'None':   # Use default CA settings
             self.scheduler_dbConnection = psycopg2.connect(host=str(self.configuration['scheduler_dbserver']),
                                                            port=str(self.configuration['scheduler_dbport']),
                                                            user=str(self.configuration['scheduler_dbuser']),
                                                            password=str(self.configuration['scheduler_dbpassword']),
                                                            dbname=str(self.configuration['scheduler_database']),
-                                                           sslmode='verify-ca')
+                                                           sslmode='verify-ca',
+                                                           options=options)
          else:   # Use given CA
             self.scheduler_dbConnection = psycopg2.connect(host=str(self.configuration['scheduler_dbserver']),
                                                            port=str(self.configuration['scheduler_dbport']),
@@ -356,7 +359,8 @@ class AtlasMNS:
                                                            password=str(self.configuration['scheduler_dbpassword']),
                                                            dbname=str(self.configuration['scheduler_database']),
                                                            sslmode='verify-ca',
-                                                           sslrootcert=self.configuration['scheduler_cafile'])
+                                                           sslrootcert=self.configuration['scheduler_cafile'],
+                                                           options=options)
          self.scheduler_dbConnection.autocommit = False
       except psycopg2.Error as e:
          AtlasMNSLogger.error('Unable to connect to the PostgreSQL scheduler database at ' +
