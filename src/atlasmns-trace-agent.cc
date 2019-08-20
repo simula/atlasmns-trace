@@ -66,7 +66,7 @@ static boost::asio::deadline_timer                               CleanupTimer(IO
 static std::mutex                                                Mutex;
 static std::chrono::system_clock::time_point                     PreviousLastSeenUpdate(TimeStampNull);
 static const std::chrono::seconds                                AvgLastSeenUpdateInterval(3600);
-static std::chrono::seconds                                      LastSeenUpdateInterval = randomiseInterval<long>(AvgLastSeenUpdateInterval, 0.50);
+static std::chrono::seconds                                      LastSeenUpdateInterval = randomiseInterval(AvgLastSeenUpdateInterval, 0.50);
 
 
 // ###### Signal handler ####################################################
@@ -151,7 +151,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
          HPCT_LOG(trace) << "Querying schedule ...";
          if(std::chrono::system_clock::now() - PreviousLastSeenUpdate > LastSeenUpdateInterval) {
             updateLastSeen(schedulerDBTransaction);
-            LastSeenUpdateInterval = randomiseInterval<long>(AvgLastSeenUpdateInterval, 0.50);
+            LastSeenUpdateInterval = randomiseInterval(AvgLastSeenUpdateInterval, 0.50);
          }
          pqxx::result result = schedulerDBTransaction.exec(
             "SELECT Identifier, AgentHostIP, AgentTrafficClass, ProbeFromIP "

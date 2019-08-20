@@ -71,7 +71,7 @@ int main(int argc, char** argv)
    double       s = 0;
    unsigned int n = 0;
    for(unsigned int i = 0; i < 1000000; i++) {
-      std::chrono::seconds lastSeenUpdateInterval = randomiseInterval<long>(std::chrono::seconds(3600), 0.50);
+      std::chrono::seconds lastSeenUpdateInterval = randomiseInterval(std::chrono::seconds(3600), 0.50);
       s += lastSeenUpdateInterval.count();
       n++;
 //       std::cout << " interval=" << lastSeenUpdateInterval.count() << std::endl;

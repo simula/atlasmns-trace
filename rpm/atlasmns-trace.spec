@@ -1,5 +1,5 @@
 Name: atlasmns-trace
-Version: 0.3.2
+Version: 0.3.3~alpha1.1
 Release: 1
 Summary: NorNet Control
 Group: Applications/Internet
