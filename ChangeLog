@@ -1,3 +1,81 @@
+commit 72d729d02e881be2339302ff8a739d8d93ca2de4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 11:03:04 2019 +0200
+
+    Further PostgreSQL option handling improvements.
+
+commit 0fff884dd927ff3038827f41fa15108d5027d6c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 10:42:08 2019 +0200
+
+    Added FreeBSD packaging files.
+
+commit 11929b2039617af52e99f220ee4d8038511213f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 10:32:51 2019 +0200
+
+    Build fix.
+
+commit bc403e9aafccc63da43c7234b33330e0fdfd5c38
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 09:29:14 2019 +0200
+
+    Improved connection handling.
+
+commit af6fae0f40500fbcec3e6638caeceaf6ccacfe4d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 09:18:03 2019 +0200
+
+    Randomise interval for LastSeen update.
+
+commit c0bdb8be46b9ab0d4d7cb8f51d01707e8d622ad4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 15:59:02 2019 +0200
+
+    Calling rollback() in exception handler will likely trigger another exception. Reconnecting is sufficient.
+
+commit 6f1cb3498c1d4365435bc81e00a80e03705c5492
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 15:51:42 2019 +0200
+
+    Minor fix.
+
+commit 739db986f561c11b8901147d3bda0f697e27b254
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 11:27:05 2019 +0200
+
+    Updated build helper script.
+
+commit 1a74719e5e8d620798714d0bcc00e1719e9ec435
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 11:01:12 2019 +0200
+
+    Updated build scripts.
+
+commit 3d1d4a0d1b85617d3d12c231c715b34e97550d05
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 11:01:04 2019 +0200
+
+    Updated build helper script.
+
+commit e4ee7ef30f00f9b66d90346d65111d245ae27a69
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 10:59:33 2019 +0200
+
+    Updated CI scripts.
+
+commit e398f09959a9093b9ee30b1299f251579e7bf596
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 16 17:44:10 2019 +0200
+
+    A fix.
+
+commit 2c190e075fce95d9f7df641348b45e9b712cea2f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 16 17:12:08 2019 +0200
+
+    New release atlasmns-trace-0.3.2.
+
 commit f3bc1178f8bd01e7404a9f31747d26cd652d600a
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Aug 16 17:11:50 2019 +0200
