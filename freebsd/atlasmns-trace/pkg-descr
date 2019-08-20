@@ -1,0 +1,7 @@
+This package contains the Atlas/MNS Trace experiment software.
+It is used to perform Traceroute experiments between Internet
+hosts and RIPE Atlas nodes, based on the HiPerConTracer
+library and results importer script. The results are imported
+into a MongoDB database for later analysis.
+
+WWW: https://packages.nntb.no/software/atlasmns-trace-service
