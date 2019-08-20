@@ -1,7 +1,7 @@
 Name: atlasmns-trace
 Version: 0.3.3~alpha1.1
 Release: 1
-Summary: NorNet Control
+Summary: AtlasMNS Trace
 Group: Applications/Internet
 License: GPL-3+
 URL: https://www.nntb.no/
