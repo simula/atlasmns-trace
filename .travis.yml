@@ -175,7 +175,7 @@ matrix:
      env:
       - TOOL="coverity"
       - VARIANT="ubuntu"
-      - COVERITY_PROJECT="dreibh%2FAtlasMNS Trace"
+      - COVERITY_PROJECT="AtlasMNS+Trace"
       - COVERITY_SCAN_NOTIFICATION_EMAIL="dreibh@simula.no"
       - COVERITY_SCAN_BRANCH="coverity_scan"
 
