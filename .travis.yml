@@ -1,4 +1,11 @@
-language: c
+language: c++
+sudo: required
+env:
+  global:
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "tbjPJzZtxlmVcusLPPd3vRGlRGv07WjsGrOQmTzXccAbVXfal05HfTPNqAw7yclThLQz8sXFA4kab9MfqY7Fwjx+BKnG3sqb5fY9YhyO5L3CE2RN3zBktfQLgOFcj6LZgXx2K6WheP6fzlWeaLylP9QCu3GDZSDgzKYlCeM4Qp7AIANVdc1BeRa/SvGkLEUMzHCYd++AZUpisMF4pO+pUHyiqUZn0ZPaGZMdLZoOpOUKeSSsvSMp+/lx3BnUphlLLMgdquUjObWRfqQ3VFOZ2Nktza8MfgF00UsfhqYzn7CrX6OwkqxI6YH0QKvxaPgrc1/xjdidYVLO6zgoxuVczL47+iBO6VmbKELkJy85UqbhapXH+UtN4xkFjB3ZEkHk4eAoMK6L/KCAR5p/2Z4xAvORgzwIJwg/NPuxj/pfsInhHsjnmw4DM2bolcSf52SccHaVOfWfAumYwmcIoB7Qb5sVzESX0rgki55Lr7nWhMxg0773sKyixlTywlJzwBMwOUKuLoOy7mAb2H+Hb+bc5n281z/CSzw3e29J++Ilw6RY96w82d8EeMzLlw78ZEs19XQI2V8fOLdQgOeQrQoizwo1psUVYks4Psp2b65ElS+L8t48ZO0ufhnVcsdmoD2l5dFEN/36dWoKw0u4IBZ8llbnCP5/M98cs1eFX6avLI4="
+
 
 matrix:
   include:
@@ -151,6 +158,26 @@ matrix:
    #   osx_image: xcode9.4
    #   compiler: clang
    #   group: travis_latest
+
+
+   # ###### Special #########################################################
+
+   - name: "Default Build"
+     os: linux
+     dist: bionic
+     group: travis_latest
+     env: TOOL="compile"
+
+   - name: "Coverity Scan"
+     os: linux
+     dist: bionic
+     group: travis_latest
+     env:
+      - TOOL="coverity"
+      - VARIANT="ubuntu"
+      - COVERITY_PROJECT="dreibh%2FAtlasMNS Trace"
+      - COVERITY_SCAN_NOTIFICATION_EMAIL="dreibh@simula.no"
+      - COVERITY_SCAN_BRANCH="coverity_scan"
 
 
 before_install:
