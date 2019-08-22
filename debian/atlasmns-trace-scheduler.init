@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ### BEGIN INIT INFO
 # Provides:          atlasmns-trace-scheduler
 # Required-Start:    $local_fs $remote_fs $network $syslog
