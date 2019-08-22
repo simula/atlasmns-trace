@@ -1,3 +1,63 @@
+commit 1c530ef8495a084aa014272194c1eae3f8b06e5c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 22 11:51:53 2019 +0200
+
+    Debian/Ubuntu init scripts have to use /bin/bash shebang.
+
+commit b569c3124f78205f3c14cee1ecf09004d3d48002
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 22 11:14:05 2019 +0200
+
+    Updated Travis CI configuration.
+
+commit e659794aba9b1140c1f4b89c69b2ddb12bd0f58d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 22 10:36:40 2019 +0200
+
+    Updated Python and Bash shebangs for improved platform-independence.
+
+commit 39883c1162aadfb30e6bb09546e8cb43d63d42d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 22 10:05:35 2019 +0200
+
+    Updated Travis CI configuration
+
+commit cc33c6e56535880c20298a372cd665fcf2e32b00
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 22 10:05:35 2019 +0200
+
+    Updated build scripts
+
+commit 8409cfd3ea555cdd0eae453dca6b6359fabb1e8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 21 17:25:31 2019 +0200
+
+    Updated build scripts.
+
+commit 8b005c8efeacf17d3555a46cb6618d347d861ff6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 21 17:25:26 2019 +0200
+
+    Updated CI scripts.
+
+commit 15b7e184bf1a131ac9f48619dd2b2fb407ed2a99
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 21 17:25:20 2019 +0200
+
+    Updated Travis CI configuration.
+
+commit ca7470027fae9b0ade75cb811cbb994c381315c4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 21 09:43:42 2019 +0200
+
+    Updated Travis CI configuration.
+
+commit 9b12f49ec4efabfcebfad15033799f0e3e1f5bc7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 20 11:13:07 2019 +0200
+
+    New release atlasmns-trace-0.3.3.
+
 commit 72d729d02e881be2339302ff8a739d8d93ca2de4
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Aug 20 11:03:04 2019 +0200
