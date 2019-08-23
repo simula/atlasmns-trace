@@ -4,7 +4,7 @@ env:
   global:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
-    - secure: h3SeiGB3WfrfbIIwtHR79GdMQAGBuVXCRNnUdeLhzTiZSE9pr3YTtQ6rNZuV1L++HmoaydMUow+MUg+Psga7nbn3bZndKA0qm1Ef8tuLja/nrkdnr1TpOcjPEJgar9dtHyhvcAZpayhu77lbQp2hwj4cGUq+mkR6v2i+Gyzooj/Ne8T2wNKOfD88AFXo2v1NYIS/V5aCEBytga+udfet+mG1j7p3Mx4DUxDh5G7SCkZDHM1siVHNTa2nsHFq1OvUqucfZgr9n2gYWMU0TXzUSfYiAQ0RppbaX4ZXLjtM5mFTc08FxIaXeblPouVZ8A2U7q5B3T7NiVzYRPoihnTJBthxWy6Mzi/MjxVkndre5rcogzhs8aX5c/1/UTAJHHsvpaLz2I9AcAmz74uwQybXRJntBccm7mehFajg5amPul8wnm/f/22kyOqeWVpmfMCgUJJpfXmOvAOooS+XYD7zstsaNND8lnE23VZ5Zt4XYss0H68bek2Lk+sdm4w/vq5YOBZQiqrEb7hN3xrctE5J+FOvhcorLGZrqvgoOO2bYq4k2F/fpnl0rj8VNuUmaj95Y3ewl9tfHF8Xcc04wjNT76NO2xBUmj3kqPOz40xCeIHxsPM0Jw7h3DfwclY9tQBXGJ/wTOAxLq6I0EPDr7ZEwAohNH5aJ32BFDSYJDxVV4k=
+    - secure: DtUVE6s2m9CvYw1leYGs37tCxKwYSZt+GqujZSh3gHR5L3KlbFzmov47ZUP68H3DSbJszrnE4L0tHgiQajJJrdjJY0WtC59wHaJkO/VtfI0qMcBQIIcqxhHId5us/eAWMig5G9Y6bHnUHeug594fWlXaVnH6wg9EX0mKlGnsaeyW+J2JvdTAzTEx3m3UMd9gd8jnCLSd6Uv8tc+G4wgmmLM0cnhVHgylAPD3RNAkGgPyNd/N04YMh0F/NvLd87ta/WpBs+ovf6Olzwf7DAgX32xZTsur57XpkC+3QnJRNXs5YavV6NIl6F4JimB5jN1fVj8muFYnIVnBGJ+/71/5AtTun/uQrM4CPj5wAjFMiDXjkAvtkGPdFqwOXDKB06XR2td9xLFiwWGGeiR7tUykKCDN6o3lBlo6uBlEFwgmpJmdUH1+6vXQ50OIk+J43wv3W4/smCaWuchymlbg1FDlgPvi7WSzjaJSuUi6zfrP88K+bw+4EZ1jmv9t9XGk4Rbktg72uWF+y6Bbip+k0u/TXHsPE2bz7ZEtKSyoEgQk/Gm9Yje5sluH4eXcaM/6HSy3vpQh9KkbQdKtff21kiKWYmkXa7kppTi3XC/6JqfkMuUONPn7ck0zb+fpVKQ6aPxbdsXuhn8cHNsgNsWTX5ihPBLrggvg0tcu0jHR0/tUIh0=
 
 
 matrix:
@@ -175,7 +175,7 @@ matrix:
      env:
       - TOOL="coverity"
       - VARIANT="ubuntu"
-      - COVERITY_PROJECT="AtlasMNS+Trace"
+      - COVERITY_PROJECT="dreibh%2Fatlasmns-trace-TESTONLY"
       - COVERITY_SCAN_NOTIFICATION_EMAIL="dreibh@simula.no"
       - COVERITY_SCAN_BRANCH="coverity_scan"
 
