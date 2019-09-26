@@ -1,8 +1,8 @@
 amsterdam.nntb.no
+ashburn.nntb.no
 frankfurt.nntb.no
 hongkong.nntb.no
 london.nntb.no
-ashburn.nntb.no
 oslo.nntb.no
 sanjose.nntb.no
 singapore.nntb.no
