@@ -1,5 +1,5 @@
 Name: atlasmns-trace
-Version: 0.4.1
+Version: 0.4.2
 Release: 1
 Summary: AtlasMNS Trace
 Group: Applications/Internet
@@ -127,6 +127,8 @@ See https://www.nntb.no for details on NorNet!
 
 
 %changelog
+* Thu Nov 07 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.4.2
+- New upstream release.
 * Thu Sep 26 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.4.1
 - New upstream release.
 * Thu Aug 22 2019 Thomas Dreibholz <dreibh@iem.uni-due.de> - 0.4.0
