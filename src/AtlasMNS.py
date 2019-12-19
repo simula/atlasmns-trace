@@ -631,7 +631,7 @@ class AtlasMNS:
                   router = run['from']
                   rtt    = '{0:1.3f} ms'.format(run['rtt'])
                except:
-                  router = run['x']
+                  router = '*'   # run['x']=='*'
                   rtt    = 'N/A   '
                sys.stdout.write('{0:>20s} {1:>11s}'.format(router, rtt) + '   ')
             sys.stdout.write('\n')
