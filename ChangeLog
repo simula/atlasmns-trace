@@ -1,3 +1,45 @@
+commit a988312221550751c6d9340ea777f0f0402b7138
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 19 12:14:25 2019 +0100
+
+    Fix for RIPE Atlas results printing.
+
+commit e2d89d8ff71d39870a82b3e01ca36a66e5a215c9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 5 13:19:18 2019 +0100
+
+    Updated Travis CI configuration: added Ubuntu 20.04.
+
+commit 36c51427aafb1ffeee053912dbc8e535d9541281
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 5 12:32:12 2019 +0100
+
+    Updated Travis CI configuration: removed Fedora 29, added Fedora 31.
+
+commit 80065cd0b254a99cf4d6e4acaa0992977236c8ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 5 12:19:47 2019 +0100
+
+    Header updates.
+
+commit 815c4a00396f094833c7d30626f28f614dead7d4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 5 12:15:09 2019 +0100
+
+    Updated build scripts
+
+commit 9ef7a4d487b2ae382c77790ce2960096d15bc1a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 5 12:15:09 2019 +0100
+
+    Updated build scripts
+
+commit 0575c9c0a2d1a454529b9ca23c14ec649d6239b4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 7 15:22:02 2019 +0100
+
+    New release atlasmns-trace-0.4.2.
+
 commit cac74b0999832b2d18d0c9830bc41cea0676f626
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 18 12:26:40 2019 +0200
