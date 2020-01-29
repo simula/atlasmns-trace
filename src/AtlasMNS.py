@@ -382,6 +382,8 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Querying schedule ...')
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             if identifier != None:
                self.scheduler_dbCursor.execute("""
                   SELECT * FROM ExperimentSchedule
@@ -430,6 +432,8 @@ class AtlasMNS:
    def addMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             self.scheduler_dbCursor.execute("""
                INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
                VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
@@ -454,6 +458,8 @@ class AtlasMNS:
    def removeMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             self.scheduler_dbCursor.execute("""
                DELETE FROM ExperimentSchedule
                WHERE
@@ -484,6 +490,8 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Querying agents ...')
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             self.scheduler_dbCursor.execute("""
                SELECT AgentHostIP,AgentHostName,LastSeen,Location FROM AgentLastSeen
                ORDER BY AgentHostName,AgentHostIP
@@ -513,6 +521,8 @@ class AtlasMNS:
    def purgeAgents(self, seconds = 24*3600):
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             self.scheduler_dbCursor.execute("""
                DELETE FROM AgentLastSeen
                WHERE
@@ -534,6 +544,8 @@ class AtlasMNS:
       AtlasMNSLogger.trace('Updating scheduled entry ...')
       for stage in [ 1, 2 ]:
          try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
             self.scheduler_dbCursor.execute(
                """
                UPDATE ExperimentSchedule
