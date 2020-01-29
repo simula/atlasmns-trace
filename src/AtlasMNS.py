@@ -184,6 +184,8 @@ class AtlasMNS:
          measurements = [ measurement ],
          is_oneoff    = True
       )
+
+      # ====== Success ======================================================
       ( is_success, response ) = atlas_request.create()
       if is_success:
          measurementID = response['measurements'][0]
@@ -191,11 +193,25 @@ class AtlasMNS:
                               'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                               ' -> Measurement #' + str(measurementID))
          return ( measurementID, None )
+
+      # ====== Failure ======================================================
       else:
+         # ====== Check for recoverable failure =============================
+         detail = None
+         try:
+            detail = response['detail']
+         except:
+            pass
+         print(detail)
+         if ((detail != None) and (detail.find('We do not allow more than ') == 0)):
+            print("LIMIT")
+            return ( None, None )
+
+         # ====== Non-recoverable failure ===================================
          AtlasMNSLogger.warning('Creating ' + measurement.measurement_type + ' measurement for ' +
                                 'Probe #' + str(source.get_value()) + ' to ' + str(measurement.target) +
                                 ' failed: ' + str(response))
-         return ( None, str(response) )
+         return ( None, response )
 
 
    # ###### Stop RIPE Atlas measurement #####################################

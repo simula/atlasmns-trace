@@ -57,10 +57,13 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
    if measurementID != None:
       scheduledEntry['State']              = 'atlas_scheduled'
       scheduledEntry['ProbeMeasurementID'] = measurementID
-   else:
+      atlasMNS.updateScheduledEntry(scheduledEntry)
+   elif info != None:
       scheduledEntry['State'] = 'failed'
       scheduledEntry['Info']  = info
-   atlasMNS.updateScheduledEntry(scheduledEntry)
+      atlasMNS.updateScheduledEntry(scheduledEntry)
+   else:
+      print('SKIP!')
 
 
 # ###### Check RIPE Atlas experiment ########################################
