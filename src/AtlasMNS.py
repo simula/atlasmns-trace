@@ -199,12 +199,11 @@ class AtlasMNS:
          # ====== Check for recoverable failure =============================
          detail = None
          try:
-            detail = response['detail']
+            detail = str(response['error']['errors'][0]['detail'])
          except:
             pass
-         print(detail)
          if ((detail != None) and (detail.find('We do not allow more than ') == 0)):
-            print("LIMIT")
+            AtlasMNSLogger.trace('Retry again later: ' + detail)
             return ( None, None )
 
          # ====== Non-recoverable failure ===================================

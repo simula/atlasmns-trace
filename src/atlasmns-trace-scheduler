@@ -63,7 +63,8 @@ def scheduleRIPEAtlasExperiment(scheduledEntry):
       scheduledEntry['Info']  = info
       atlasMNS.updateScheduledEntry(scheduledEntry)
    else:
-      print('SKIP!')
+      # Retry later (too many measurements to target are already scheduled)!
+      pass
 
 
 # ###### Check RIPE Atlas experiment ########################################
