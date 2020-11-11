@@ -1,3 +1,10 @@
+atlasmns-trace (0.4.5~rc0-1ubuntu1) hirsute; urgency=medium
+
+  * New upstream release.
+  * debian/control: Updated standards version to 4.5.0.3.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 11 Nov 2020 22:39:05 +0100
+
 atlasmns-trace (0.4.4-1ubuntu1) disco; urgency=medium
 
   * New upstream release.
