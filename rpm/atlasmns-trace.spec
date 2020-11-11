@@ -1,5 +1,5 @@
 Name: atlasmns-trace
-Version: 0.4.4
+Version: 0.4.5~rc0
 Release: 1
 Summary: AtlasMNS Trace
 Group: Applications/Internet
