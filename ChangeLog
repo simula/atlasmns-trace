@@ -1,3 +1,99 @@
+commit 4f4019620c77d16e4a0549d844da2539f04d20e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 21:22:46 2021 +0200
+
+    Updated build scripts
+
+commit 88407dfbe6832d32f01d2c93bf54f1ced38812eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 5 18:52:37 2021 +0100
+
+    Updated Travis CI configuration
+
+commit 0c993108d98c0d36d6af491c737536c5b9092667
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 5 16:01:45 2021 +0100
+
+    Updated build scripts
+
+commit b939a03b1fc23a0cfe5673a65f7974721e89f449
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 3 19:41:47 2021 +0100
+
+    Updated script.
+
+commit 58021700d53f75df23d5e71015590269927f6cd6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 21:20:30 2021 +0100
+
+    Updated build scripts
+
+commit 48bd2e410e4573c5d44147a64e7f2aec5a6cfb2f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 16:30:36 2021 +0100
+
+    Updated build scripts
+
+commit ac59c1a762b8fb5396664389e8177aaf3b1c964d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 16:13:22 2021 +0100
+
+    Improved autogen.sh with options for static analysis.
+
+commit 4ee2f209447344fb51cac3044abfa27616f48071
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 17:57:12 2021 +0100
+
+    Cleaned up CMakeLists.txt.
+
+commit 8cd5bd5660e26b886b17148b2feb4e1fe076cfbc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:19:07 2021 +0100
+
+    Updated build scripts
+
+commit c78599a6bdd9d716a0a6a40fb0cef605b2bff040
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:19:06 2021 +0100
+
+    Updated build scripts
+
+commit 7e82e0355f240489d69d31d6e93495cd1dab08e8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:17:37 2021 +0100
+
+    Updated build scripts
+
+commit 5847813834bd8e7940dc6766dc1102295361477e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:17:37 2021 +0100
+
+    Updated build scripts
+
+commit 8f98c7725fec2a3c1845f84d01083f89838553a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:16:37 2021 +0100
+
+    Header updates.
+
+commit 5cf5d3847ad69d8b787f5f3955e35e93ea4f7a7a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jan 30 07:51:10 2021 +0100
+
+    Updated Travis CI configuration
+
+commit a6053bfcc278988f483dd7a55a1e95e62b607042
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 19:47:56 2020 +0100
+
+    Updated LSM entry.
+
+commit c1fc7f2c97d3bac9b4fa8ae60330f8b11c2d6009
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 19:01:07 2020 +0100
+
+    New release atlasmns-trace-0.4.5.
+
 commit 136971eaa1201ea580ae1d471d6f3edd9195d998
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Nov 13 10:24:50 2020 +0100
