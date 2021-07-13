@@ -42,14 +42,16 @@ import os
 import re
 import readline
 import sys
+import time
+import human_readable
 
 import AtlasMNS
 import AtlasMNSLogger
 import AtlasMNSTools
 
 
-# ###### List measurement runs ##############################################
-def addMeasurementRunsFromJSON(atlasMNS, jsonName):
+# ###### Add measurement from json ##############################################
+def removeMeasurementRunsFromJSON(atlasMNS, jsonName):
    # ====== Parse JSON ======================================================
    try:
       jsonFile = open(jsonName, 'r')
@@ -65,7 +67,7 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
 
    # print(json.dumps(jsonData, indent=3, sort_keys=True))
 
-   # ====== Create measurements from JSON ===================================
+   # ====== Remove measurements from JSON ===================================
    for dryRun in [ True, False ]:
       for i in range(0, len(jsonData)):
          try:
@@ -76,8 +78,9 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
 
             if dryRun == False:
                print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
-               atlasMNS.addMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID)
-
+               atlasMNS.removeMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID)
+            #else:
+            #    print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
          except Exception as e:
             print('Bad entry #' + str(i + 1) + ': ' + str(e))
             return False
@@ -85,8 +88,96 @@ def addMeasurementRunsFromJSON(atlasMNS, jsonName):
    return True
 
 
+
+# ###### Run measurement JSON file  ##############################################
+def addMeasurementRunsFromJSON(atlasMNS, jsonName, create):
+   # ====== Parse JSON ======================================================
+   try:
+      jsonFile = open(jsonName, 'r')
+   except Exception as e:
+      print('Unable to open input file: ' + str(e))
+      return False
+
+   try:
+      jsonData = json.load(jsonFile)
+   except Exception as e:
+      print('Unable to read JSON: ' + str(e))
+      return False
+
+   # print(json.dumps(jsonData, indent=3, sort_keys=True))
+
+   
+   # ====== Create measurements from JSON ===================================
+   for dryRun in [ True, False ]:
+      for i in range(0, len(jsonData)):
+         try:
+            agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
+            agentTrafficClass = int(jsonData[i]['agentTrafficClass'])
+            agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
+            probeID           = int(jsonData[i]['probeID'])
+
+            if dryRun == False:
+               #print('=>', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+               atlasMNS.addMeasurementRun(agentHostIP, agentTrafficClass, agentFromIP, probeID, create)
+         except Exception as e:
+            print('Bad entry #' + str(i + 1) + ': ' + str(e))
+            return False
+
+   return True
+
+# ######  Run measurement from folder ##############################################
+def addMeasurementRunsFromFOLDER(atlasMNS, path, create):
+   # ====== Check path  ======================================================
+   if not os.listdir(path):
+      return False
+
+
+   for root, _, files in os.walk(path):
+       files.sort()
+       for filename in files:
+           fullfile = os.path.join(root,filename)
+           #print(fullfile)
+           
+           if not addMeasurementRunsFromJSON(atlasMNS, fullfile, create ):
+               print('Bad result for measurements in file ' + str(fullfile))
+           # Wait 1 minute between files
+           time.sleep(60)
+
+   return True
+
+
+
+# ###### Print measurement stats  #############################################
+def printStatistics(rows):
+    stats = {}
+    print("+" * 150)
+    execution_times = [ AtlasMNSTools.valueOrNoneString(x['AgentMeasurementTime'])  for x in rows ]
+    execution_times = [ x for x in execution_times if x ]
+    if execution_times:
+        execution_duration = datetime.datetime.strptime(max(execution_times), "%Y-%m-%d %H:%M:%S.%f") - datetime.datetime.strptime(min(execution_times), "%Y-%m-%d %H:%M:%S.%f")
+        now = datetime.datetime.now()
+        execution_times = now - datetime.datetime.strptime(min(execution_times), "%Y-%m-%d %H:%M:%S.%f")
+    
+    sys.stdout.write('Stats: ')
+    for state in ['scheduled', 'atlas_scheduled', 'agent_scheduled', 'agent_completed', 'failed', 'finished']:
+        num = len([x for x in rows if x['State'] == state])
+        stats[state] = num
+        sys.stdout.write('{0:>8s}:{1:>1d} {2:>5}'.format(state, num, ''))
+
+    sys.stdout.write('{0:>8s}:{1:>1d} {2:>5}'.format('Total', len(rows), ''))
+    sys.stdout.write('\n')
+    try:
+        print(str(stats['finished']) +  " finished measurements done in " + str(human_readable.precise_delta(execution_duration)))
+        print("Measurements started " + str(human_readable.date_time(execution_times)))
+    except:
+        pass
+    print("+" * 150)
+
+
+
 # ###### Print measurement runs #############################################
 def printMeasurementRuns(rows, indent = '* '):
+   printStatistics(rows)
    sys.stdout.write(' ' * len(indent))
    sys.stdout.write('{0:>8s} {1:>8s} {2:>36s} {3:>36s} {4:>24s} {5:>2s} {6:>24s} {7:>16s} {8:>10s} {9:>6s} {10:>26s} {11:s}\n'.format(
       'ID', 'ProbeID', 'ProbeHostIP', 'ProbeFromIP', 'AgentHostIP', 'TC', 'AgentFromIP',
@@ -109,7 +200,7 @@ def printMeasurementRuns(rows, indent = '* '):
          AtlasMNSTools.valueOrNoneString(row['AgentMeasurementTime']),
          AtlasMNSTools.valueOrNoneString(row['Info']).strip()
       ))
-
+   printStatistics(rows)
 
 # ###### Check status of measurement run ####################################
 def checkMeasurementRun(atlasMNS, identifier):
@@ -121,10 +212,59 @@ def checkMeasurementRun(atlasMNS, identifier):
 
 
 # ###### List measurement runs ##############################################
-def listMeasurementRuns(atlasMNS):
-   rows = atlasMNS.querySchedule()
-   print('Measurements: ' + str(len(rows)))
+def listMeasurementRuns(atlasMNS, limit, kind):
+   rows = atlasMNS.querySchedule(limit, kind)
+   #print('Measurements: ' + str(len(rows)))
    printMeasurementRuns(rows)
+
+# ###### List measurement runs from json  ##############################################
+def listMeasurementRunsFromJSON(atlasMNS, jsonName, limit, kind):
+      # ====== Parse JSON ======================================================
+   try:
+      jsonFile = open(jsonName, 'r')
+   except Exception as e:
+      print('Unable to open input file: ' + str(e))
+      return False
+
+   try:
+      jsonData = json.load(jsonFile)
+   except Exception as e:
+      print('Unable to read JSON: ' + str(e))
+      return False
+
+   params = {}
+   params['agentHostIP'] = []
+   params['agentTrafficClass'] = []
+   params['agentFromIP'] = []
+   params['probeID'] = []
+
+   for i in range(0, len(jsonData)):
+       try:
+           agentHostIP       = ipaddress.ip_address(jsonData[i]['agentHostIP'])
+           agentTrafficClass = int(jsonData[i]['agentTrafficClass'])
+           agentFromIP       = ipaddress.ip_address(jsonData[i]['agentFromIP'])
+           probeID           = int(jsonData[i]['probeID'])
+
+           params['agentHostIP'].append(jsonData[i]['agentHostIP'])
+           params['agentTrafficClass'].append(jsonData[i]['agentTrafficClass'])
+           params['agentFromIP'].append(jsonData[i]['agentFromIP'])
+           params['probeID'].append(jsonData[i]['probeID'])
+
+       except Exception as e:
+            print('Bad entry #' + str(i + 1) + ': ' + str(e))
+            return False
+
+   params['agentHostIP'] = tuple(params['agentHostIP'])
+   params['agentTrafficClass'] = tuple(params['agentTrafficClass'])
+   params['agentFromIP'] = tuple(params['agentFromIP'])
+   params['probeID'] = tuple(params['probeID'])
+
+   #print(params['probeID'])
+   rows = atlasMNS.queryScheduleFromParams(params, len(jsonData), limit, kind)
+   #print('Measurements: ' + str(len(rows)))
+   printMeasurementRuns(rows)
+
+
 
 
 # ###### Print agents #######################################################
@@ -205,7 +345,10 @@ def showHelp():
    print('* check-measurement  identifier')
    print('* remove-measurement agent_host_ip agent_traffic_class agent_from_ip probe_id')
    print('* add-measurements-from-json json_file')
+   print('* add-measurements-from-folder path')
+   print('* remove-measurements-from-json json_file')
    print('* list-measurements')
+   print('* list-measurements-from-json')
    print('* show-results identifier')
    print('')
    print('Miscellaneous')
@@ -270,7 +413,9 @@ readline.set_completer(SimpleCompleter([
    'check-measurement',
    'remove-measurement',
    'add-measurements-from-json',
+   'remove-measurements-from-json',
    'list-measurements',
+   'list-measurements-from-json',
    'show-results',
    'exit',
    'help'
@@ -320,7 +465,34 @@ while True:
 
        # ------ "list-measurements" -----------------------------------------
        elif argv[0] == 'list-measurements':
-          listMeasurementRuns(atlasMNS)
+           try:
+               limit = int(argv[1])
+           except:
+               limit = None
+           
+           try:
+               kind = str(argv[2])
+           except:
+               kind = None
+
+           listMeasurementRuns(atlasMNS, limit, kind)
+
+       # ------ "list-measurements-from-json" -----------------------------------------
+       elif argv[0] == 'list-measurements-from-json':
+           if len(argv) >= 2:
+               try:
+                   limit = int(argv[2])
+               except:
+                   limit = None
+
+               try:
+                   kind = str(argv[3])
+               except:
+                   kind = None
+               listMeasurementRunsFromJSON(atlasMNS, argv[1], limit, kind)
+           else:
+               print('Too few arguments for ' + argv[0] + ' given!')
+
 
        # ------ "list-agents" -----------------------------------------------
        elif argv[0] == 'list-agents':
@@ -365,7 +537,30 @@ while True:
        # ------ "add-measurements-from-json" --------------------------------
        elif (argv[0] == 'add-measurements-from-json'):
           if len(argv) >= 2:
-             addMeasurementRunsFromJSON(atlasMNS, argv[1])
+              try:
+                 create = argv[2]
+              except:
+                 create = False
+              addMeasurementRunsFromJSON(atlasMNS, argv[1], create)
+          else:
+             print('Too few arguments for ' + argv[0] + ' given!')
+
+       # ------ "add-measurements-from-folder" --------------------------------
+       elif (argv[0] == 'add-measurements-from-folder'):
+          if len(argv) >= 2:
+             try:
+                 create = argv[2]
+             except:
+                 create = False
+             addMeasurementRunsFromFOLDER(atlasMNS, argv[1], create)
+          else:
+             print('Too few arguments for ' + argv[0] + ' given!')
+
+
+       # ------ "remove-measurements-from-json" --------------------------------
+       elif (argv[0] == 'remove-measurements-from-json'):
+          if len(argv) >= 2:
+             removeMeasurementRunsFromJSON(atlasMNS, argv[1])
           else:
              print('Too few arguments for ' + argv[0] + ' given!')
 

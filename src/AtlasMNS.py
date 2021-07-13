@@ -390,9 +390,101 @@ class AtlasMNS:
 
       return True
 
+   # ###### Query schedule from scheduler database ##########################
+   def queryScheduleFromParams(self, parameters, total, limit, kind, identifiers=None):
+      # ====== Query database ===============================================
+      AtlasMNSLogger.trace('Querying schedule ...')
+      for stage in [ 1, 2 ]:
+         try:
+            if self.scheduler_dbCursor == None:
+               raise psycopg2.Error('Disconnected from database')
+            if identifiers != None:
+               self.scheduler_dbCursor.execute("""
+                  SELECT * FROM ExperimentSchedule
+                  WHERE
+                     Identifier IN %(Identifiers)s
+                  """, {
+                     'Identifiers': identifiers
+                  })
+            else:
+                if limit and kind:
+                    query = self.scheduler_dbCursor.mogrify(
+                        """SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                        FROM ExperimentSchedule
+                        WHERE AgentHostIP IN %s
+                           AND AgentTrafficClass IN %s
+                           AND AgentFromIP IN %s
+                           AND ProbeID IN %s
+                           AND State = %s
+                        ORDER BY Identifier DESC LIMIT %s
+                        """, (parameters['agentHostIP'],parameters['agentTrafficClass'], parameters['agentFromIP'], parameters['probeID'], kind, limit, )
+                    )
+                elif limit and not kind:
+                    query = self.scheduler_dbCursor.mogrify(
+                        """SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                        FROM ExperimentSchedule
+                        WHERE AgentHostIP IN %s
+                           AND AgentTrafficClass IN %s
+                           AND AgentFromIP IN %s
+                           AND ProbeID IN %s
+                        ORDER BY Identifier DESC LIMIT %s
+                        """, (parameters['agentHostIP'],parameters['agentTrafficClass'], parameters['agentFromIP'], parameters['probeID'], limit, )
+                    )
+                elif kind and not limit:
+                    query = self.scheduler_dbCursor.mogrify(
+                        """SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                        FROM ExperimentSchedule
+                        WHERE AgentHostIP IN %s
+                           AND AgentTrafficClass IN %s
+                           AND AgentFromIP IN %s
+                           AND ProbeID IN %s
+                           AND State = %s
+                        ORDER BY Identifier DESC
+                        """, (parameters['agentHostIP'],parameters['agentTrafficClass'], parameters['agentFromIP'], parameters['probeID'], kind, )
+                    )
+                else:
+                    query = self.scheduler_dbCursor.mogrify(
+                        """SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                        FROM ExperimentSchedule
+                        WHERE AgentHostIP IN %s 
+                           AND AgentTrafficClass IN %s
+                           AND AgentFromIP IN %s
+                           AND ProbeID IN %s
+                        ORDER BY Identifier DESC LIMIT %s
+                        """, (parameters['agentHostIP'],parameters['agentTrafficClass'], parameters['agentFromIP'], parameters['probeID'], total, ) 
+                    )
+            self.scheduler_dbCursor.execute(query)
+            table = self.scheduler_dbCursor.fetchall()
+            break
+         except psycopg2.Error as e:
+            self.connectToSchedulerDB()
+            if stage == 2:
+               AtlasMNSLogger.warning('Failed to query schedule: ' + str(e).strip())
+               return []
+
+      # ====== Provide result as list of dictionaries =======================
+      schedule = []
+      for row in table:
+         schedule.append({
+            'Identifier':           row[0],
+            'State':                row[1],
+            'LastChange':           row[2],
+            'AgentMeasurementTime': row[3],
+            'AgentHostIP':          row[4],
+            'AgentTrafficClass':    row[5],
+            'AgentFromIP':          row[6],
+            'ProbeID':              row[7],
+            'ProbeMeasurementID':   row[8],
+            'ProbeCost':            row[9],
+            'ProbeHostIP':          row[10],
+            'ProbeFromIP':          row[11],
+            'Info':                 row[12]
+         })
+      return schedule
+
 
    # ###### Query schedule from scheduler database ##########################
-   def querySchedule(self, identifier = None):
+   def querySchedule(self, limit, kind, identifier = None):
       # ====== Query database ===============================================
       AtlasMNSLogger.trace('Querying schedule ...')
       for stage in [ 1, 2 ]:
@@ -408,11 +500,39 @@ class AtlasMNS:
                      'Identifier': int(identifier)
                   })
             else:
-               self.scheduler_dbCursor.execute("""
-                  SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
-                  FROM ExperimentSchedule
-                  ORDER BY LastChange ASC;
-                  """)
+                if limit and kind:
+                    self.scheduler_dbCursor.execute("""
+                      SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                      FROM ExperimentSchedule
+                      WHERE State = %(state)s
+                      ORDER BY Identifier DESC
+                      LIMIT %(limit)s;
+                      """,{'limit': int(limit), 'state': str(kind) })
+
+                elif limit and not kind:
+                    self.scheduler_dbCursor.execute("""
+                      SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                      FROM ExperimentSchedule
+                      ORDER BY Identifier DESC
+                      LIMIT %(limit)s;
+                      """,{'limit': int(limit)})
+
+                elif kind and not limit:
+                    self.scheduler_dbCursor.execute("""
+                      SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                      FROM ExperimentSchedule
+                      WHERE State = %(state)s
+                      ORDER BY LastChange ASC;
+                      """,{'state': str(kind)})
+
+                else:
+                    self.scheduler_dbCursor.execute("""
+                      SELECT Identifier,State,LastChange,AgentMeasurementTime,AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID,ProbeMeasurementID,ProbeCost,ProbeHostIP,ProbeFromIP,Info
+                      FROM ExperimentSchedule
+                      ORDER BY LastChange ASC;
+                      """)
+ 
+
             table = self.scheduler_dbCursor.fetchall()
             break
          except psycopg2.Error as e:
@@ -444,29 +564,81 @@ class AtlasMNS:
 
 
    # ###### Add measurement run #############################################
-   def addMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID):
-      for stage in [ 1, 2 ]:
-         try:
-            if self.scheduler_dbCursor == None:
-               raise psycopg2.Error('Disconnected from database')
-            self.scheduler_dbCursor.execute("""
-               INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
-               VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
+   def addMeasurementRun(self, agentHostIP, agentTrafficClass, agentFromIP, probeID, insert):
+     # Measurement is finished ? We can run new one
+     scheduled = False
+     find = False
+     identifier = 0
+     state = None
+     use = False
+     try:
+         self.scheduler_dbCursor.execute("""
+               SELECT Identifier,State FROM  ExperimentSchedule
+               WHERE AgentHostIP = %(AgentHostIP)s
+                 AND AgentTrafficClass = %(AgentTrafficClass)s
+                 AND AgentFromIP = %(AgentFromIP)s
+                 AND ProbeID = %(ProbeID)s
+                 ORDER BY Identifier ASC
                """, {
                   'AgentHostIP':       str(agentHostIP),
                   'AgentTrafficClass': int(agentTrafficClass),
                   'AgentFromIP':       str(agentFromIP),
                   'ProbeID':           int(probeID)
                })
-            self.scheduler_dbConnection.commit()
-            break
-         except psycopg2.Error as e:
-            self.connectToSchedulerDB()
-            if stage == 2:
-               print('Unable to add measurement run: ' + str(e).strip())
-               return False
+         table = self.scheduler_dbCursor.fetchall()
+         if table:
+             find = True
+             for row in table:
+                 identifier = row[0]
+                 state = row[1]
+                 if state == "scheduled":
+                     scheduled = True
+                     break
+     except psycopg2.Error as e:
+         self.connectToSchedulerDB()
+         print('Unable to check measurement: ' + str(e).strip())
+         return False
 
-      return True
+     if scheduled:
+         if identifier != 0:
+             print('==> [Duplicate]', agentHostIP, agentTrafficClass, agentFromIP, probeID, ' Measurement ' + str(identifier) + ' state is ' + state)  
+         return False
+     
+     if find:
+         if state != 'finished':
+             print('==> [Done]', agentHostIP, agentTrafficClass, agentFromIP, probeID, ' Measurement ' + str(identifier) + ' state is ' + state)
+             return False
+         else:
+             use = True
+
+     if not find or use:
+     #if not find:
+         for stage in [ 1, 2 ]:
+             try:
+                 if self.scheduler_dbCursor == None:
+                     raise psycopg2.Error('Disconnected from database')
+                 if insert:
+                     print('==> [Insertion]', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+                     self.scheduler_dbCursor.execute("""
+                       INSERT INTO ExperimentSchedule (AgentHostIP,AgentTrafficClass,AgentFromIP,ProbeID)
+                       VALUES (%(AgentHostIP)s,%(AgentTrafficClass)s,%(AgentFromIP)s,%(ProbeID)s)
+                        """, {
+                            'AgentHostIP':       str(agentHostIP),
+                            'AgentTrafficClass': int(agentTrafficClass),
+                            'AgentFromIP':       str(agentFromIP),
+                            'ProbeID':           int(probeID)
+                     })
+                     self.scheduler_dbConnection.commit()
+                 else:
+                     print('==> [Dry Run]', agentHostIP, agentTrafficClass, agentFromIP, probeID)
+                 break
+             except psycopg2.Error as e:
+                 self.connectToSchedulerDB()
+                 if stage == 2:
+                     print('Unable to add measurement run: ' + str(e).strip())
+                     return False
+
+     return True
 
 
    # ###### Remove measurement run ##########################################
@@ -482,6 +654,7 @@ class AtlasMNS:
                   AgentTrafficClass = %(AgentTrafficClass)s AND
                   AgentFromIP = %(AgentFromIP)s AND
                   ProbeID = %(ProbeID)s
+                  AND state = 'scheduled'
                """, {
                   'AgentHostIP':       str(agentHostIP),
                   'AgentTrafficClass': int(agentTrafficClass),
