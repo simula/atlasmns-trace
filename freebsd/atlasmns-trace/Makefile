@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	atlasmns-trace
-PORTVERSION=	0.4.6
+PORTVERSION=	0.4.7
 CATEGORIES=	benchmarks
 MASTER_SITES=	https://packages.nntb.no/software/atlasmns-trace-service
 
