@@ -1,3 +1,99 @@
+commit 715bbfb4958bb2df08a80b4de3c8cff7fadef7b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 11 13:27:31 2022 +0200
+
+    Updated submodule.
+
+commit 13c12f5f3c604f8aa7b5705912ba3a88ad0d9cc8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:46:33 2022 +0200
+
+    Removed Vcs-* fields from debian/control.
+
+commit cd048f77730de12f6d72dedd4166eac340015d32
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:17:54 2022 +0200
+
+    Packaging update.
+
+commit cbef45629c1832e39aca7afd9d93beeb0817b841
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:17:36 2022 +0200
+
+    Updated CI scripts
+
+commit 31493bdece333dc7b27209b92dc6b17c0322f686
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:17:34 2022 +0200
+
+    Updated build scripts
+
+commit 924c3a7e805c0963f4fb8dbf9b55b564e6008f12
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:21:24 2022 +0100
+
+    Updated build scripts
+
+commit 08e3f9678d17e0bc0b432c8e0f54b5e11c3d5012
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:31:47 2021 +0100
+
+    Travis CI is dead. Removed obsolete Travis CI scripts and configuration.
+
+commit bdcd72f0fde2ac552f5cb7de75cf3ae2dedf7ccd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:30:37 2021 +0100
+
+    Updated build scripts
+
+commit e09c788fa39051ab0ae145db03c598b6ddfa7ce5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:28:43 2021 +0100
+
+    Removed invalid field "Homepage" from debian/upstream/metadata
+
+commit 1f72ccc188dedd90945abd2636843b1f23ec97f9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 8 10:36:52 2021 +0100
+
+    Updated build scripts
+
+commit 4120759ebd3551d2dd68289a17a1228b51360882
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 7 14:29:47 2021 +0100
+
+    Updated build scripts.
+
+commit 48fc48f1a126a0d41d12ce94238080f2482bc414
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 7 14:22:52 2021 +0100
+
+    Updated build scripts
+
+commit dd49825263fcad54ccd0d3ffbc43a8d4d112f246
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 3 18:23:02 2021 +0100
+
+    Updated build scripts
+
+commit 5db2e25084c3d36b27d028cd0cc77122dcb96dd7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 3 18:23:00 2021 +0100
+
+    Updated build scripts
+
+commit adf81ecfefe851f662542f5ead9759f7aabe836e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 19 16:11:57 2021 +0200
+
+    Updated build scripts
+
+commit a5bb2208a7b221f7fbcd5a0fade3f7b16642b38e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 10 11:19:29 2021 +0200
+
+    New release atlasmns-trace-0.4.7.
+
 commit 08895dfe722c90033a883677311adc37dfd28b41
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Jul 7 13:36:11 2021 +0200
