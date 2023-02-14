@@ -1,7 +1,7 @@
 Source: atlasmns-trace
 Section: net
 Priority: optional
-Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
+Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/
 Build-Depends: cmake (>= 3.0.2) | cmake3,
                debhelper (>= 9),
@@ -20,7 +20,7 @@ Build-Depends: cmake (>= 3.0.2) | cmake3,
                python3-colorlog,
                python3-psycopg2,
                python3-pymongo
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Rules-Requires-Root: no
 
 Package: atlasmns-trace-common

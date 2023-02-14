@@ -1,3 +1,33 @@
+commit b7da7cc571f15ab0f81ded0e1f172017eb8ffb9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Feb 14 11:49:12 2023 +0100
+
+    Updated build scripts
+
+commit 624e3c9caab1c925ea1c3e8798ba5fbadb76c87f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Feb 14 11:46:55 2023 +0100
+
+    Updated CI scripts
+
+commit f4902bcc87ce0e195ff476d6946c1c3cd1d09c9f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Feb 14 11:46:53 2023 +0100
+
+    Updated build scripts
+
+commit 8e8536350f6a2bc74b4f1bbab06a77743c86e1b9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Dec 12 13:29:58 2022 +0100
+
+    Minor CMakeLists.txt updates.
+
+commit 52bf200a6b504e78b63a0126521c31c32fd88ae9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 11 13:27:45 2022 +0200
+
+    New release atlasmns-trace-0.4.8.
+
 commit 715bbfb4958bb2df08a80b4de3c8cff7fadef7b8
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Sep 11 13:27:31 2022 +0200
