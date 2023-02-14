@@ -1,7 +1,7 @@
 Begin4
 Title:          atlasmns-trace
-Version:        0.4.5
-Entered-date:   2020-11-13
+Version:        0.4.9
+Entered-date:   2023-02-14
 Description:    This package contains the Atlas/MNS Trace experiment software.
                 It is used to perform Traceroute experiments between Internet
                 hosts and RIPE Atlas nodes, based on the HiPerConTracer
@@ -11,7 +11,7 @@ Keywords:       Ping, Traceroute, Connectivity, Measurements
 Author:         dreibh@simula.no (Thomas Dreibholz)
 Maintained-by:  dreibh@simula.no (Thomas Dreibholz)
 Primary-site:   https://packages.nntb.no/software/atlasmns-trace-service
-                1799 kB atlasmns-trace-0.4.5.tar.xz
+                1798 kB atlasmns-trace-0.4.9.tar.xz
 Original-site:  https://packages.nntb.no/software/atlasmns-trace-service
 Platforms:      Linux
 Copying-policy: GPL-3+
