@@ -127,7 +127,7 @@ static void updateLastSeen(pqxx::work& schedulerDBTransaction)
 
 // ###### Check schedule ####################################################
 static void checkSchedule(const boost::system::error_code& errorCode,
-                          pqxx::lazyconnection*            schedulerDBConnection)
+                          pqxx::connection*                schedulerDBConnection)
 {
    // ====== Handle scheduled measurements ==================================
    if(errorCode != boost::asio::error::operation_aborted) {
@@ -236,7 +236,7 @@ static void checkSchedule(const boost::system::error_code& errorCode,
 // ###### Callback to handle new results ####################################
 static void resultCallback(Service*              service,
                            const ResultEntry*    resultEntry,
-                           pqxx::lazyconnection* schedulerDBConnection)
+                           pqxx::connection*     schedulerDBConnection)
 {
    if( (resultEntry->round() == 0) && (resultEntry->hop() == 1) ) {
       // Only the first hop of the first round is of interest to obtain
@@ -503,7 +503,7 @@ int main(int argc, char** argv)
 
    // ====== Prepare scheduler database connection ==========================
    try {
-      pqxx::lazyconnection schedulerDBConnection(
+      pqxx::connection schedulerDBConnection(
          "host="     + schedulerDBServer                                 + " "
          "port="     + boost::str(boost::format("%d") % schedulerDBPort) + " "
          "user="     + schedulerDBUser     + " "
