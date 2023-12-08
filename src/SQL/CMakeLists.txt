@@ -1,5 +1,5 @@
 #############################################################################
-#### EXAMPLES                                                            #### ####
+#### EXAMPLES                                                            ####
 #############################################################################
 
 INSTALL(FILES install-database-and-users database.sql README schema.sql users.sql
