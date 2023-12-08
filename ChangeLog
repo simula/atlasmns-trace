@@ -1,3 +1,45 @@
+commit da5faffbb2b0a4f03885db1aa58664b729ac1abd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 8 15:28:18 2023 +0100
+
+    Build fixes.
+
+commit 6274247792ba582db5bb6898d1d4d17f9e62d5ea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 8 15:22:08 2023 +0100
+
+    Header fix.
+
+commit 467fe07929b55673a576ce342d31bb526774096f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 8 15:14:07 2023 +0100
+
+    Updated build scripts
+
+commit adb12afd77450dc404568b9c4a1490183a67f498
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 15 09:33:24 2023 +0100
+
+    Updated CI scripts
+
+commit 408b503a0f34c7f1e28922319cc1ff3377c91303
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 15 09:33:15 2023 +0100
+
+    Updated build scripts
+
+commit 4a3273881fe59cc5fec0f0945d402e094a91f981
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Feb 14 11:53:34 2023 +0100
+
+    Updated LSM entry.
+
+commit abd1f9fbd1aa444302d429d20a5633a8b701c2f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Feb 14 11:49:22 2023 +0100
+
+    New release atlasmns-trace-0.4.9.
+
 commit b7da7cc571f15ab0f81ded0e1f172017eb8ffb9b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Feb 14 11:49:12 2023 +0100
